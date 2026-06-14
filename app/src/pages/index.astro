@@ -5,16 +5,18 @@ import siteData from '../data/site.json';
 import villaData from '../data/villa.json';
 
 import NavMenu from '../components/svelte/NavMenu.svelte';
-import Hero from '../components/svelte/Hero.svelte';
-import StatsCounter from '../components/svelte/StatsCounter.svelte';
-import VillaCard from '../components/svelte/VillaCard.svelte';
-import VillaComparison from '../components/svelte/VillaComparison.svelte';
+import EditorialHero from '../components/svelte/EditorialHero.svelte';
+import Cursor from '../components/svelte/Cursor.svelte';
+import Marquee from '../components/svelte/Marquee.svelte';
+import Ticker from '../components/svelte/Ticker.svelte';
+import Manifesto from '../components/svelte/Manifesto.svelte';
+import VillaShowcase from '../components/svelte/VillaShowcase.svelte';
+import Masterplan from '../components/svelte/Masterplan.svelte';
 import TestimoniCarousel from '../components/svelte/TestimoniCarousel.svelte';
-import StickyScrollSection from '../components/svelte/StickyScrollSection.svelte';
 import FloatingActionButton from '../components/svelte/FloatingActionButton.svelte';
 import LiveActivity from '../components/svelte/LiveActivity.svelte';
 
-import { ArrowRight, Shield, Award, Sparkles, TrendingUp, Home, Key, MapPin, Users, CheckCircle2, Building2, Briefcase, LineChart, Wallet, Calendar } from 'lucide-svelte';
+import { ArrowRight, ArrowUpRight, Shield, Award, Sparkles, TrendingUp, Home, Key, MapPin, CheckCircle2, Building2, LineChart, Wallet, Calendar, Quote } from 'lucide-svelte';
 
 const villaImages = {
   bijak: '/images/ref/villa-bijak-row.jpg',
@@ -22,303 +24,134 @@ const villaImages = {
   mapan: '/images/ref/villa-mapan-street.jpg',
 };
 
-const villas = villaData.types.map((v) => ({
+const showcaseVillas = villaData.types.map((v) => ({
   id: v.id,
   name: v.name,
-  architecture: v.architecture,
   tagline: v.tagline,
-  tag: v.taglineShort,
   priceLabel: v.priceDisplay,
-  specs: { land: `${v.lt} m²`, building: `${v.lb} m²`, bedrooms: `${v.bedrooms}BR` },
-  features: v.features,
+  image: villaImages[v.id],
 }));
 
-const howSteps = [
-  {
-    eyebrow: 'Konsultasi',
-    title: 'Konsultasi & Survei Lokasi',
-    desc: 'Pilih jadwal survei langsung ke kawasan resort. Tim kami akan menemani Anda melihat unit, masterplan kawasan, dan fasilitas lengkap.',
-    bullets: ['Transport dari Bandung kami siapkan', 'Site visit + masterplan walkthrough', 'Sesi tanya jawab dengan developer'],
-  },
-  {
-    eyebrow: 'Booking',
-    title: 'Booking & Pilih Unit',
-    desc: 'Setelah yakin dengan unit pilihan, lakukan booking fee Rp 10 juta untuk mengunci unit Anda. Pilih tipe villa sesuai profil dan target passive income.',
-    bullets: ['Booking fee Rp 10 juta (refundable)', 'Pilih unit via masterplan 3D', 'Konsultan kami siap membantu'],
-  },
-  {
-    eyebrow: 'Pembayaran',
-    title: 'Skema Pembayaran Fleksibel',
-    desc: 'Pilih KPR bank (DP 25%, cicilan 9-15jt) atau skema developer (DP 30%, angsuran ringan 5 tahun). Semua terikat notaris.',
-    bullets: ['KPR BCA/Mandiri/BNI available', 'Skema developer 0% bunga 5 tahun', 'Akad notaris resmi'],
-  },
-  {
-    eyebrow: 'Handover',
-    title: 'Handover & Serah Terima',
-    desc: 'Setelah pelunasan, villa Anda di serahterimakan fully furnished standar Sahid. Sertifikat SHM atas nama pribadi langsung diproses.',
-    bullets: ['Fully furnished standar Sahid', 'SHM atas nama pribadi (clean & clear)', 'Smart home system installed'],
-  },
-  {
-    eyebrow: 'Passive Income',
-    title: 'Terima Passive Income Bulanan',
-    desc: 'Sahid mulai mengelola villa Anda. Setiap bulan, Anda menerima bagi hasil 70% dari net revenue. Tercatat transparan, dikirim tepat waktu.',
-    bullets: ['Bagi hasil 70% untuk pemilik', 'Laporan bulanan via app', 'ROI 10% guarantee 2 tahun pertama'],
-  },
-];
 
-const pillars = [
-  { iconSvg: 'M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z', title: 'SHM + Izin Komersial', desc: 'Sertifikat Hak Milik pribadi clean & clear. Dilengkapi izin operasional komersial.' },
-  { iconSvg: 'polyline 22 7 13.5 15.5 8.5 21 17 11 2 9 22 3 22 7', title: 'ROI 10% Guarantee', desc: 'Jaminan return 10% per tahun untuk 2 tahun pertama, melindungi cashflow awal Anda.' },
-  { iconSvg: 'm3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z M9 22 V12 h6 v10', title: 'Standar Hotel Sahid', desc: 'Fully furnished dengan standar hospitality bintang 5. Siap huni, siap sewakan.' },
-  { iconSvg: 'M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4', title: 'Warisan Produktif', desc: 'Aset tangible atas nama pribadi. Bisa diwariskan. Bukan Hak Pakai, milik Anda selamanya.' },
-  { iconSvg: 'M11 5.5V21 M11 5.5a4 4 0 0 0-4-4 H7 a4 4 0 0 0 0 8 h4 M19 12a4 4 0 0 0-4-4 h-1 a4 4 0 0 0 0 8 h4 v4', title: 'Sahid 50+ Tahun', desc: 'Dikelola harian oleh manajemen Sahid Hotels & Resorts yang berpengalaman sejak 1974.' },
-  { iconSvg: 'M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z', title: 'Lokasi Bandung Timur', desc: 'Cicalengka, view 360 perbukitan. 45 menit dari Gerbang Tol Cileunyi. Hidden gem.' },
-];
 
-const passiveIncomeScenarios = [
-  { tier: 'Bijak', price: 'Rp 1,2 M', cicilan: 'Rp 9,7 jt/bulan', income: 'Rp 9,75 jt/bulan', surplus: 'Positif tipis', tagColor: 'forest' },
-  { tier: 'Idaman', price: 'Rp 1,6 M', cicilan: 'Rp 11,6 jt/bulan', income: 'Rp 12 jt/bulan', surplus: 'Seimbang', tagColor: 'gold' },
-  { tier: 'Mapan', price: 'Rp 2 M', cicilan: 'Rp 14,5 jt/bulan', income: 'Rp 15 jt/bulan', surplus: 'Optimal', tagColor: 'forest' },
+
+const heroTitle = 'Masa Depan';
+const heroAccent = 'Lebih Mapan.';
+const heroEyebrow = '01 / Edition · 2026';
+const heroBadge = 'Limited Release · 16 dari 74 unit tersisa';
+const heroBody = 'Aset warisan produktif berlegalitas SHM Bersih di Cicalengka, Bandung Timur. Dikelola harian oleh manajemen Sahid Hotels & Resorts (50+ tahun). Cicilan mulai Rp 9 juta/bulan, passive income Rp 9-15 juta/bulan.';
+const marqueeItems = [
+  'SHM Bersih',
+  'Dikelola Sahid 50+ Tahun',
+  'ROI 10% Guarantee',
+  'Passive Income Otomatis',
+  'Cicilan Mulai 9 Juta',
+  'Bandung Timur',
+  'Cicalengka',
+];
+const tickerItems = [
+  { title: '74 Unit', subtitle: 'Total villa SHM' },
+  { title: '3 Tipe', subtitle: 'Bijak · Idaman · Mapan' },
+  { title: '3.5 Ha', subtitle: 'Luas kawasan' },
+  { title: '50+ Th', subtitle: 'Track record Sahid' },
+  { title: '70/30', subtitle: 'Profit share' },
+  { title: '10% p.a.', subtitle: 'ROI guarantee' },
+  { title: '45 min', subtitle: 'Dari Tol Cileunyi' },
+];
+const masterplanHotspots = [
+  { x: 18, y: 28, tag: 'Cluster A', label: 'Villa Bijak', desc: '36 unit entry-level dengan atap Limasan etnik Jawa. Ideal untuk first-time investor.' },
+  { x: 40, y: 28, tag: 'Cluster B', label: 'Villa Idaman', desc: '36 unit keluarga dengan double glass facade dan balkon lantai dua.' },
+  { x: 70, y: 28, tag: 'Cluster C', label: 'Villa Mapan', desc: '2 unit flagship dengan atap Gothic Arch dan private sky deck.' },
+  { x: 50, y: 55, tag: 'Central Plaza', label: 'Plaza & F&B', desc: 'Pusat komersial dengan cafe, restaurant, dan retail space untuk tenant.' },
+  { x: 25, y: 75, tag: 'Facility', label: 'Eco Resort Pool', desc: 'Infinity pool 15x6m dengan view perbukitan Bandung Timur.' },
+  { x: 75, y: 75, tag: 'Wellness', label: 'Sahid Wellness Center', desc: 'Spa, fitness, dan yoga pavilion dengan standar Sahid Hospitality.' },
 ];
 ---
 
 <BaseLayout>
+  <Cursor client:load />
   <NavMenu client:load />
 
   <main>
-    <Hero client:load />
-    <StatsCounter client:visible />
+    <!-- ═══ 1. EDITORIAL HERO (full-bleed, cinematic) ═══ -->
+    <EditorialHero
+      client:load
+      title={heroTitle}
+      accent={heroAccent}
+      eyebrow={heroEyebrow}
+      badge={heroBadge}
+      body={heroBody}
+    />
 
-    <section class="section section-cream" id="value">
-      <div class="container-wide">
-        <div class="max-w-3xl mb-16">
-          <div class="inline-flex items-center gap-3 mb-6">
-            <span class="h-px w-12 bg-gold-500"></span>
-            <span class="eyebrow">Nilai Fundamental</span>
-          </div>
-          <h2 class="font-display text-display text-forest-700 leading-[1.05] mb-6">
-            Enam pilar yang membuat<br/>investasi ini <em>berbeda.</em>
-          </h2>
-          <p class="font-body text-lg text-ink-500 leading-relaxed max-w-2xl">
-            Bukan sekadar properti. Ini adalah instrumen keuangan yang dirancang untuk menghasilkan
-            passive income konsisten, dengan legalitas sempurna dan operasional profesional.
-          </p>
-        </div>
+    <!-- ═══ 2. MARQUEE (horizontal infinite scroll tagline) ═══ -->
+    <Marquee client:visible items={marqueeItems} speed={35} />
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-cream-100 border border-cream-100">
-          {pillars.map((p, i) => (
-            <div class="group relative bg-white p-8 md:p-10 transition-all duration-500 hover:bg-cream-50 hover:z-[1]">
-              <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-gold-500 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-center"></div>
-              <div class="flex items-start justify-between mb-6">
-                <div class="w-14 h-14 border border-gold-500/30 bg-gold-500/10 flex items-center justify-center group-hover:bg-gold-500 group-hover:border-gold-500 transition-all duration-500">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-gold-500 group-hover:text-forest-700 transition-colors duration-500">
-                    <path d={p.iconSvg}></path>
-                  </svg>
-                </div>
-                <span class="font-mono text-xs text-cream-100 group-hover:text-gold-500/50 transition-colors">0{i + 1}</span>
-              </div>
-              <h3 class="font-display text-2xl text-forest-700 font-bold leading-tight mb-3 group-hover:text-gold-700 transition-colors duration-500">{p.title}</h3>
-              <p class="font-body text-ink-500 leading-relaxed">{p.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
+    <!-- ═══ 3. MANIFESTO (oversized italic display, word reveal on scroll) ═══ -->
+    <Manifesto client:visible />
 
-    <section class="section section-white" id="villa-types">
-      <div class="container-wide">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-16">
-          <div class="lg:col-span-7">
-            <div class="inline-flex items-center gap-3 mb-6">
-              <span class="h-px w-12 bg-gold-500"></span>
-              <span class="eyebrow">Tipe Villa</span>
-            </div>
-            <h2 class="font-display text-display text-forest-700 leading-[1.05] mb-6">
-              Tiga karakter, <em>satu kemapanan.</em>
-            </h2>
-          </div>
-          <div class="lg:col-span-5 flex items-end">
-            <p class="font-body text-ink-500 leading-relaxed text-lg">
-              Dari pintu masuk Anda ke dunia properti premium, hingga standar keluarga, hingga pinnacle untuk mereka yang tidak puas dengan cukup. Pilih villa sesuai profil dan target.
-            </p>
-          </div>
-        </div>
+    <!-- ═══ 4. VILLA SHOWCASE (sticky scrollspy full-bleed dark) ═══ -->
+    <VillaShowcase client:visible villas={showcaseVillas} />
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <VillaCard client:visible villa={villas[0]} image={villaImages.bijak} index={0} />
-          <VillaCard client:visible villa={villas[1]} image={villaImages.idaman} index={1} />
-          <VillaCard client:visible villa={villas[2]} image={villaImages.mapan} index={2} featured={true} />
-        </div>
-      </div>
-    </section>
+    <!-- ═══ 5. TICKER (horizontal facts) ═══ -->
+    <Ticker client:visible items={tickerItems} />
 
-    <VillaComparison client:visible />
+    <!-- ═══ 6. MASTERPLAN (interactive SVG dengan hotspot) ═══ -->
+    <Masterplan client:visible hotspots={masterplanHotspots} />
 
-    <StickyScrollSection steps={howSteps} client:visible />
-
-    <section class="section section-tint relative overflow-hidden">
-      <div class="absolute inset-0 pattern-grid opacity-50"></div>
-      <div class="container-wide relative">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <div class="lg:col-span-5">
-            <div class="inline-flex items-center gap-3 mb-6">
-              <span class="h-px w-12 bg-gold-500"></span>
-              <span class="eyebrow">Mitra Strategis</span>
-            </div>
-            <h2 class="font-display text-display text-forest-700 leading-[1.05] mb-6">
-              Dikelola oleh <em>Sahid</em>.<br/>50+ tahun pengalaman.
-            </h2>
-            <p class="font-body text-lg text-ink-500 leading-relaxed mb-8">
-              Sahid Hotels & Resorts mengelola lebih dari 20 properti aktif di Indonesia sejak 1974.
-              Mulai dari Grand Sahid Jaya Jakarta, Sahid Resort Yogyakarta, hingga Sahid Serpong BSD.
-              Standar operasional mereka adalah jaminan mutu villa Anda.
-            </p>
-
-            <div class="grid grid-cols-2 gap-4 mb-8">
-              <div class="p-4 bg-white border border-cream-100">
-                <div class="font-display text-3xl text-forest-700 font-bold">20+</div>
-                <div class="font-body text-xs text-ink-500 uppercase tracking-wider mt-1">Properti Aktif</div>
-              </div>
-              <div class="p-4 bg-white border border-cream-100">
-                <div class="font-display text-3xl text-forest-700 font-bold">50+</div>
-                <div class="font-body text-xs text-ink-500 uppercase tracking-wider mt-1">Tahun Pengalaman</div>
-              </div>
-              <div class="p-4 bg-white border border-cream-100">
-                <div class="font-display text-3xl text-forest-700 font-bold">4.5/5</div>
-                <div class="font-body text-xs text-ink-500 uppercase tracking-wider mt-1">Guest Rating</div>
-              </div>
-              <div class="p-4 bg-white border border-cream-100">
-                <div class="font-display text-3xl text-forest-700 font-bold">70/30</div>
-                <div class="font-body text-xs text-ink-500 uppercase tracking-wider mt-1">Profit Share</div>
-              </div>
-            </div>
-
-            <a href="/resort" class="btn btn-primary">
-              Lihat Fasilitas Resort
-              <ArrowRight size={16} />
-            </a>
-          </div>
-
-          <div class="lg:col-span-7 relative">
-            <div class="relative aspect-[4/3] overflow-hidden">
-              <img
-                src="/images/ref/interior-living.jpg"
-                alt="Interior villa Sahid standar hospitality bintang 5"
-                class="w-full h-full object-cover"
-                loading="lazy"
-              />
-              <div class="absolute inset-0 bg-gradient-to-t from-forest-700/50 to-transparent"></div>
-              <div class="absolute bottom-6 left-6 right-6 p-6 bg-white/95 backdrop-blur-sm">
-                <div class="flex items-center gap-3">
-                  <Building2 size={20} class="text-gold-500" />
-                  <div>
-                    <div class="font-display text-lg text-forest-700 font-bold">Standar Sahid Hospitality</div>
-                    <div class="font-body text-xs text-ink-500">Fully furnished · Smart home · 24/7 security</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="absolute -top-4 -right-4 w-24 h-24 border-2 border-gold-500 -z-10"></div>
-            <div class="absolute -bottom-4 -left-4 w-32 h-32 bg-cream-100 -z-10"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section-cream-dark">
-      <div class="container-wide">
-        <div class="max-w-3xl mb-12">
-          <div class="inline-flex items-center gap-3 mb-6">
-            <span class="h-px w-12 bg-gold-500"></span>
-            <span class="eyebrow">Simulasi Cashflow</span>
-          </div>
-          <h2 class="font-display text-display text-forest-700 leading-[1.05] mb-6">
-            Cicilan <em>terkontrol.</em><br/>Passive income otomatis.
-          </h2>
-          <p class="font-body text-lg text-ink-500 leading-relaxed">
-            Dirancang dengan prinsip: cicilan Anda harus lebih kecil dari passive income. Itulah warisan produktif yang sesungguhnya.
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {passiveIncomeScenarios.map((s) => (
-            <div class="group relative bg-white border border-cream-100 p-8 transition-all duration-500 hover:border-gold-300 hover:shadow-xl hover:-translate-y-1">
-              <span class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-gold-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></span>
-              <div class="flex items-start justify-between mb-6">
-                <div>
-                  <div class="font-body text-xs text-ink-500 uppercase tracking-wider mb-1">Villa</div>
-                  <div class="font-display text-3xl text-forest-700 font-bold leading-none">Menantu {s.tier}</div>
-                </div>
-                <span class:list-none={false} class={`inline-flex items-center px-3 py-1 text-xs font-semibold tracking-wide ${s.tagColor === 'forest' ? 'bg-forest-500 text-cream-50' : 'bg-gold-500 text-forest-700'}`}>{s.price}</span>
-              </div>
-
-              <div class="space-y-4 mb-6">
-                <div class="flex items-center justify-between py-3 border-b border-cream-100">
-                  <span class="font-body text-sm text-ink-500">Cicilan / bulan</span>
-                  <span class="font-display text-lg text-forest-700 font-bold">{s.cicilan}</span>
-                </div>
-                <div class="flex items-center justify-between py-3 border-b border-cream-100">
-                  <span class="font-body text-sm text-ink-500">Passive income</span>
-                  <span class="font-display text-lg text-gold-700 font-bold">{s.income}</span>
-                </div>
-                <div class="flex items-center justify-between py-3">
-                  <span class="font-body text-sm text-ink-500">Surplus</span>
-                  <span class="inline-flex items-center gap-1.5 text-whatsapp font-display text-lg font-bold">
-                    <CheckCircle2 size={16} />
-                    {s.surplus}
-                  </span>
-                </div>
-              </div>
-
-              <a href={`/villa/${s.tier.toLowerCase()}`} class="inline-flex items-center gap-2 font-body font-semibold text-forest-700 text-sm tracking-wide hover:text-gold-700 transition-colors">
-                Detail Skema
-                <ArrowRight size={16} />
-              </a>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
+    <!-- ═══ 7. TESTIMONI CAROUSEL (embla) ═══ -->
     <TestimoniCarousel client:visible />
 
-    <section class="relative section-lg overflow-hidden">
-      <div class="absolute inset-0 z-0">
-        <img src="/images/ref/villa-mapan-detail.jpg" alt="" class="w-full h-full object-cover" loading="lazy" />
-        <div class="absolute inset-0 bg-gradient-to-br from-forest-700/95 via-forest-700/90 to-forest-900/85"></div>
-      </div>
+    <!-- ═══ 8. FINAL CTA (asymmetric, editorial) ═══ -->
+    <section class="relative bg-forest-700 text-cream-50 grain overflow-hidden">
+      <div class="container-wide py-32 md:py-48 relative z-10">
+        <div class="grid grid-cols-12 gap-8">
+          <div class="col-span-12 md:col-span-2">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-500">— Closing</div>
+            <div class="font-display text-6xl text-gold-500/20 numeral leading-none mt-2">08</div>
+          </div>
+          <div class="col-span-12 md:col-span-10">
+            <h2 class="font-display text-cream-50 leading-[0.92] tracking-tight mb-12 text-editorial-lg font-bold">
+              Masa depan Anda<br/>
+              <em class="text-gold-500 font-medium">dimulai dari keputusan</em><br/>
+              hari ini.
+            </h2>
 
-      <div class="container-tight relative z-10 text-center">
-        <div class="inline-flex items-center gap-3 mb-6">
-          <span class="h-px w-12 bg-gold-500"></span>
-          <span class="eyebrow text-gold-500">Langkah Pertama</span>
-          <span class="h-px w-12 bg-gold-500"></span>
-        </div>
-        <h2 class="font-display text-cream-50 leading-[1.0] tracking-tight mb-8 text-hero">
-          Masa Depan Anda Dimulai<br/>
-          <em class="text-gold-500 font-medium">Dari Keputusan Hari Ini.</em>
-        </h2>
-        <p class="font-body text-lg text-cream-50/80 leading-relaxed max-w-2xl mx-auto mb-10">
-          74 unit, 58 sudah terjual. Survei gratis, termasuk transport dari Bandung.
-          Promo khusus minggu ini: diskon Rp 200 juta + bonus mobil listrik untuk unit terpilih.
-        </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+              <p class="font-body text-cream-50/80 leading-relaxed text-lg">
+                74 unit, 58 sudah terjual. Survei gratis, termasuk transport dari Bandung.
+                Promo khusus minggu ini: <span class="text-gold-500 font-semibold">diskon Rp 200 juta + bonus mobil listrik</span> untuk unit terpilih.
+              </p>
+              <div class="space-y-4">
+                <div class="flex items-center gap-3 font-body text-sm text-cream-50/80">
+                  <Calendar size={16} class="text-gold-500 flex-shrink-0" />
+                  <span>Survei include transport dari Bandung</span>
+                </div>
+                <div class="flex items-center gap-3 font-body text-sm text-cream-50/80">
+                  <Wallet size={16} class="text-gold-500 flex-shrink-0" />
+                  <span>Booking fee Rp 10 juta (refundable)</span>
+                </div>
+                <div class="flex items-center gap-3 font-body text-sm text-cream-50/80">
+                  <LineChart size={16} class="text-gold-500 flex-shrink-0" />
+                  <span>Konsultan wealth management available</span>
+                </div>
+                <div class="flex items-center gap-3 font-body text-sm text-cream-50/80">
+                  <Shield size={16} class="text-gold-500 flex-shrink-0" />
+                  <span>SHM clean & clear, atas nama pribadi</span>
+                </div>
+              </div>
+            </div>
 
-        <div class="flex flex-wrap gap-4 justify-center mb-12">
-          <a href="#villa-types" class="btn btn-secondary btn-lg">
-            Lihat Unit Tersisa
-            <ArrowRight size={18} />
-          </a>
-          <a href={`https://wa.me/${siteData.contact.whatsapp}?text=Halo%2C%20saya%20ingin%20booking%20survei%20Menantu%20Resort`} target="_blank" rel="noopener" class="btn btn-outline-light btn-lg">
-            Booking Survei Gratis
-          </a>
-        </div>
-
-        <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-cream-50/70 font-body">
-          <div class="flex items-center gap-2"><Calendar size={14} class="text-gold-500" /> Survei include transport</div>
-          <div class="hidden md:block h-4 w-px bg-cream-50/30"></div>
-          <div class="flex items-center gap-2"><Wallet size={14} class="text-gold-500" /> Booking fee Rp 10 juta (refundable)</div>
-          <div class="hidden md:block h-4 w-px bg-cream-50/30"></div>
-          <div class="flex items-center gap-2"><LineChart size={14} class="text-gold-500" /> Konsultan wealth available</div>
+            <div class="flex flex-wrap gap-4">
+              <a href="/villa" data-cursor="Explore" class="group inline-flex items-center gap-3 px-8 py-4 bg-gold-500 text-forest-700 font-body font-semibold tracking-wide transition-all hover:bg-gold-300">
+                Lihat 3 Villa
+                <ArrowRight size={16} class="transition-transform group-hover:translate-x-1" />
+              </a>
+              <a href={`https://wa.me/${siteData.contact.whatsapp}?text=Halo%2C%20saya%20ingin%20booking%20survei%20Menantu%20Resort`} target="_blank" rel="noopener" data-cursor="WhatsApp" class="inline-flex items-center gap-3 px-8 py-4 border border-cream-50/30 text-cream-50 font-body font-semibold tracking-wide transition-all hover:border-cream-50 hover:bg-cream-50/5">
+                Booking Survei
+                <ArrowUpRight size={16} />
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </section>
