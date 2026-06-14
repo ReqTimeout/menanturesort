@@ -1,357 +1,87 @@
 ---
+import villaData from '../../data/villa.json';
+import { formatShort, waUrl } from '../../lib/utils';
+import VillaArt from '../../lib/components/sections/VillaArt.svelte';
 import siteData from '../../data/site.json';
-import { formatRupiah, waUrl } from '../../lib/format';
+import { ArrowRight, Bed, Bath, Maximize, Square, FileCheck, MessageCircle } from 'lucide-svelte';
 
-interface Props {
-  villa: {
-    id: string;
-    name: string;
-    tagline: string;
-    price: number;
-    priceDisplay: string;
-    lb: number;
-    lt: number;
-    bedrooms: number;
-    floors: string;
-    cicilanBank: number;
-    cicilanDeveloper: number;
-    passiveIncome: number;
-    surplusBank: number;
-    target: string;
-    bestValue?: boolean;
-  };
-  index?: number;
-}
-
-const { villa, index = 0 } = Astro.props;
-const waLink = waUrl(
-  siteData.contact.whatsapp,
-  `Halo, saya tertarik dengan ${villa.name}. Bisa info lebih lanjut?`,
-  `villa_card_${villa.id}`
-);
+const waLink = (id: string, msg: string) => waUrl(siteData.contact.whatsapp, msg, `villa_${id}`);
 ---
-<article class="villa-card" style={`--delay: ${index * 0.1}s`}>
-  {villa.bestValue && (
-    <div class="villa-badge">⭐ BEST VALUE</div>
-  )}
-
-  <a href={`/villa/${villa.id}`} class="villa-image">
-    <div class="villa-image-inner">
-      <img src="/images/placeholders/villa-card-placeholder.svg" alt={villa.name} loading="lazy" />
-    </div>
-    <div class="villa-image-overlay">
-      <span class="villa-view">Lihat Detail →</span>
-    </div>
-    <div class="villa-specs-pill">
-      <span>{villa.lb} m²</span>
-      <span class="dot">·</span>
-      <span>{villa.bedrooms} KT</span>
-      <span class="dot">·</span>
-      <span>{villa.floors} Lantai</span>
-    </div>
-  </a>
-
-  <div class="villa-body">
-    <h3 class="villa-name">{villa.name}</h3>
-    <p class="villa-tagline">"{villa.tagline}"</p>
-
-    <div class="villa-price">
-      <span class="villa-price-label">Mulai dari</span>
-      <span class="villa-price-value">{villa.priceDisplay}</span>
+<section id="villa-types" class="section section-white">
+  <div class="container-wide">
+    <div class="text-center mb-20">
+      <span class="eyebrow">Pilih Villa Anda</span>
+      <h2 class="heading-title mt-4">
+        3 Tipe Villa, <br/><em>Semua dengan SHM.</em>
+      </h2>
+      <p class="text-body-lg text-ink-500 max-w-2xl mx-auto mt-6">
+        Dari entry-level untuk investor muda hingga flagship dengan sky deck panoramic.
+        Semua dengan sertifikat Hak Milik atas nama pribadi.
+      </p>
     </div>
 
-    <div class="villa-income">
-      <div class="income-row">
-        <span class="income-label">Cicilan KPR Bank</span>
-        <span class="income-value">{formatRupiah(villa.cicilanBank)}<small>/bln</small></span>
-      </div>
-      <div class="income-row">
-        <span class="income-label">Passive Income</span>
-        <span class="income-value gold">{formatRupiah(villa.passiveIncome)}<small>/bln</small></span>
-      </div>
-      <div class="income-divider"></div>
-      <div class="income-row income-surplus">
-        <span class="income-label">Surplus / bulan</span>
-        <span class={`income-value ${villa.surplusBank > 0 ? 'positive' : 'negative'}`}>
-          {villa.surplusBank > 0 ? '+' : ''}{formatRupiah(villa.surplusBank)}
-          {villa.surplusBank > 0 && <span class="check-mark">✓</span>}
-        </span>
-      </div>
-    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+      {villaData.types.map((villa) => {
+        const link = waLink(villa.id, `Halo, saya tertarik dengan ${villa.name}`);
+        const surplus = villa.passiveIncome - villa.cicilanBank;
+        return (
+          <article class="card accent-line group">
+            <div class="aspect-[4/3] overflow-hidden bg-forest-700">
+              <VillaArt client:visible type={villa.id} class="w-full h-full transition-transform duration-700 group-hover:scale-105" />
+            </div>
 
-    <p class="villa-target">Cocok untuk: <strong>{villa.target}</strong></p>
+            <div class="p-8 md:p-10">
+              {villa.bestValue && (
+                <div class="mb-4">
+                  <span class="badge badge-gold">⭐ Best Value</span>
+                </div>
+              )}
 
-    <div class="villa-ctas">
-      <a href={`/villa/${villa.id}`} class="btn-villa btn-villa-primary">Lihat Detail</a>
-      <a href={waLink} target="_blank" rel="noopener" class="btn-villa btn-villa-wa" aria-label="Chat WhatsApp">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.4-.1-.6.1-.2.3-.7.9-.8 1-.1.2-.3.2-.5.1-.3-.1-1.2-.5-2.3-1.5-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.2-.4.1-.2 0-.3 0-.5-.1-.1-.6-1.5-.8-2.1-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4 0 1.4 1 2.8 1.2 3 .1.2 2 3 4.8 4.2.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.2-.3-.2-.5-.4zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/>
-        </svg>
-        Chat
-      </a>
+              <h3 class="font-display text-2xl md:text-3xl mb-2">{villa.name}</h3>
+              <p class="font-quote italic text-ink-500 text-base mb-6">"{villa.tagline}"</p>
+
+              <div class="font-mono text-2xl text-forest-500 mb-1">{villa.priceDisplay}</div>
+              <div class="text-xs text-ink-700 mb-6">Booking fee Rp 10 jt (refundable 30 hari)</div>
+
+              <div class="grid grid-cols-3 gap-2 mb-6 text-xs">
+                <div class="flex items-center gap-1.5 text-ink-700">
+                  <Bed size="14" class="text-forest-500" /> {villa.bedrooms} KT
+                </div>
+                <div class="flex items-center gap-1.5 text-ink-700">
+                  <Bath size="14" class="text-forest-500" /> {villa.bathrooms} KM
+                </div>
+                <div class="flex items-center gap-1.5 text-ink-700">
+                  <Maximize size="14" class="text-forest-500" /> {villa.lb} m²
+                </div>
+              </div>
+
+              <div class="space-y-3 mb-8 pb-6 border-b border-cream-100">
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-ink-500">Cicilan KPR</span>
+                  <span class="font-mono font-semibold">{formatShort(villa.cicilanBank)}</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-ink-500">Passive Income</span>
+                  <span class="font-mono font-semibold text-forest-500">{formatShort(villa.passiveIncome)}</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-ink-500">Surplus / Bulan</span>
+                  <span class="font-mono font-semibold text-success">+{formatShort(surplus)}</span>
+                </div>
+              </div>
+
+              <div class="flex gap-3">
+                <a href={`/villa/${villa.id}/`} class="btn btn-outline flex-1 text-xs">
+                  Detail <ArrowRight size="14" />
+                </a>
+                <a href={link} target="_blank" rel="noopener" class="btn btn-whatsapp flex-1 text-xs">
+                  <MessageCircle size="14" /> Chat
+                </a>
+              </div>
+            </div>
+          </article>
+        );
+      })}
     </div>
   </div>
-</article>
-
-<style>
-  .villa-card {
-    position: relative;
-    background: #FFFFFF;
-    overflow: hidden;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    animation: cardFadeIn 0.8s ease-out var(--delay) both;
-  }
-
-  @keyframes cardFadeIn {
-    from { opacity: 0; transform: translateY(40px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .villa-card:hover {
-    transform: translateY(-8px);
-  }
-
-  .villa-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #1B4332 0%, #D4A574 100%);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    z-index: 5;
-  }
-
-  .villa-card:hover::before { transform: scaleX(1); }
-
-  .villa-badge {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    z-index: 4;
-    background: #D4A574;
-    color: #0D1B14;
-    font-family: 'Inter', sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    padding: 8px 14px;
-    text-transform: uppercase;
-  }
-
-  .villa-image {
-    display: block;
-    position: relative;
-    overflow: hidden;
-    aspect-ratio: 4 / 3;
-    background: #1B4332;
-  }
-
-  .villa-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .villa-card:hover .villa-image img { transform: scale(1.08); }
-
-  .villa-image-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, transparent 50%, rgba(13, 27, 20, 0.85) 100%);
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-start;
-    padding: 24px;
-    opacity: 0;
-    transition: opacity 0.4s;
-  }
-
-  .villa-card:hover .villa-image-overlay { opacity: 1; }
-
-  .villa-view {
-    color: #D4A574;
-    font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    transform: translateY(10px);
-    transition: transform 0.4s;
-  }
-
-  .villa-card:hover .villa-view { transform: translateY(0); }
-
-  .villa-specs-pill {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(8px);
-    padding: 8px 14px;
-    font-family: 'Inter', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    color: #0D1B14;
-    letter-spacing: 0.05em;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    z-index: 3;
-  }
-
-  .villa-specs-pill .dot { color: #D4A574; }
-
-  .villa-body {
-    padding: 32px;
-  }
-
-  .villa-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #0D1B14;
-    margin: 0 0 8px;
-    line-height: 1.2;
-  }
-
-  .villa-tagline {
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    font-style: italic;
-    color: #6B7280;
-    margin: 0 0 24px;
-    line-height: 1.5;
-  }
-
-  .villa-price {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 24px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid #E5E7EB;
-  }
-
-  .villa-price-label {
-    font-family: 'Inter', sans-serif;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: #6B7280;
-    margin-bottom: 4px;
-  }
-
-  .villa-price-value {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
-    font-weight: 700;
-    color: #1B4332;
-    line-height: 1;
-  }
-
-  .villa-income {
-    margin-bottom: 24px;
-  }
-
-  .income-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 10px 0;
-    font-family: 'Inter', sans-serif;
-  }
-
-  .income-label {
-    font-size: 13px;
-    color: #4B5563;
-  }
-
-  .income-value {
-    font-size: 15px;
-    font-weight: 600;
-    color: #0D1B14;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .income-value.gold { color: #D4A574; }
-  .income-value.positive { color: #16A34A; }
-  .income-value.negative { color: #DC2626; }
-
-  .income-value small { font-size: 11px; font-weight: 400; color: #9CA3AF; }
-
-  .check-mark { color: #16A34A; margin-left: 4px; }
-
-  .income-divider {
-    height: 1px;
-    background: #E5E7EB;
-    margin: 4px 0;
-  }
-
-  .income-surplus { padding-top: 12px; }
-  .income-surplus .income-label { font-weight: 600; color: #0D1B14; }
-  .income-surplus .income-value { font-size: 18px; }
-
-  .villa-target {
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    color: #6B7280;
-    line-height: 1.5;
-    margin: 0 0 24px;
-  }
-
-  .villa-target strong { color: #0D1B14; font-weight: 600; }
-
-  .villa-ctas {
-    display: flex;
-    gap: 8px;
-  }
-
-  .btn-villa {
-    flex: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 14px 20px;
-    font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    text-decoration: none;
-    border: 1.5px solid transparent;
-    cursor: pointer;
-    transition: all 0.3s;
-  }
-
-  .btn-villa-primary {
-    background: #0D1B14;
-    color: #FFFFFF;
-    border-color: #0D1B14;
-  }
-
-  .btn-villa-primary:hover {
-    background: #D4A574;
-    color: #0D1B14;
-    border-color: #D4A574;
-  }
-
-  .btn-villa-wa {
-    background: transparent;
-    color: #25D366;
-    border-color: #25D366;
-    flex: 0 0 auto;
-  }
-
-  .btn-villa-wa:hover {
-    background: #25D366;
-    color: #FFFFFF;
-  }
-
-  @media (max-width: 768px) {
-    .villa-body { padding: 24px; }
-    .villa-name { font-size: 1.5rem; }
-  }
-</style>
+</section>

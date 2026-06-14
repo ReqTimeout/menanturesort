@@ -28,6 +28,14 @@ export default defineConfig({
     build: {
       cssCodeSplit: true,
     },
+    resolve: {
+      alias: {
+        '@': '/Users/maabook/Desktop/menantu-resort.com/app/src',
+        '@lib': '/Users/maabook/Desktop/menantu-resort.com/app/src/lib',
+        '@components': '/Users/maabook/Desktop/menantu-resort.com/app/src/components',
+        '@data': '/Users/maabook/Desktop/menantu-resort.com/app/src/data',
+      },
+    },
   },
   image: {
     domains: ['cdn.jsdelivr.net'],

@@ -1,100 +1,81 @@
 ---
 import siteData from '../../data/site.json';
-import { waUrl } from '../../lib/format';
-
-const waLink = waUrl(siteData.contact.whatsapp, 'Halo, saya tertarik dengan Menantu Resort', 'footer');
-const currentYear = new Date().getFullYear();
+import { Instagram, Phone, Mail, MapPin, Shield } from 'lucide-svelte';
 ---
-<footer class="bg-primary-dark text-white">
-  <!-- Anti-fraud warning -->
-  <div class="border-b border-white/10">
-    <div class="container py-md">
-      <div class="flex items-start gap-md">
-        <div class="text-2xl">⚠️</div>
-        <div class="text-sm">
-          <strong class="text-secondary">PERINGATAN PENIPUAN:</strong>
-          Hati-hati penipuan mengatasnamakan Menantu Resort atau {siteData.developer.name}.
-          Pembayaran SAH hanya melalui rekening resmi:
-          {siteData.bankAccounts.map((b, i) => (
-            <span class="font-mono ml-1">{b.bank}: {b.number}</span>
-          )).reduce((acc, el) => acc.concat(typeof acc[acc.length-1] === 'object' ? [<span>, </span>, el] : [acc, <span>, </span>, el]), [] as any[])}
+<footer class="section-tight section-cream border-t border-cream-100">
+  <div class="container-wide">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-16 mb-12">
+      <div class="md:col-span-4">
+        <div class="font-display text-2xl text-forest-700 mb-3">Menantu Resort</div>
+        <p class="text-sm text-ink-700 mb-6 max-w-sm">{siteData.tagline}</p>
+        <div class="flex items-center gap-3 text-forest-700">
+          <a href={`https://instagram.com/${siteData.social.instagram.replace('@','')}`} target="_blank" rel="noopener" class="w-9 h-9 border border-cream-100 flex items-center justify-center hover:border-gold-500 hover:text-gold-700 transition-colors">
+            <Instagram size="16" />
+          </a>
+          <a href={`tel:${siteData.contact.whatsapp}`} class="w-9 h-9 border border-cream-100 flex items-center justify-center hover:border-gold-500 hover:text-gold-700 transition-colors">
+            <Phone size="16" />
+          </a>
+          <a href={`mailto:${siteData.contact.email}`} class="w-9 h-9 border border-cream-100 flex items-center justify-center hover:border-gold-500 hover:text-gold-700 transition-colors">
+            <Mail size="16" />
+          </a>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Main footer -->
-  <div class="container py-3xl">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-xl">
-      <!-- Brand -->
-      <div>
-        <div class="flex items-center gap-sm mb-md">
-          <div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center font-display font-bold text-xl text-primary-dark">M</div>
+      <div class="md:col-span-3">
+        <span class="eyebrow text-forest-700 mb-4 block">Halaman</span>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/villa" class="text-ink-500 hover:text-gold-700 transition-colors">Tipe Villa</a></li>
+          <li><a href="/investasi" class="text-ink-500 hover:text-gold-700 transition-colors">Investasi</a></li>
+          <li><a href="/lokasi" class="text-ink-500 hover:text-gold-700 transition-colors">Lokasi</a></li>
+          <li><a href="/resort" class="text-ink-500 hover:text-gold-700 transition-colors">Resort</a></li>
+          <li><a href="/artikel" class="text-ink-500 hover:text-gold-700 transition-colors">Artikel</a></li>
+        </ul>
+      </div>
+
+      <div class="md:col-span-3">
+        <span class="eyebrow text-forest-700 mb-4 block">Kontak</span>
+        <ul class="space-y-2 text-sm text-ink-500">
+          <li class="flex items-start gap-2">
+            <MapPin size="14" class="text-gold-700 mt-1 flex-shrink-0" />
+            <span class="leading-relaxed">{siteData.contact.address}</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <Phone size="14" class="text-gold-700 flex-shrink-0" />
+            <span class="font-mono">{siteData.contact.whatsappDisplay}</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <Mail size="14" class="text-gold-700 flex-shrink-0" />
+            <span>{siteData.contact.email}</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="md:col-span-2">
+        <span class="eyebrow text-forest-700 mb-4 block">Legal</span>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/faq" class="text-ink-500 hover:text-gold-700 transition-colors">FAQ</a></li>
+          <li><a href="/syarat-dan-ketentuan" class="text-ink-500 hover:text-gold-700 transition-colors">Syarat</a></li>
+          <li><a href="/kebijakan-privasi" class="text-ink-500 hover:text-gold-700 transition-colors">Privasi</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pt-8 border-t border-cream-100">
+      <div class="bg-gold-500/10 border-l-2 border-gold-500 p-4 mb-6">
+        <div class="flex items-start gap-3 text-sm text-ink-700">
+          <Shield size="16" class="text-gold-700 flex-shrink-0 mt-0.5" />
           <div>
-            <div class="font-display font-semibold text-base">Menantu Resort</div>
-            <div class="text-xs text-white/60 tracking-widest uppercase">Managed by Sahid</div>
+            <strong class="text-forest-700">Anti-fraud:</strong> Pembayaran SAH hanya melalui rekening resmi:
+            {siteData.bankAccounts.map((b, i) => (
+              <span class="font-mono">{b.bank} {b.number}{i < siteData.bankAccounts.length - 1 ? ' · ' : ''}</span>
+            ))} a.n. PT Cipta Multikarya Propertindo.
           </div>
         </div>
-        <p class="text-sm text-white/70 leading-relaxed">
-          Villa produktif eco-resort 3,5 hektar di Cicalengka, Bandung Timur. Dikelola Sahid Hotel & Resort.
-        </p>
       </div>
 
-      <!-- Villa -->
-      <div>
-        <h4 class="font-display font-semibold text-base mb-md text-secondary">Tipe Villa</h4>
-        <ul class="space-y-sm text-sm">
-          <li><a href="/villa/bijak" class="text-white/80 hover:text-secondary">Menantu Bijak</a></li>
-          <li><a href="/villa/idaman" class="text-white/80 hover:text-secondary">Menantu Idaman</a></li>
-          <li><a href="/villa/mapan" class="text-white/80 hover:text-secondary">Menantu Mapan</a></li>
-          <li><a href="/villa" class="text-white/80 hover:text-secondary">Lihat Semua →</a></li>
-        </ul>
-      </div>
-
-      <!-- Investasi -->
-      <div>
-        <h4 class="font-display font-semibold text-base mb-md text-secondary">Investasi</h4>
-        <ul class="space-y-sm text-sm">
-          <li><a href="/investasi/simulasi-kpr" class="text-white/80 hover:text-secondary">Simulasi KPR</a></li>
-          <li><a href="/investasi/skema-bank" class="text-white/80 hover:text-secondary">KPR Bank</a></li>
-          <li><a href="/investasi/skema-developer" class="text-white/80 hover:text-secondary">KPR Developer</a></li>
-          <li><a href="/investasi/passive-income" class="text-white/80 hover:text-secondary">Passive Income</a></li>
-        </ul>
-      </div>
-
-      <!-- Kontak -->
-      <div>
-        <h4 class="font-display font-semibold text-base mb-md text-secondary">Kontak</h4>
-        <ul class="space-y-sm text-sm text-white/80">
-          <li>
-            <a href={waLink} target="_blank" rel="noopener" class="hover:text-secondary">
-              💬 {siteData.contact.whatsappDisplay}
-            </a>
-          </li>
-          <li>✉️ {siteData.contact.email}</li>
-          <li>📍 {siteData.contact.address}</li>
-          <li class="pt-sm">
-            <a href="https://instagram.com/{siteData.social.instagram.replace('@','')}" target="_blank" rel="noopener" class="inline-flex items-center gap-xs text-secondary hover:underline">
-              Instagram {siteData.social.instagram}
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <hr class="border-white/10 my-xl" />
-
-    <!-- Disclaimer -->
-    <p class="text-xs text-white/60 leading-relaxed mb-md">
-      <strong>DISCLAIMER:</strong> Seluruh angka passive income, capital gain, dan simulasi cicilan yang ditampilkan di website ini adalah ILUSTRASI EDUKATIF, bukan jaminan. Performa aktual tergantung pada kondisi pasar, tingkat okupansi, suku bunga, biaya operasional, dan faktor lain di luar kendali developer atau pengelola. Persetujuan KPR dan skema pembayaran tunduk pada kebijakan bank atau lembaga pembiayaan masing-masing. Harga dapat berubah sewaktu-waktu sesuai kebijakan perusahaan.
-    </p>
-
-    <div class="flex flex-col md:flex-row items-center justify-between gap-md text-sm text-white/60">
-      <div>© {currentYear} {siteData.developer.name}. All rights reserved.</div>
-      <div class="flex gap-md">
-        <a href="/syarat-dan-ketentuan" class="hover:text-secondary">Syarat & Ketentuan</a>
-        <a href="/kebijakan-privasi" class="hover:text-secondary">Kebijakan Privasi</a>
-        <a href="/faq" class="hover:text-secondary">FAQ</a>
+      <div class="flex flex-wrap items-center justify-between gap-4 text-xs text-ink-700">
+        <p>© {new Date().getFullYear()} Menantu Resort managed by Sahid. All rights reserved.</p>
+        <p>Developed by <span class="text-forest-700 font-semibold">{siteData.developer.shortName}</span> ({siteData.developer.brand})</p>
       </div>
     </div>
   </div>

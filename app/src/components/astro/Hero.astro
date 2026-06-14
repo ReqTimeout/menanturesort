@@ -1,281 +1,62 @@
 ---
-// Hero Svelte component - server-rendered shell with Svelte island for parallax
 import HeroParallax from '../svelte/HeroParallax.svelte';
 import siteData from '../../data/site.json';
-import { waUrl } from '../../lib/format';
+import { waUrl } from '../../lib/utils';
+import { ArrowRight, Check } from 'lucide-svelte';
 
 const waLink = waUrl(siteData.contact.whatsapp, 'Halo, saya tertarik dengan Menantu Resort. Bisa info lebih lanjut?', 'homepage_hero');
 ---
-<section class="hero-premium">
+<section class="relative min-h-screen flex items-center overflow-hidden">
+  <!-- Photo background with parallax -->
   <HeroParallax client:load />
 
-  <div class="hero-content container">
-    <div class="hero-eyebrow">
-      <span class="line"></span>
-      <span>INVESTASI VILLA BANDUNG · SHM · DIKELOLA SAHID</span>
-    </div>
+  <!-- Dark gradient overlay for text readability (only on photo) -->
+  <div class="absolute inset-0 bg-gradient-to-r from-forest-900/85 via-forest-900/65 to-forest-900/40 z-[1]"></div>
+  <div class="absolute inset-0 bg-gradient-to-t from-forest-900/60 to-transparent z-[1]"></div>
 
-    <h1 class="hero-title">
-      <span class="title-line">Miliki Villa Impian</span>
-      <span class="title-line">di Bandung.</span>
-      <span class="title-accent">Bayar Rp 9 Juta/Bulan.</span>
-      <span class="title-line title-small">Dikelola Profesional. Income Masuk Otomatis.</span>
-    </h1>
+  <div class="relative z-10 container-wide w-full pt-32 pb-20 md:pt-40 md:pb-32 text-cream-50">
+    <div class="max-w-3xl">
+      <div class="flex items-center gap-4 mb-8 animate-fade-in-up opacity-0" style="animation-delay: 0.1s">
+        <span class="h-px w-12 bg-gold-500"></span>
+        <span class="eyebrow text-gold-500">Investasi Villa Bandung · SHM · Dikelola Sahid</span>
+      </div>
 
-    <p class="hero-sub">
-      Tidak perlu repot cari tamu. Tidak perlu pusing maintenance.
-      <strong>Sahid Hotel & Resort (50+ tahun)</strong> yang urus semuanya.
-      Anda terima passive income setiap bulan.
-    </p>
+      <h1 class="font-display text-cream-50 mb-8 text-balance" style="font-size: clamp(2.5rem, 6vw, 4.75rem); line-height: 1.0; letter-spacing: -0.025em; font-weight: 700;">
+        <span class="block">Miliki Villa Impian</span>
+        <span class="block">di Bandung.</span>
+        <span class="block italic text-gold-500 mt-2" style="font-weight: 500;">Bayar Rp 9 Juta / Bulan.</span>
+      </h1>
 
-    <div class="hero-ctas">
-      <a href="#villa-types" class="btn-premium btn-primary-premium">
-        <span>Lihat Skema Investasi</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <path d="M5 12h14M12 5l7 7-7 7"/>
-        </svg>
-      </a>
-      <a href={waLink} target="_blank" rel="noopener" class="btn-premium btn-wa-premium">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.4-.1-.6.1-.2.3-.7.9-.8 1-.1.2-.3.2-.5.1-.3-.1-1.2-.5-2.3-1.5-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.2-.4.1-.2 0-.3 0-.5-.1-.1-.6-1.5-.8-2.1-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4 0 1.4 1 2.8 1.2 3 .1.2 2 3 4.8 4.2.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.2-.3-.2-.5-.4zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/>
-        </svg>
-        <span>Chat WhatsApp</span>
-      </a>
-    </div>
+      <p class="font-body text-lg md:text-xl text-cream-50/85 leading-relaxed max-w-xl mb-10 animate-fade-in-up opacity-0" style="animation-delay: 0.5s">
+        Tidak perlu repot cari tamu. Tidak perlu pusing maintenance.
+        <span class="text-gold-500 font-semibold">Sahid Hotel & Resort (50+ tahun)</span> yang urus semuanya.
+        Anda terima passive income setiap bulan.
+      </p>
 
-    <div class="hero-trust">
-      <div class="trust-item"><span class="check">✓</span> 74 Unit, 58 Terjual</div>
-      <div class="trust-divider"></div>
-      <div class="trust-item"><span class="check">✓</span> SHM, Bukan Sewa</div>
-      <div class="trust-divider"></div>
-      <div class="trust-item"><span class="check">✓</span> Sahid 50+ Tahun</div>
-      <div class="trust-divider"></div>
-      <div class="trust-item"><span class="check">✓</span> Cicilan 9-15 Juta</div>
+      <div class="flex flex-wrap gap-4 mb-16 animate-fade-in-up opacity-0" style="animation-delay: 0.7s">
+        <a href="#villa-types" class="btn btn-secondary btn-lg">
+          Lihat Skema Investasi
+          <ArrowRight size="18" strokeWidth="2.5" />
+        </a>
+        <a href={waLink} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">
+          Chat WhatsApp
+        </a>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-cream-50/85 animate-fade-in-up opacity-0" style="animation-delay: 0.9s">
+        <div class="flex items-center gap-2"><Check size="16" class="text-gold-500" /> 74 Unit, 58 Terjual</div>
+        <div class="hidden md:block h-4 w-px bg-cream-50/30"></div>
+        <div class="flex items-center gap-2"><Check size="16" class="text-gold-500" /> SHM, Bukan Sewa</div>
+        <div class="hidden md:block h-4 w-px bg-cream-50/30"></div>
+        <div class="flex items-center gap-2"><Check size="16" class="text-gold-500" /> Sahid 50+ Tahun</div>
+        <div class="hidden md:block h-4 w-px bg-cream-50/30"></div>
+        <div class="flex items-center gap-2"><Check size="16" class="text-gold-500" /> Cicilan 9-15 Juta</div>
+      </div>
     </div>
   </div>
 
-  <div class="hero-scroll-indicator">
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3 text-xs text-cream-50/60 uppercase tracking-widest">
     <span>Scroll untuk jelajahi</span>
-    <div class="scroll-line"></div>
+    <div class="h-12 w-px bg-gradient-to-b from-gold-500 to-transparent"></div>
   </div>
 </section>
-
-<style>
-  .hero-premium {
-    position: relative;
-    min-height: 100vh;
-    min-height: 100svh;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-    background: #0D1B14;
-  }
-
-  .hero-content {
-    position: relative;
-    z-index: 10;
-    padding: 120px 0 80px;
-  }
-
-  .hero-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    font-family: 'Inter', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: #D4A574;
-    margin-bottom: 28px;
-    animation: fadeInUp 0.8s ease-out 0.2s both;
-  }
-
-  .hero-eyebrow .line {
-    display: block;
-    width: 40px;
-    height: 1px;
-    background: #D4A574;
-  }
-
-  .hero-title {
-    font-family: 'Playfair Display', serif;
-    font-weight: 700;
-    line-height: 1.05;
-    color: #FFFFFF;
-    margin: 0 0 32px;
-    max-width: 1100px;
-    text-wrap: balance;
-  }
-
-  .title-line {
-    display: block;
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
-    animation: fadeInUp 0.8s ease-out 0.3s both;
-  }
-
-  .title-accent {
-    display: block;
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
-    color: #D4A574;
-    font-style: italic;
-    font-weight: 600;
-    margin-top: 8px;
-    animation: fadeInUp 0.8s ease-out 0.45s both;
-  }
-
-  .title-small {
-    font-size: clamp(1.25rem, 2.5vw, 1.875rem) !important;
-    font-weight: 400 !important;
-    color: rgba(255,255,255,0.85);
-    font-family: 'Inter', sans-serif;
-    margin-top: 16px;
-    line-height: 1.4;
-    animation: fadeInUp 0.8s ease-out 0.6s both;
-  }
-
-  .hero-sub {
-    font-family: 'Inter', sans-serif;
-    font-size: clamp(1rem, 1.4vw, 1.125rem);
-    line-height: 1.7;
-    color: rgba(255,255,255,0.85);
-    max-width: 640px;
-    margin: 0 0 40px;
-    animation: fadeInUp 0.8s ease-out 0.7s both;
-  }
-
-  .hero-sub strong { color: #D4A574; font-weight: 600; }
-
-  .hero-ctas {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 56px;
-    animation: fadeInUp 0.8s ease-out 0.8s both;
-  }
-
-  .btn-premium {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 18px 32px;
-    font-family: 'Inter', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    border: 1.5px solid transparent;
-    border-radius: 0;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    text-decoration: none;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn-primary-premium {
-    background: #D4A574;
-    color: #0D1B14;
-    border-color: #D4A574;
-  }
-
-  .btn-primary-premium:hover {
-    background: #c4956a;
-    transform: translateY(-2px);
-    box-shadow: 0 12px 32px rgba(212, 165, 116, 0.35);
-  }
-
-  .btn-wa-premium {
-    background: transparent;
-    color: #FFFFFF;
-    border-color: rgba(255,255,255,0.3);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-  }
-
-  .btn-wa-premium:hover {
-    background: #25D366;
-    border-color: #25D366;
-    color: #FFFFFF;
-    transform: translateY(-2px);
-  }
-
-  .hero-trust {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 20px;
-    padding-top: 32px;
-    border-top: 1px solid rgba(255,255,255,0.12);
-    animation: fadeInUp 0.8s ease-out 0.9s both;
-  }
-
-  .trust-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    color: rgba(255,255,255,0.75);
-  }
-
-  .check { color: #D4A574; font-weight: 700; }
-
-  .trust-divider {
-    width: 1px;
-    height: 16px;
-    background: rgba(255,255,255,0.2);
-  }
-
-  .hero-scroll-indicator {
-    position: absolute;
-    bottom: 32px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    font-family: 'Inter', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.5);
-  }
-
-  .scroll-line {
-    width: 1px;
-    height: 50px;
-    background: linear-gradient(180deg, #D4A574 0%, transparent 100%);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .scroll-line::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 30%;
-    background: #D4A574;
-    animation: scrollDown 2s ease-in-out infinite;
-  }
-
-  @keyframes scrollDown {
-    0% { transform: translateY(-100%); }
-    100% { transform: translateY(300%); }
-  }
-
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @media (max-width: 768px) {
-    .hero-ctas { flex-direction: column; }
-    .btn-premium { width: 100%; justify-content: center; }
-    .hero-trust { gap: 12px; }
-    .trust-divider { display: none; }
-  }
-</style>

@@ -4,56 +4,49 @@ import Navbar from '../components/astro/Navbar.astro';
 import Footer from '../components/astro/Footer.astro';
 import WhatsAppFloating from '../components/astro/WhatsAppFloating.astro';
 import siteData from '../data/site.json';
-import { waUrl } from '../lib/format';
+import { waUrl } from '../lib/utils';
+import { ArrowRight, Calendar, Tag } from 'lucide-svelte';
 
 const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'artikel');
 
 const posts = [
-  { title: 'Mengapa Investasi Villa Lebih Stabil dari Saham di 2026', cat: 'Investasi', date: '14 Juni 2026', excerpt: 'Aset tangible vs paper asset: perbandingan yield, risiko, dan likuiditas untuk investor pemula.' },
-  { title: 'ROI 10% Guarantee: Realita atau Marketing?', cat: 'Edukasi', date: '10 Juni 2026', excerpt: 'Bedah tuntas akad ROI guarantee Menantu Resort — apa yang dijamin, apa yang tidak.' },
+  { title: 'Mengapa Investasi Vila Lebih Stabil dari Saham di 2026', cat: 'Investasi', date: '14 Juni 2026', excerpt: 'Tangible asset vs paper asset: perbandingan yield, risiko, likuiditas.' },
+  { title: 'ROI 10% Guarantee: Realita atau Marketing?', cat: 'Edukasi', date: '10 Juni 2026', excerpt: 'Bedah akad ROI guarantee — apa yang dijamin, apa yang tidak.' },
   { title: 'KPR Bank vs KPR Developer: Pilih yang Mana?', cat: 'Pembiayaan', date: '5 Juni 2026', excerpt: 'Simulasi total bayar 15 tahun untuk kedua skema, dengan kasus DP 25-30%.' },
-  { title: 'Bandung Timur: Hidden Gem Properti 2026', cat: 'Lokasi', date: '1 Juni 2026', excerpt: 'Data kenaikan harga 28% YoY, akses tol baru, dan kenapa Cicalengka menarik.' },
-  { title: '5 Pertanyaan yang Wajib Ditanya Sebelum Beli Villa Investasi', cat: 'Edukasi', date: '28 Mei 2026', excerpt: 'Checklist due diligence: legalitas, operator, yield, exit strategy, dan biaya tersembunyi.' },
-  { title: 'Sahid Hotel: 50 Tahun Standar Hospitality Indonesia', cat: 'Manajemen', date: '20 Mei 2026', excerpt: 'Track record Sahid dari 1970-an hingga sekarang — apa yang membuat mereka berbeda.' },
+  { title: 'Bandung Timur: Hidden Gem Properti 2026', cat: 'Lokasi', date: '1 Juni 2026', excerpt: 'Data kenaikan 28% YoY, akses tol baru, kenapa Cicalengka menarik.' },
+  { title: '5 Pertanyaan Wajib Sebelum Beli Vila Investasi', cat: 'Edukasi', date: '28 Mei 2026', excerpt: 'Checklist due diligence: legalitas, operator, yield, exit strategy.' },
+  { title: 'Sahid Hotel: 50 Tahun Standar Hospitality Indonesia', cat: 'Manajemen', date: '20 Mei 2026', excerpt: 'Track record Sahid dari 1970-an — apa yang membuat mereka berbeda.' },
 ];
 ---
-<BaseLayout
-  title="Artikel & Insight Investasi Villa"
-  description="Artikel, insight, dan edukasi seputar investasi villa, KPR, ROI, dan properti Bandung. Update mingguan dari tim Menantu Resort."
->
+<BaseLayout title="Artikel & Insight Investasi Vila" description="Artikel edukatif: investasi vila, KPR, ROI, dan properti Bandung. Update mingguan dari tim Menantu Resort.">
   <Navbar />
-  <main>
-    <section class="relative bg-gradient-to-br from-primary-dark to-primary text-white py-3xl overflow-hidden">
-      <div class="absolute inset-0 pattern-subtle opacity-20"></div>
-      <div class="container relative z-10">
-        <div class="max-w-3xl">
-          <span class="eyebrow text-secondary">Insight & Edukasi</span>
-          <h1 class="heading-display text-white mb-md">
-            Baca Sebelum Beli:<br/><span class="text-secondary italic">Insight dari Tim & Pakar.</span>
-          </h1>
-          <p class="text-body-lg text-white/85 mb-xl">
-            Artikel edukatif untuk calon investor — bebas jargon, fokus pada data.
-          </p>
-        </div>
+  <main class="pt-20">
+    <section class="section section-cream">
+      <div class="container-tight text-center">
+        <span class="eyebrow">Insight & Edukasi</span>
+        <h1 class="heading-title mt-4 mb-6">Baca Sebelum Beli: <em>Insight dari Tim & Pakar.</em></h1>
+        <p class="text-body-lg text-ink-500 max-w-2xl mx-auto">Artikel edukatif untuk calon investor — bebas jargon, fokus pada data.</p>
       </div>
     </section>
 
-    <section class="section">
-      <div class="container">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-xl">
+    <section class="section-tight section-white">
+      <div class="container-tight">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {posts.map((p) => (
-            <article class="card overflow-hidden hover:border-secondary transition">
-              <div class="aspect-[16/10] bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-secondary text-5xl">
+            <article class="card overflow-hidden hover:border-gold-500 transition group cursor-pointer">
+              <div class="aspect-[16/10] bg-gradient-to-br from-forest-500 to-forest-700 flex items-center justify-center text-gold-500 text-5xl">
                 📰
               </div>
-              <div class="p-xl">
-                <div class="flex items-center gap-sm mb-sm text-xs">
-                  <span class="badge badge-gold">{p.cat}</span>
-                  <span class="text-ink-mute">{p.date}</span>
+              <div class="p-8">
+                <div class="flex items-center gap-3 mb-3 text-xs">
+                  <span class="badge badge-gold"><Tag size="10" class="mr-1" />{p.cat}</span>
+                  <span class="text-ink-700 flex items-center gap-1"><Calendar size="10" />{p.date}</span>
                 </div>
-                <h2 class="heading-3 mb-sm">{p.title}</h2>
-                <p class="text-sm text-ink-soft mb-md">{p.excerpt}</p>
-                <a href={waLink(`Halo, saya tertarik dengan artikel "${p.title}"`)} target="_blank" rel="noopener" class="text-secondary text-sm font-semibold hover:underline">Baca Selengkapnya →</a>
+                <h2 class="font-display text-xl text-forest-700 font-semibold mb-3 group-hover:text-gold-700 transition">{p.title}</h2>
+                <p class="text-sm text-ink-500 mb-4">{p.excerpt}</p>
+                <a href={waLink(`Halo, saya tertarik dengan artikel "${p.title}"`)} target="_blank" rel="noopener" class="text-gold-700 text-sm font-semibold inline-flex items-center gap-1 hover:gap-2 transition-all">
+                  Baca Selengkapnya <ArrowRight size="14" />
+                </a>
               </div>
             </article>
           ))}

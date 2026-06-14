@@ -1,123 +1,127 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Navbar from '../../components/astro/Navbar.astro';
 import Footer from '../../components/astro/Footer.astro';
-import WhatsAppFloating from '../../components/astro/WhatsAppFloating.astro';
 import siteData from '../../data/site.json';
 import villaData from '../../data/villa.json';
-import { formatRupiah, waUrl } from '../../lib/format';
+import { formatShort, waUrl } from '@lib/utils';
+import { ArrowRight, MessageCircle, Bed, Bath, Maximize, Check } from 'lucide-svelte';
+import NavMenu from '../../components/svelte/NavMenu.svelte';
+import FloatingActionButton from '../../components/svelte/FloatingActionButton.svelte';
 
-const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'villa_listing');
+const waLink = (id, msg) => waUrl(siteData.contact.whatsapp, msg, `villa_${id}`);
+
+const villaImages = {
+  bijak: '/images/ref/villa-bijak-row.jpg',
+  idaman: '/images/ref/villa-idaman-row.jpg',
+  mapan: '/images/ref/villa-mapan-street.jpg',
+};
 ---
-<BaseLayout
-  title="Tipe Villa Menantu Resort"
-  description="Pilih villa impian Anda di Menantu Resort. 3 tipe: Bijak (Rp 1,2 M), Idaman (Rp 1,6 M), Mapan (Rp 2 M). Semua SHM, dikelola Sahid."
->
-  <Navbar />
 
-  <main class="pt-32 pb-3xl">
-    <div class="container">
-      <div class="text-center mb-2xl">
-        <span class="eyebrow">3 Tipe Villa</span>
-        <h1 class="heading-display">Pilih Villa yang Sesuai<br/><span class="text-secondary">Tujuan & Budget Anda</span></h1>
-        <p class="text-body-lg mt-md text-gray-700 max-w-2xl mx-auto">
-          Semua villa Menantu Resort berstatus SHM atas nama pribadi, fully furnished,
-          dan dikelola profesional oleh Sahid Hotel & Resort.
+<BaseLayout title="Tipe Villa Menantu Resort" description="Pilih villa impian Anda: Bijak (Rp 1,2 M), Idaman (Rp 1,6 M), Mapan (Rp 2 M). Semua SHM, dikelola Sahid, cicilan ringan.">
+  <NavMenu client:load />
+  <main>
+    <section class="section section-cream relative pt-32">
+      <div class="container-tight text-center">
+        <span class="eyebrow">3 Tipe Villa · SHM Bersih</span>
+        <h1 class="font-display text-display text-forest-700 leading-[1.05] mt-4 mb-6">
+          Pilih Vila yang Sesuai <br/><em>Anggaran Anda.</em>
+        </h1>
+        <p class="font-body text-lg text-ink-500 max-w-2xl mx-auto">
+          Entry-level untuk investor muda, standar keluarga, hingga flagship premium dengan sky deck.
+          Semua dengan sertifikat Hak Milik atas nama pribadi.
         </p>
       </div>
+    </section>
 
-      <div class="space-y-2xl">
-        {villaData.types.map((villa, idx) => (
-          <article class={`grid grid-cols-1 lg:grid-cols-2 gap-xl items-center ${idx % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
-            <div class={idx % 2 === 1 ? 'lg:order-2' : ''}>
-              <div class="card overflow-hidden aspect-[4/3]">
-                <img
-                  src="/images/placeholders/villa-card-placeholder.svg"
-                  alt={villa.name}
-                  class="w-full h-full object-cover"
-                  loading="lazy"
-                />
-              </div>
-            </div>
-            <div class={idx % 2 === 1 ? 'lg:order-1' : ''}>
-              {villa.bestValue && (
-                <span class="badge badge-gold mb-md">⭐ BEST VALUE — Rekomendasi Kami</span>
-              )}
-              <h2 class="heading-1 mb-sm">{villa.name}</h2>
-              <p class="text-body-lg italic text-gray-500 mb-lg">"{villa.tagline}"</p>
-
-              <div class="grid grid-cols-2 gap-md mb-lg">
-                <div>
-                  <div class="text-xs text-gray-500">Luas Bangunan</div>
-                  <div class="font-semibold">{villa.lb} m²</div>
-                </div>
-                <div>
-                  <div class="text-xs text-gray-500">Luas Tanah</div>
-                  <div class="font-semibold">{villa.lt} m²</div>
-                </div>
-                <div>
-                  <div class="text-xs text-gray-500">Kamar Tidur</div>
-                  <div class="font-semibold">{villa.bedrooms}</div>
-                </div>
-                <div>
-                  <div class="text-xs text-gray-500">Lantai</div>
-                  <div class="font-semibold">{villa.floors}</div>
+    <section class="section-tight section-white">
+      <div class="container-wide space-y-24">
+        {villaData.types.map((villa, idx) => {
+          const link = waLink(villa.id, `Halo, saya tertarik dengan ${villa.name}`);
+          const surplus = villa.passiveIncome - villa.cicilanBank;
+          const isReversed = idx % 2 === 1;
+          return (
+            <article class={`grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center`}>
+              <div class={isReversed ? 'lg:order-2' : ''}>
+                <div class="relative aspect-[4/3] overflow-hidden border border-cream-100 group">
+                  <img src={villaImages[villa.id]} alt={villa.name} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+                  <span class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-gold-500 to-transparent"></span>
+                  <div class="absolute top-4 left-4">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-forest-700/85 text-cream-50 text-xs font-body font-semibold tracking-wide backdrop-blur-sm">
+                      <span class="h-1.5 w-1.5 rounded-full bg-gold-500"></span>
+                      {villa.taglineShort}
+                    </span>
+                  </div>
+                  <div class="absolute bottom-4 right-4">
+                    <span class="inline-flex items-center px-3 py-1.5 bg-gold-500 text-forest-700 text-xs font-body font-bold tracking-wide">
+                      {villa.priceDisplay}
+                    </span>
+                  </div>
                 </div>
               </div>
+              <div class={isReversed ? 'lg:order-1' : ''}>
+                <div class="font-body text-xs text-gold-700 uppercase tracking-widest font-semibold mb-3">{villa.architecture}</div>
+                <h2 class="font-display text-5xl text-forest-700 font-bold leading-[1.0] mb-4">{villa.name}</h2>
+                <p class="font-quote italic text-2xl text-ink-500 mb-6">"{villa.tagline}"</p>
 
-              <div class="border-t border-b border-gray-200 py-md mb-lg">
-                <div class="text-3xl font-display font-bold text-primary">{villa.priceDisplay}</div>
-                <div class="text-xs text-gray-500">Booking fee Rp 10 juta (refundable 30 hari)</div>
-              </div>
+                <div class="grid grid-cols-3 gap-4 pb-6 mb-6 border-b border-cream-100">
+                  <div>
+                    <Bed size={16} class="text-gold-500 mb-1" />
+                    <div class="font-display text-xl text-forest-700 font-bold">{villa.bedrooms} KT</div>
+                    <div class="font-body text-[10px] text-ink-500 uppercase tracking-wider">{villa.bathrooms} KM</div>
+                  </div>
+                  <div>
+                    <Maximize size={16} class="text-gold-500 mb-1" />
+                    <div class="font-display text-xl text-forest-700 font-bold">{villa.lb}m²</div>
+                    <div class="font-body text-[10px] text-ink-500 uppercase tracking-wider">{villa.lt}m² tanah</div>
+                  </div>
+                  <div>
+                    <Check size={16} class="text-gold-500 mb-1" />
+                    <div class="font-display text-xl text-forest-700 font-bold">Cash+</div>
+                    <div class="font-body text-[10px] text-ink-500 uppercase tracking-wider">flow</div>
+                  </div>
+                </div>
 
-              <div class="text-body mb-lg">
-                <strong class="text-primary">Cocok untuk:</strong> {villa.target}
-              </div>
+                <ul class="space-y-2 mb-8">
+                  {villa.features.slice(0, 3).map((f) => (
+                    <li class="flex items-start gap-2 font-body text-sm text-forest-700">
+                      <Check size={14} class="text-gold-500 mt-0.5 flex-shrink-0" strokeWidth={2.5} />
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
 
-              <div class="flex flex-wrap gap-sm">
-                <a href={`/villa/${villa.id}`} class="btn btn-primary">Lihat Detail Lengkap →</a>
-                <a href={waLink(`Halo, saya tertarik dengan ${villa.name}`)} target="_blank" rel="noopener" class="btn btn-whatsapp">💬 Tanya Tipe Ini</a>
+                <div class="flex flex-wrap gap-3">
+                  <a href={`/villa/${villa.id}`} class="btn btn-primary">
+                    Detail Villa
+                    <ArrowRight size={16} />
+                  </a>
+                  <a href={link} target="_blank" rel="noopener" class="btn btn-whatsapp">
+                    <MessageCircle size={16} />
+                    Tanya
+                  </a>
+                </div>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          );
+        })}
       </div>
+    </section>
 
-      <!-- Perbandingan Singkat -->
-      <section class="mt-4xl">
-        <h2 class="heading-1 text-center mb-2xl">Perbandingan Tipe Villa</h2>
-        <div class="card overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead class="bg-primary text-white">
-              <tr>
-                <th class="text-left p-md">Spesifikasi</th>
-                {villaData.types.map(v => <th class="p-md text-center">{v.name.replace('Menantu ', '')}</th>)}
-              </tr>
-            </thead>
-            <tbody>
-              {[
-                { label: 'Harga', get: (v: any) => v.priceDisplay },
-                { label: 'Luas Bangunan', get: (v: any) => `${v.lb} m²` },
-                { label: 'Luas Tanah', get: (v: any) => `${v.lt} m²` },
-                { label: 'Kamar Tidur', get: (v: any) => v.bedrooms },
-                { label: 'Kamar Mandi', get: (v: any) => v.bathrooms },
-                { label: 'Lantai', get: (v: any) => v.floors },
-                { label: 'Cicilan KPR Bank', get: (v: any) => formatRupiah(v.cicilanBank) + '/bln' },
-                { label: 'Passive Income', get: (v: any) => formatRupiah(v.passiveIncome) + '/bln' },
-                { label: 'Capital Gain 15 th', get: (v: any) => `Rp ${(v.capitalGainOptimis/1_000_000_000).toFixed(1)} M` },
-              ].map((row, i) => (
-                <tr class={i % 2 === 0 ? 'bg-white' : 'bg-accent/30'}>
-                  <td class="p-md font-semibold text-text">{row.label}</td>
-                  {villaData.types.map(v => <td class="p-md text-center">{row.get(v)}</td>)}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-    </div>
+    <section class="section section-cream">
+      <div class="container-tight text-center">
+        <h2 class="font-display text-display text-forest-700 leading-[1.05] mb-6">
+          Bingung memilih? <em>Kami bantu.</em>
+        </h2>
+        <p class="font-body text-lg text-ink-500 max-w-xl mx-auto mb-8">
+          Setiap profil investor memiliki villa yang berbeda. Tim konsultan kami akan memandu Anda memilih tipe paling pas untuk target passive income dan toleransi risiko.
+        </p>
+        <a href={waLink('general', 'Halo, saya ingin konsultasi pemilihan tipe villa.')} target="_blank" rel="noopener" class="btn btn-secondary btn-lg">
+          <MessageCircle size={18} />
+          Konsultasi Gratis via WhatsApp
+        </a>
+      </div>
+    </section>
   </main>
-
   <Footer />
-  <WhatsAppFloating />
+  <FloatingActionButton client:load />
 </BaseLayout>

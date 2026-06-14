@@ -1,602 +1,330 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Navbar from '../components/astro/Navbar.astro';
 import Footer from '../components/astro/Footer.astro';
-import WhatsAppFloating from '../components/astro/WhatsAppFloating.astro';
-import Hero from '../components/astro/Hero.astro';
-import StatsBar from '../components/astro/StatsBar.astro';
-import VillaCard from '../components/astro/VillaCard.astro';
 import siteData from '../data/site.json';
 import villaData from '../data/villa.json';
-import { formatRupiah, waUrl } from '../lib/format';
 
-const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'homepage_cta');
+import NavMenu from '../components/svelte/NavMenu.svelte';
+import Hero from '../components/svelte/Hero.svelte';
+import StatsCounter from '../components/svelte/StatsCounter.svelte';
+import VillaCard from '../components/svelte/VillaCard.svelte';
+import VillaComparison from '../components/svelte/VillaComparison.svelte';
+import TestimoniCarousel from '../components/svelte/TestimoniCarousel.svelte';
+import StickyScrollSection from '../components/svelte/StickyScrollSection.svelte';
+import FloatingActionButton from '../components/svelte/FloatingActionButton.svelte';
+import LiveActivity from '../components/svelte/LiveActivity.svelte';
+
+import { ArrowRight, Shield, Award, Sparkles, TrendingUp, Home, Key, MapPin, Users, CheckCircle2, Building2, Briefcase, LineChart, Wallet, Calendar } from 'lucide-svelte';
+
+const villaImages = {
+  bijak: '/images/ref/villa-bijak-row.jpg',
+  idaman: '/images/ref/villa-idaman-row.jpg',
+  mapan: '/images/ref/villa-mapan-street.jpg',
+};
+
+const villas = villaData.types.map((v) => ({
+  id: v.id,
+  name: v.name,
+  architecture: v.architecture,
+  tagline: v.tagline,
+  tag: v.taglineShort,
+  priceLabel: v.priceDisplay,
+  specs: { land: `${v.lt} m²`, building: `${v.lb} m²`, bedrooms: `${v.bedrooms}BR` },
+  features: v.features,
+}));
+
+const howSteps = [
+  {
+    eyebrow: 'Konsultasi',
+    title: 'Konsultasi & Survei Lokasi',
+    desc: 'Pilih jadwal survei langsung ke kawasan resort. Tim kami akan menemani Anda melihat unit, masterplan kawasan, dan fasilitas lengkap.',
+    bullets: ['Transport dari Bandung kami siapkan', 'Site visit + masterplan walkthrough', 'Sesi tanya jawab dengan developer'],
+  },
+  {
+    eyebrow: 'Booking',
+    title: 'Booking & Pilih Unit',
+    desc: 'Setelah yakin dengan unit pilihan, lakukan booking fee Rp 10 juta untuk mengunci unit Anda. Pilih tipe villa sesuai profil dan target passive income.',
+    bullets: ['Booking fee Rp 10 juta (refundable)', 'Pilih unit via masterplan 3D', 'Konsultan kami siap membantu'],
+  },
+  {
+    eyebrow: 'Pembayaran',
+    title: 'Skema Pembayaran Fleksibel',
+    desc: 'Pilih KPR bank (DP 25%, cicilan 9-15jt) atau skema developer (DP 30%, angsuran ringan 5 tahun). Semua terikat notaris.',
+    bullets: ['KPR BCA/Mandiri/BNI available', 'Skema developer 0% bunga 5 tahun', 'Akad notaris resmi'],
+  },
+  {
+    eyebrow: 'Handover',
+    title: 'Handover & Serah Terima',
+    desc: 'Setelah pelunasan, villa Anda di serahterimakan fully furnished standar Sahid. Sertifikat SHM atas nama pribadi langsung diproses.',
+    bullets: ['Fully furnished standar Sahid', 'SHM atas nama pribadi (clean & clear)', 'Smart home system installed'],
+  },
+  {
+    eyebrow: 'Passive Income',
+    title: 'Terima Passive Income Bulanan',
+    desc: 'Sahid mulai mengelola villa Anda. Setiap bulan, Anda menerima bagi hasil 70% dari net revenue. Tercatat transparan, dikirim tepat waktu.',
+    bullets: ['Bagi hasil 70% untuk pemilik', 'Laporan bulanan via app', 'ROI 10% guarantee 2 tahun pertama'],
+  },
+];
+
+const pillars = [
+  { iconSvg: 'M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z', title: 'SHM + Izin Komersial', desc: 'Sertifikat Hak Milik pribadi clean & clear. Dilengkapi izin operasional komersial.' },
+  { iconSvg: 'polyline 22 7 13.5 15.5 8.5 21 17 11 2 9 22 3 22 7', title: 'ROI 10% Guarantee', desc: 'Jaminan return 10% per tahun untuk 2 tahun pertama, melindungi cashflow awal Anda.' },
+  { iconSvg: 'm3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z M9 22 V12 h6 v10', title: 'Standar Hotel Sahid', desc: 'Fully furnished dengan standar hospitality bintang 5. Siap huni, siap sewakan.' },
+  { iconSvg: 'M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4', title: 'Warisan Produktif', desc: 'Aset tangible atas nama pribadi. Bisa diwariskan. Bukan Hak Pakai, milik Anda selamanya.' },
+  { iconSvg: 'M11 5.5V21 M11 5.5a4 4 0 0 0-4-4 H7 a4 4 0 0 0 0 8 h4 M19 12a4 4 0 0 0-4-4 h-1 a4 4 0 0 0 0 8 h4 v4', title: 'Sahid 50+ Tahun', desc: 'Dikelola harian oleh manajemen Sahid Hotels & Resorts yang berpengalaman sejak 1974.' },
+  { iconSvg: 'M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z', title: 'Lokasi Bandung Timur', desc: 'Cicalengka, view 360 perbukitan. 45 menit dari Gerbang Tol Cileunyi. Hidden gem.' },
+];
+
+const passiveIncomeScenarios = [
+  { tier: 'Bijak', price: 'Rp 1,2 M', cicilan: 'Rp 9,7 jt/bulan', income: 'Rp 9,75 jt/bulan', surplus: 'Positif tipis', tagColor: 'forest' },
+  { tier: 'Idaman', price: 'Rp 1,6 M', cicilan: 'Rp 11,6 jt/bulan', income: 'Rp 12 jt/bulan', surplus: 'Seimbang', tagColor: 'gold' },
+  { tier: 'Mapan', price: 'Rp 2 M', cicilan: 'Rp 14,5 jt/bulan', income: 'Rp 15 jt/bulan', surplus: 'Optimal', tagColor: 'forest' },
+];
 ---
+
 <BaseLayout>
-  <Navbar />
+  <NavMenu client:load />
 
   <main>
-    <!-- ============================================
-         SECTION 1: HERO (premium, parallax, Svelte)
-         ============================================ -->
-    <Hero />
+    <Hero client:load />
+    <StatsCounter client:visible />
 
-    <!-- ============================================
-         SECTION 2: STATS BAR (animated counter)
-         ============================================ -->
-    <StatsBar />
-
-    <!-- ============================================
-         SECTION 3: PROBLEM → PROMISE (split layout)
-         ============================================ -->
-    <section class="split-section">
-      <div class="split-left">
-        <div class="split-sticky">
-          <span class="eyebrow-gold">PUNYA VILLA IMPIAN TANPA PUSING KELOLA</span>
-          <h2 class="split-title">
-            Kami Tahu<br/>
-            <em>Apa yang Anda<br/>K Khawatirkan</em>
+    <section class="section section-cream" id="value">
+      <div class="container-wide">
+        <div class="max-w-3xl mb-16">
+          <div class="inline-flex items-center gap-3 mb-6">
+            <span class="h-px w-12 bg-gold-500"></span>
+            <span class="eyebrow">Nilai Fundamental</span>
+          </div>
+          <h2 class="font-display text-display text-forest-700 leading-[1.05] mb-6">
+            Enam pilar yang membuat<br/>investasi ini <em>berbeda.</em>
           </h2>
-          <p class="split-sub">
-            Kebanyakan investor villa gagal bukan karena salah beli, tapi karena
-            salah kelola. Kami selesaikan itu.
-          </p>
-        </div>
-      </div>
-
-      <div class="split-right">
-        <div class="problem-card">
-          <div class="problem-icon">✗</div>
-          <h3 class="problem-title">Yang Biasa Terjadi</h3>
-          <ul class="problem-list">
-            <li><span class="x">✗</span> Cari tamu sendiri, ribet</li>
-            <li><span class="x">✗</span> Maintenance bocor, AC rusak — semua tanggung jawab Anda</li>
-            <li><span class="x">✗</span> Okupansi rendah, income tidak konsisten</li>
-            <li><span class="x">✗</span> Aset tidak jelas (Hak Pakai, bukan SHM)</li>
-            <li><span class="x">✗</span> Developer kabur, garansi tidak jelas</li>
-          </ul>
-        </div>
-
-        <div class="solution-card">
-          <div class="solution-icon">✓</div>
-          <h3 class="solution-title">Yang Anda Dapat di Menantu</h3>
-          <ul class="solution-list">
-            <li><span class="check">✓</span> Tamu diurus profesional oleh tim Sahid</li>
-            <li><span class="check">✓</span> Maintenance, housekeeping, operasional di-handle tim resort</li>
-            <li><span class="check">✓</span> Okupansi ditarget 60-70% dengan marketing terintegrasi</li>
-            <li><span class="check">✓</span> SHM atas nama pribadi, aset seumur hidup</li>
-            <li><span class="check">✓</span> Developer PT Cipta Multikarya (15+ tahun track record)</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <style>
-      .split-section {
-        display: grid;
-        grid-template-columns: 1fr 1.2fr;
-        background: #F5F0E8;
-        min-height: 100vh;
-      }
-      .split-left {
-        background: #0D1B14;
-        color: white;
-        padding: 120px 60px;
-        display: flex;
-        align-items: center;
-        position: sticky;
-        top: 0;
-        height: 100vh;
-      }
-      .split-sticky { max-width: 480px; }
-      .eyebrow-gold {
-        display: inline-block;
-        font-family: 'Inter', sans-serif;
-        font-size: 11px;
-        font-weight: 600;
-        letter-spacing: 0.25em;
-        text-transform: uppercase;
-        color: #D4A574;
-        margin-bottom: 32px;
-      }
-      .split-title {
-        font-family: 'Playfair Display', serif;
-        font-size: clamp(2.5rem, 5vw, 4rem);
-        font-weight: 700;
-        line-height: 1.05;
-        color: white;
-        margin: 0 0 32px;
-        text-wrap: balance;
-      }
-      .split-title em {
-        color: #D4A574;
-        font-style: italic;
-        font-weight: 400;
-      }
-      .split-sub {
-        font-family: 'Inter', sans-serif;
-        font-size: 17px;
-        line-height: 1.7;
-        color: rgba(255,255,255,0.8);
-        margin: 0;
-      }
-      .split-right {
-        padding: 120px 60px;
-        display: flex;
-        flex-direction: column;
-        gap: 32px;
-        align-items: stretch;
-      }
-      .problem-card, .solution-card {
-        padding: 48px;
-        position: relative;
-        overflow: hidden;
-      }
-      .problem-card {
-        background: white;
-        border-left: 4px solid #DC2626;
-      }
-      .solution-card {
-        background: #1B4332;
-        color: white;
-        border-left: 4px solid #D4A574;
-      }
-      .problem-icon, .solution-icon {
-        font-family: 'Playfair Display', serif;
-        font-size: 5rem;
-        font-weight: 700;
-        line-height: 1;
-        margin-bottom: 16px;
-      }
-      .problem-icon { color: #DC2626; }
-      .solution-icon { color: #D4A574; }
-      .problem-title, .solution-title {
-        font-family: 'Playfair Display', serif;
-        font-size: 1.75rem;
-        font-weight: 700;
-        margin: 0 0 32px;
-      }
-      .problem-title { color: #0D1B14; }
-      .solution-title { color: white; }
-      .problem-list, .solution-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-      }
-      .problem-list li, .solution-list li {
-        font-family: 'Inter', sans-serif;
-        font-size: 15px;
-        line-height: 1.6;
-        display: flex;
-        gap: 12px;
-        align-items: flex-start;
-      }
-      .problem-list li { color: #4B5563; }
-      .solution-list li { color: rgba(255,255,255,0.9); }
-      .x { color: #DC2626; font-weight: 700; flex-shrink: 0; }
-      .check { color: #D4A574; font-weight: 700; flex-shrink: 0; }
-      @media (max-width: 1024px) {
-        .split-section { grid-template-columns: 1fr; }
-        .split-left { position: relative; height: auto; padding: 80px 24px; }
-        .split-right { padding: 60px 24px; }
-        .problem-card, .solution-card { padding: 32px 24px; }
-      }
-    </style>
-
-    <!-- ============================================
-         SECTION 4: TIPE VILLA (premium cards)
-         ============================================ -->
-    <section id="villa-types" class="villa-section">
-      <div class="container">
-        <div class="villa-section-header">
-          <span class="eyebrow-gold">PILIH VILLA ANDA</span>
-          <h2 class="villa-section-title">
-            3 Tipe Villa,<br/>
-            <em>Semua dengan SHM</em>
-          </h2>
-          <p class="villa-section-sub">
-            Dari entry-level untuk first-time investor hingga flagship premium.
-            Semua dengan sertifikat Hak Milik atas nama pribadi.
+          <p class="font-body text-lg text-ink-500 leading-relaxed max-w-2xl">
+            Bukan sekadar properti. Ini adalah instrumen keuangan yang dirancang untuk menghasilkan
+            passive income konsisten, dengan legalitas sempurna dan operasional profesional.
           </p>
         </div>
 
-        <div class="villa-grid">
-          {villaData.types.map((villa, i) => (
-            <VillaCard villa={villa} index={i} />
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-cream-100 border border-cream-100">
+          {pillars.map((p, i) => (
+            <div class="group relative bg-white p-8 md:p-10 transition-all duration-500 hover:bg-cream-50 hover:z-[1]">
+              <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-gold-500 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-center"></div>
+              <div class="flex items-start justify-between mb-6">
+                <div class="w-14 h-14 border border-gold-500/30 bg-gold-500/10 flex items-center justify-center group-hover:bg-gold-500 group-hover:border-gold-500 transition-all duration-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-gold-500 group-hover:text-forest-700 transition-colors duration-500">
+                    <path d={p.iconSvg}></path>
+                  </svg>
+                </div>
+                <span class="font-mono text-xs text-cream-100 group-hover:text-gold-500/50 transition-colors">0{i + 1}</span>
+              </div>
+              <h3 class="font-display text-2xl text-forest-700 font-bold leading-tight mb-3 group-hover:text-gold-700 transition-colors duration-500">{p.title}</h3>
+              <p class="font-body text-ink-500 leading-relaxed">{p.desc}</p>
+            </div>
           ))}
         </div>
       </div>
     </section>
 
-    <style>
-      .villa-section {
-        padding: 140px 0;
-        background: white;
-        position: relative;
-      }
-      .villa-section::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent 0%, #D4A574 50%, transparent 100%);
-      }
-      .villa-section-header {
-        text-align: center;
-        max-width: 720px;
-        margin: 0 auto 80px;
-      }
-      .villa-section-title {
-        font-family: 'Playfair Display', serif;
-        font-size: clamp(2.5rem, 5vw, 4rem);
-        font-weight: 700;
-        line-height: 1.1;
-        color: #0D1B14;
-        margin: 24px 0 24px;
-        text-wrap: balance;
-      }
-      .villa-section-title em {
-        color: #1B4332;
-        font-style: italic;
-        font-weight: 400;
-      }
-      .villa-section-sub {
-        font-family: 'Inter', sans-serif;
-        font-size: 17px;
-        line-height: 1.6;
-        color: #4B5563;
-        margin: 0;
-      }
-      .villa-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0;
-        border-left: 1px solid #E5E7EB;
-      }
-      @media (max-width: 1024px) {
-        .villa-section { padding: 80px 0; }
-        .villa-grid { grid-template-columns: 1fr; border-left: none; }
-      }
-    </style>
+    <section class="section section-white" id="villa-types">
+      <div class="container-wide">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-16">
+          <div class="lg:col-span-7">
+            <div class="inline-flex items-center gap-3 mb-6">
+              <span class="h-px w-12 bg-gold-500"></span>
+              <span class="eyebrow">Tipe Villa</span>
+            </div>
+            <h2 class="font-display text-display text-forest-700 leading-[1.05] mb-6">
+              Tiga karakter, <em>satu kemapanan.</em>
+            </h2>
+          </div>
+          <div class="lg:col-span-5 flex items-end">
+            <p class="font-body text-ink-500 leading-relaxed text-lg">
+              Dari pintu masuk Anda ke dunia properti premium, hingga standar keluarga, hingga pinnacle untuk mereka yang tidak puas dengan cukup. Pilih villa sesuai profil dan target.
+            </p>
+          </div>
+        </div>
 
-    <!-- ============================================
-         SECTION 5: PASSIVE INCOME CHART
-         ============================================ -->
-    <section class="chart-section">
-      <div class="chart-bg"></div>
-      <div class="container">
-        <div class="chart-header">
-          <span class="eyebrow-gold">CICILAN ANDA, DITUTUP INCOME ANDA</span>
-          <h2 class="chart-title">
-            Bayangkan:<br/>
-            <em>Villa Anda Membayar</em><br/>
-            Cicilannya Sendiri.
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <VillaCard client:visible villa={villas[0]} image={villaImages.bijak} index={0} />
+          <VillaCard client:visible villa={villas[1]} image={villaImages.idaman} index={1} />
+          <VillaCard client:visible villa={villas[2]} image={villaImages.mapan} index={2} featured={true} />
+        </div>
+      </div>
+    </section>
+
+    <VillaComparison client:visible />
+
+    <StickyScrollSection steps={howSteps} client:visible />
+
+    <section class="section section-tint relative overflow-hidden">
+      <div class="absolute inset-0 pattern-grid opacity-50"></div>
+      <div class="container-wide relative">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div class="lg:col-span-5">
+            <div class="inline-flex items-center gap-3 mb-6">
+              <span class="h-px w-12 bg-gold-500"></span>
+              <span class="eyebrow">Mitra Strategis</span>
+            </div>
+            <h2 class="font-display text-display text-forest-700 leading-[1.05] mb-6">
+              Dikelola oleh <em>Sahid</em>.<br/>50+ tahun pengalaman.
+            </h2>
+            <p class="font-body text-lg text-ink-500 leading-relaxed mb-8">
+              Sahid Hotels & Resorts mengelola lebih dari 20 properti aktif di Indonesia sejak 1974.
+              Mulai dari Grand Sahid Jaya Jakarta, Sahid Resort Yogyakarta, hingga Sahid Serpong BSD.
+              Standar operasional mereka adalah jaminan mutu villa Anda.
+            </p>
+
+            <div class="grid grid-cols-2 gap-4 mb-8">
+              <div class="p-4 bg-white border border-cream-100">
+                <div class="font-display text-3xl text-forest-700 font-bold">20+</div>
+                <div class="font-body text-xs text-ink-500 uppercase tracking-wider mt-1">Properti Aktif</div>
+              </div>
+              <div class="p-4 bg-white border border-cream-100">
+                <div class="font-display text-3xl text-forest-700 font-bold">50+</div>
+                <div class="font-body text-xs text-ink-500 uppercase tracking-wider mt-1">Tahun Pengalaman</div>
+              </div>
+              <div class="p-4 bg-white border border-cream-100">
+                <div class="font-display text-3xl text-forest-700 font-bold">4.5/5</div>
+                <div class="font-body text-xs text-ink-500 uppercase tracking-wider mt-1">Guest Rating</div>
+              </div>
+              <div class="p-4 bg-white border border-cream-100">
+                <div class="font-display text-3xl text-forest-700 font-bold">70/30</div>
+                <div class="font-body text-xs text-ink-500 uppercase tracking-wider mt-1">Profit Share</div>
+              </div>
+            </div>
+
+            <a href="/resort" class="btn btn-primary">
+              Lihat Fasilitas Resort
+              <ArrowRight size={16} />
+            </a>
+          </div>
+
+          <div class="lg:col-span-7 relative">
+            <div class="relative aspect-[4/3] overflow-hidden">
+              <img
+                src="/images/ref/interior-living.jpg"
+                alt="Interior villa Sahid standar hospitality bintang 5"
+                class="w-full h-full object-cover"
+                loading="lazy"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-forest-700/50 to-transparent"></div>
+              <div class="absolute bottom-6 left-6 right-6 p-6 bg-white/95 backdrop-blur-sm">
+                <div class="flex items-center gap-3">
+                  <Building2 size={20} class="text-gold-500" />
+                  <div>
+                    <div class="font-display text-lg text-forest-700 font-bold">Standar Sahid Hospitality</div>
+                    <div class="font-body text-xs text-ink-500">Fully furnished · Smart home · 24/7 security</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="absolute -top-4 -right-4 w-24 h-24 border-2 border-gold-500 -z-10"></div>
+            <div class="absolute -bottom-4 -left-4 w-32 h-32 bg-cream-100 -z-10"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-cream-dark">
+      <div class="container-wide">
+        <div class="max-w-3xl mb-12">
+          <div class="inline-flex items-center gap-3 mb-6">
+            <span class="h-px w-12 bg-gold-500"></span>
+            <span class="eyebrow">Simulasi Cashflow</span>
+          </div>
+          <h2 class="font-display text-display text-forest-700 leading-[1.05] mb-6">
+            Cicilan <em>terkontrol.</em><br/>Passive income otomatis.
           </h2>
-          <p class="chart-sub">
-            Okupansi 50%, tarif Rp 2,2 juta/malam. Cicilan 15 tahun ke bank.
-            Income yang masuk dari villa: Cukup. Untuk. Menutup. Cicilan.
+          <p class="font-body text-lg text-ink-500 leading-relaxed">
+            Dirancang dengan prinsip: cicilan Anda harus lebih kecil dari passive income. Itulah warisan produktif yang sesungguhnya.
           </p>
         </div>
 
-        <div class="chart-grid">
-          {villaData.types.map((villa, i) => {
-            const maxBar = 16000000; // 16jt
-            const cicilanPct = (villa.cicilanBank / maxBar) * 100;
-            const incomePct = (villa.passiveIncome / maxBar) * 100;
-            return (
-              <div class="chart-item" style={`--i: ${i}`}>
-                <div class="chart-item-header">
-                  <h3>{villa.name}</h3>
-                  <span class={`status ${villa.surplusBank > 0 ? 'positive' : 'negative'}`}>
-                    {villa.surplusBank > 0 ? '✓ Cicilan tertutup' : '⚠ Defisit'}
-                  </span>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {passiveIncomeScenarios.map((s) => (
+            <div class="group relative bg-white border border-cream-100 p-8 transition-all duration-500 hover:border-gold-300 hover:shadow-xl hover:-translate-y-1">
+              <span class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-gold-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></span>
+              <div class="flex items-start justify-between mb-6">
+                <div>
+                  <div class="font-body text-xs text-ink-500 uppercase tracking-wider mb-1">Villa</div>
+                  <div class="font-display text-3xl text-forest-700 font-bold leading-none">Menantu {s.tier}</div>
                 </div>
-                <div class="bar-group">
-                  <div class="bar-label">
-                    <span>Cicilan</span>
-                    <span class="bar-value">{formatRupiah(villa.cicilanBank)}</span>
-                  </div>
-                  <div class="bar-track">
-                    <div class="bar-fill bar-cicilan" style={`width: ${cicilanPct}%`}></div>
-                  </div>
+                <span class:list-none={false} class={`inline-flex items-center px-3 py-1 text-xs font-semibold tracking-wide ${s.tagColor === 'forest' ? 'bg-forest-500 text-cream-50' : 'bg-gold-500 text-forest-700'}`}>{s.price}</span>
+              </div>
+
+              <div class="space-y-4 mb-6">
+                <div class="flex items-center justify-between py-3 border-b border-cream-100">
+                  <span class="font-body text-sm text-ink-500">Cicilan / bulan</span>
+                  <span class="font-display text-lg text-forest-700 font-bold">{s.cicilan}</span>
                 </div>
-                <div class="bar-group">
-                  <div class="bar-label">
-                    <span>Passive Income</span>
-                    <span class="bar-value gold">{formatRupiah(villa.passiveIncome)}</span>
-                  </div>
-                  <div class="bar-track">
-                    <div class="bar-fill bar-income" style={`width: ${incomePct}%`}></div>
-                  </div>
+                <div class="flex items-center justify-between py-3 border-b border-cream-100">
+                  <span class="font-body text-sm text-ink-500">Passive income</span>
+                  <span class="font-display text-lg text-gold-700 font-bold">{s.income}</span>
                 </div>
-                <div class="chart-item-footer">
-                  <span class="footer-label">Surplus per bulan</span>
-                  <span class={`footer-value ${villa.surplusBank > 0 ? 'positive' : 'negative'}`}>
-                    {villa.surplusBank > 0 ? '+' : ''}{formatRupiah(villa.surplusBank)}
+                <div class="flex items-center justify-between py-3">
+                  <span class="font-body text-sm text-ink-500">Surplus</span>
+                  <span class="inline-flex items-center gap-1.5 text-whatsapp font-display text-lg font-bold">
+                    <CheckCircle2 size={16} />
+                    {s.surplus}
                   </span>
                 </div>
               </div>
-            );
-          })}
-        </div>
 
-        <p class="chart-disclaimer">
-          *Simulasi berdasarkan okupansi 50% & tarif Rp 2,2jt/malam. Performa aktual dapat bervariasi.
+              <a href={`/villa/${s.tier.toLowerCase()}`} class="inline-flex items-center gap-2 font-body font-semibold text-forest-700 text-sm tracking-wide hover:text-gold-700 transition-colors">
+                Detail Skema
+                <ArrowRight size={16} />
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <TestimoniCarousel client:visible />
+
+    <section class="relative section-lg overflow-hidden">
+      <div class="absolute inset-0 z-0">
+        <img src="/images/ref/villa-mapan-detail.jpg" alt="" class="w-full h-full object-cover" loading="lazy" />
+        <div class="absolute inset-0 bg-gradient-to-br from-forest-700/95 via-forest-700/90 to-forest-900/85"></div>
+      </div>
+
+      <div class="container-tight relative z-10 text-center">
+        <div class="inline-flex items-center gap-3 mb-6">
+          <span class="h-px w-12 bg-gold-500"></span>
+          <span class="eyebrow text-gold-500">Langkah Pertama</span>
+          <span class="h-px w-12 bg-gold-500"></span>
+        </div>
+        <h2 class="font-display text-cream-50 leading-[1.0] tracking-tight mb-8 text-hero">
+          Masa Depan Anda Dimulai<br/>
+          <em class="text-gold-500 font-medium">Dari Keputusan Hari Ini.</em>
+        </h2>
+        <p class="font-body text-lg text-cream-50/80 leading-relaxed max-w-2xl mx-auto mb-10">
+          74 unit, 58 sudah terjual. Survei gratis, termasuk transport dari Bandung.
+          Promo khusus minggu ini: diskon Rp 200 juta + bonus mobil listrik untuk unit terpilih.
         </p>
 
-        <div class="chart-cta">
-          <a href="/investasi/simulasi-kpr" class="btn-premium btn-primary-premium">
-            <span>Hitung Sendiri di Simulator</span>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
+        <div class="flex flex-wrap gap-4 justify-center mb-12">
+          <a href="#villa-types" class="btn btn-secondary btn-lg">
+            Lihat Unit Tersisa
+            <ArrowRight size={18} />
           </a>
+          <a href={`https://wa.me/${siteData.contact.whatsapp}?text=Halo%2C%20saya%20ingin%20booking%20survei%20Menantu%20Resort`} target="_blank" rel="noopener" class="btn btn-outline-light btn-lg">
+            Booking Survei Gratis
+          </a>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-cream-50/70 font-body">
+          <div class="flex items-center gap-2"><Calendar size={14} class="text-gold-500" /> Survei include transport</div>
+          <div class="hidden md:block h-4 w-px bg-cream-50/30"></div>
+          <div class="flex items-center gap-2"><Wallet size={14} class="text-gold-500" /> Booking fee Rp 10 juta (refundable)</div>
+          <div class="hidden md:block h-4 w-px bg-cream-50/30"></div>
+          <div class="flex items-center gap-2"><LineChart size={14} class="text-gold-500" /> Konsultan wealth available</div>
         </div>
       </div>
     </section>
-
-    <style>
-      .chart-section {
-        background: #0D1B14;
-        padding: 140px 0;
-        position: relative;
-        overflow: hidden;
-      }
-      .chart-bg {
-        position: absolute;
-        inset: 0;
-        background:
-          radial-gradient(ellipse 60% 40% at 30% 20%, rgba(27, 67, 50, 0.4) 0%, transparent 60%),
-          radial-gradient(ellipse 50% 30% at 80% 80%, rgba(212, 165, 116, 0.1) 0%, transparent 60%);
-      }
-      .chart-header { text-align: center; max-width: 800px; margin: 0 auto 80px; position: relative; }
-      .chart-title {
-        font-family: 'Playfair Display', serif;
-        font-size: clamp(2.5rem, 5vw, 4.5rem);
-        font-weight: 700;
-        line-height: 1.05;
-        color: white;
-        margin: 24px 0 24px;
-        text-wrap: balance;
-      }
-      .chart-title em { color: #D4A574; font-style: italic; font-weight: 400; }
-      .chart-sub {
-        font-family: 'Inter', sans-serif;
-        font-size: 17px;
-        line-height: 1.7;
-        color: rgba(255,255,255,0.7);
-        margin: 0;
-      }
-      .chart-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 24px;
-        margin-bottom: 32px;
-        position: relative;
-      }
-      .chart-item {
-        background: rgba(255,255,255,0.04);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(212, 165, 116, 0.2);
-        padding: 32px;
-        animation: chartFade 0.8s ease-out calc(var(--i) * 0.15s) both;
-      }
-      @keyframes chartFade {
-        from { opacity: 0; transform: translateY(30px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      .chart-item-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 24px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid rgba(212, 165, 116, 0.15);
-      }
-      .chart-item-header h3 {
-        font-family: 'Playfair Display', serif;
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: white;
-        margin: 0;
-      }
-      .status {
-        font-family: 'Inter', sans-serif;
-        font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        padding: 4px 10px;
-        border-radius: 2px;
-      }
-      .status.positive { background: rgba(22, 163, 74, 0.15); color: #4ADE80; }
-      .status.negative { background: rgba(220, 38, 38, 0.15); color: #F87171; }
-
-      .bar-group { margin-bottom: 20px; }
-      .bar-label {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        margin-bottom: 8px;
-        font-family: 'Inter', sans-serif;
-        font-size: 12px;
-        color: rgba(255,255,255,0.6);
-      }
-      .bar-value { color: white; font-weight: 600; font-variant-numeric: tabular-nums; }
-      .bar-value.gold { color: #D4A574; }
-
-      .bar-track {
-        height: 6px;
-        background: rgba(255,255,255,0.08);
-        overflow: hidden;
-      }
-      .bar-fill {
-        height: 100%;
-        transform-origin: left;
-        animation: barGrow 1.5s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 0.15s + 0.3s) both;
-      }
-      @keyframes barGrow {
-        from { transform: scaleX(0); }
-        to { transform: scaleX(1); }
-      }
-      .bar-cicilan { background: linear-gradient(90deg, #DC2626 0%, #F59E0B 100%); }
-      .bar-income { background: linear-gradient(90deg, #D4A574 0%, #16A34A 100%); }
-
-      .chart-item-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        margin-top: 20px;
-        padding-top: 20px;
-        border-top: 1px solid rgba(212, 165, 116, 0.15);
-        font-family: 'Inter', sans-serif;
-      }
-      .footer-label { font-size: 12px; color: rgba(255,255,255,0.6); }
-      .footer-value { font-size: 1.25rem; font-weight: 700; font-variant-numeric: tabular-nums; }
-      .footer-value.positive { color: #4ADE80; }
-      .footer-value.negative { color: #F87171; }
-
-      .chart-disclaimer {
-        text-align: center;
-        font-family: 'Inter', sans-serif;
-        font-size: 12px;
-        color: rgba(255,255,255,0.4);
-        margin: 0 0 40px;
-        position: relative;
-      }
-      .chart-cta { text-align: center; position: relative; }
-
-      @media (max-width: 1024px) {
-        .chart-section { padding: 80px 0; }
-        .chart-grid { grid-template-columns: 1fr; }
-      }
-    </style>
-
-    <!-- ============================================
-         SECTION 6: FINAL CTA
-         ============================================ -->
-    <section class="final-cta-section">
-      <div class="container">
-        <div class="urgency-badge">
-          <span class="pulse"></span>
-          PERHATIAN: HARGA NAIK Q3 2026
-        </div>
-        <h2 class="final-cta-title">
-          58 dari 74 unit sudah terjual.<br/>
-          <em class="gold">Sisa 16 unit.</em><br/>
-          Booking fee Rp 10 juta<br/>
-          <span class="small">lock harga hari ini.</span>
-        </h2>
-        <div class="final-cta-buttons">
-          <a href={waLink('Halo, saya tertarik booking unit Menantu Resort')} target="_blank" rel="noopener" class="btn-premium btn-wa-premium btn-premium-lg">
-            💬 Chat WhatsApp Sekarang
-          </a>
-          <a href="/kontak" class="btn-premium btn-outline-premium btn-premium-lg">
-            📅 Jadwalkan Kunjungan
-          </a>
-        </div>
-        <p class="final-cta-trust">✅ Pembayaran ke rekening PT Cipta Multikarya Propertindo · Booking fee 100% refundable</p>
-      </div>
-    </section>
-
-    <style>
-      .final-cta-section {
-        background: #0D1B14;
-        padding: 140px 0;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-      }
-      .final-cta-section::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(212, 165, 116, 0.08) 0%, transparent 60%);
-      }
-      .urgency-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        background: rgba(220, 38, 38, 0.15);
-        border: 1px solid rgba(220, 38, 38, 0.3);
-        padding: 10px 20px;
-        font-family: 'Inter', sans-serif;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-        color: #FCA5A5;
-        margin-bottom: 40px;
-        position: relative;
-      }
-      .pulse {
-        width: 8px;
-        height: 8px;
-        background: #DC2626;
-        border-radius: 50%;
-        animation: pulseDot 1.5s ease-in-out infinite;
-      }
-      @keyframes pulseDot {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.5; transform: scale(1.5); }
-      }
-      .final-cta-title {
-        font-family: 'Playfair Display', serif;
-        font-size: clamp(2.5rem, 6vw, 5rem);
-        font-weight: 700;
-        line-height: 1.05;
-        color: white;
-        margin: 0 auto 48px;
-        max-width: 900px;
-        text-wrap: balance;
-        position: relative;
-      }
-      .final-cta-title em { color: #D4A574; font-style: italic; font-weight: 400; }
-      .final-cta-title em.gold { color: #D4A574; }
-      .final-cta-title .small {
-        font-size: 0.6em;
-        color: rgba(255,255,255,0.7);
-        font-weight: 400;
-        font-family: 'Inter', sans-serif;
-      }
-      .final-cta-buttons {
-        display: flex;
-        gap: 16px;
-        justify-content: center;
-        flex-wrap: wrap;
-        margin-bottom: 40px;
-        position: relative;
-      }
-      .btn-premium-lg { padding: 20px 40px; font-size: 15px; }
-      .btn-outline-premium {
-        background: transparent;
-        color: white;
-        border-color: rgba(255,255,255,0.3);
-      }
-      .btn-outline-premium:hover {
-        background: white;
-        color: #0D1B14;
-        border-color: white;
-      }
-      .final-cta-trust {
-        font-family: 'Inter', sans-serif;
-        font-size: 12px;
-        color: rgba(255,255,255,0.5);
-        margin: 0;
-        position: relative;
-      }
-      @media (max-width: 768px) {
-        .final-cta-section { padding: 80px 0; }
-        .final-cta-buttons { flex-direction: column; }
-        .btn-premium-lg { width: 100%; }
-      }
-    </style>
   </main>
 
   <Footer />
-  <WhatsAppFloating />
+  <FloatingActionButton client:load />
+  <LiveActivity client:load />
 </BaseLayout>

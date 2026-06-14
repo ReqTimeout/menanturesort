@@ -4,146 +4,133 @@ import Navbar from '../components/astro/Navbar.astro';
 import Footer from '../components/astro/Footer.astro';
 import WhatsAppFloating from '../components/astro/WhatsAppFloating.astro';
 import siteData from '../data/site.json';
-import { waUrl } from '../lib/format';
+import { waUrl } from '../lib/utils';
+import { MessageCircle, MapPin, Mountain, TreePine, Waves, Building, Train, Car, Hospital, Camera } from 'lucide-svelte';
 
 const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'lokasi');
 
-const nearby = [
-  { name: 'Curug Cinulang', desc: 'Air terjun signature, 5 menit', icon: '💧' },
-  { name: 'Gunung Masigit Kareumbi', desc: 'Destinasi gunung & hiking, 20 menit', icon: '⛰️' },
-  { name: 'Bukit Teletubbies Cicalengka', desc: 'Bukit ikonik Bandung Timur, 15 menit', icon: '🌄' },
-  { name: 'Cicalengka Dreamland', desc: 'Wisata keluarga, 10 menit', icon: '🎢' },
-  { name: 'Stasiun Cicalengka', desc: 'Akses KAI, 8 menit', icon: '🚆' },
-  { name: 'Gerbang Tol Cileunyi', desc: '45 menit ke Bandung / Jakarta', icon: '🛣️' },
-  { name: 'RSUD Cicalengka', desc: 'Rumah sakit terdekat, 7 menit', icon: '🏥' },
-  { name: 'Taman Renang Alam Nagreg', desc: 'Wisata air keluarga, 25 menit', icon: '🏊' },
-];
-
 const akses = [
   { from: 'Bandung Kota', time: '45 menit', route: 'Tol Cileunyi → Cicalengka' },
-  { from: 'Jakarta', time: '2.5 jam', route: 'Tol Cipularang → Cileunyi → Cicalengka' },
-  { from: 'Sumedang', time: '40 menit', route: 'Jalan Nasional Sumedang-Cicalengka' },
+  { from: 'Jakarta', time: '2.5 jam', route: 'Tol Cipularang → Cileunyi' },
+  { from: 'Sumedang', time: '40 menit', route: 'Jalan Nasional' },
   { from: 'Garut', time: '1 jam', route: 'Lewat Nagreg' },
   { from: 'Stasiun Cicalengka', time: '8 menit', route: 'Akses langsung KAI' },
-  { from: 'Bandara Kertajati', time: '1.5 jam', route: 'Tol Cisumdawu (alternatif)' },
+  { from: 'Bandara Kertajati', time: '1.5 jam', route: 'Tol Cisumdawu' },
+];
+
+const nearby = [
+  { name: 'Curug Cinulang', desc: 'Air terjun signature, 5 menit', icon: Waves },
+  { name: 'Gunung Masigit', desc: 'Destinasi gunung, 20 menit', icon: Mountain },
+  { name: 'Bukit Teletubbies', desc: 'Bukit ikonik, 15 menit', icon: TreePine },
+  { name: 'Cicalengka Dreamland', desc: 'Wisata keluarga, 10 menit', icon: Camera },
+  { name: 'Stasiun Cicalengka', desc: 'Akses KAI, 8 menit', icon: Train },
+  { name: 'Gerbang Tol Cileunyi', desc: '45 menit ke Bandung', icon: Car },
+  { name: 'RSUD Cicalengka', desc: 'Rumah sakit terdekat', icon: Hospital },
+  { name: 'Taman Renang Nagreg', desc: 'Wisata air, 25 menit', icon: Waves },
 ];
 ---
-<BaseLayout
-  title="Lokasi Menantu Resort — Bandung Timur"
-  description="Menantu Resort di Jl. Curug Cinulang, Tenjolaya, Cicalengka, Bandung Timur. Akses 45 menit dari Bandung, 2.5 jam dari Jakarta. View 360° Bandung Timur, udara sejuk pegunungan."
->
+<BaseLayout title="Lokasi Menantu Resort — Bandung Timur" description="Jl. Curug Cinulang, Tenjolaya, Cicalengka. 45 menit dari Tol Cileunyi. View 360°, udara sejuk pegunungan.">
   <Navbar />
-  <main>
-    <section class="relative bg-gradient-to-br from-primary to-primary-dark text-white py-3xl overflow-hidden">
-      <div class="absolute inset-0 pattern-subtle opacity-20"></div>
-      <div class="container relative z-10">
-        <div class="max-w-3xl">
-          <span class="eyebrow text-secondary">Lokasi Strategis</span>
-          <h1 class="heading-display text-white mb-md">
-            Hidden Gem Bandung Timur,<br/><span class="text-secondary italic">45 Menit dari Gerbang Tol Cileunyi.</span>
-          </h1>
-          <p class="text-body-lg text-white/85 mb-xl">
-            Udara sejuk pegunungan, view 360° perbukitan, akses mudah dari kota besar —
-            tanpa keramaian overtourism.
-          </p>
-          <a href={waLink('Halo, saya ingin kunjungan ke lokasi')} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">💬 Jadwalkan Kunjungan</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- MAP -->
-    <section class="section">
-      <div class="container">
-        <div class="card overflow-hidden aspect-[16/9] md:aspect-[21/9]">
-          <iframe
-            src={siteData.contact.mapsEmbed}
-            width="100%" height="100%"
-            style="border:0;" allowfullscreen loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-            title="Lokasi Menantu Resort"
-          ></iframe>
-        </div>
-        <p class="text-center mt-md text-sm text-ink-soft">
-          📍 {siteData.contact.address}
+  <main class="pt-20">
+    <section class="section section-cream">
+      <div class="container-tight text-center">
+        <span class="eyebrow">Lokasi Strategis</span>
+        <h1 class="heading-title mt-4 mb-6">
+          Hidden Gem Bandung Timur, <br/><em>45 Menit dari Tol Cileunyi.</em>
+        </h1>
+        <p class="text-body-lg text-ink-500 max-w-2xl mx-auto">
+          Udara sejuk pegunungan, view 360° perbukitan, akses mudah dari kota besar —
+          tanpa keramaian overtourism.
         </p>
       </div>
     </section>
 
-    <!-- AKSES -->
-    <section class="section bg-accent">
-      <div class="container">
-        <div class="text-center mb-2xl">
-          <span class="eyebrow">Akses Mudah</span>
-          <h2 class="heading-display">Dari Mana Saja,<br/><span class="text-secondary">Dekat dan Strategis</span></h2>
+    <section class="section-tight section-white">
+      <div class="container-tight">
+        <div class="card overflow-hidden aspect-[16/9] md:aspect-[21/9]">
+          <iframe src={siteData.contact.mapsEmbed} width="100%" height="100%" style="border:0;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Lokasi Menantu Resort"></iframe>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+        <div class="flex items-center justify-center gap-2 mt-4 text-sm text-ink-500">
+          <MapPin size="16" class="text-gold-700" />
+          {siteData.contact.address}
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-cream">
+      <div class="container-tight">
+        <div class="text-center mb-12">
+          <span class="eyebrow">Akses Mudah</span>
+          <h2 class="heading-title mt-4">Dari Mana Saja, <em>Dekat & Strategis.</em></h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {akses.map((a) => (
-            <div class="card p-lg">
-              <div class="flex items-start justify-between mb-sm">
-                <div class="font-semibold text-lg">{a.from}</div>
+            <div class="card p-6">
+              <div class="flex items-start justify-between mb-2">
+                <div class="font-display text-lg text-forest-700 font-semibold">{a.from}</div>
                 <span class="badge badge-gold">{a.time}</span>
               </div>
-              <p class="text-sm text-ink-soft">{a.route}</p>
+              <p class="text-sm text-ink-500">{a.route}</p>
             </div>
           ))}
         </div>
       </div>
     </section>
 
-    <!-- NEARBY -->
-    <section class="section">
-      <div class="container">
-        <div class="text-center mb-2xl">
+    <section class="section section-white">
+      <div class="container-tight">
+        <div class="text-center mb-12">
           <span class="eyebrow">Wisata & Fasilitas Sekitar</span>
-          <h2 class="heading-display">Bandung Timur Punya<br/><span class="text-secondary">Segalanya</span></h2>
+          <h2 class="heading-title mt-4">Bandung Timur <em>Punya Segalanya.</em></h2>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-lg">
-          {nearby.map((n) => (
-            <div class="card p-lg hover:border-secondary transition">
-              <div class="text-3xl mb-sm">{n.icon}</div>
-              <h3 class="heading-3 mb-xs text-base">{n.name}</h3>
-              <p class="text-sm text-ink-soft">{n.desc}</p>
-            </div>
-          ))}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {nearby.map((n) => {
+            const Icon = n.icon;
+            return (
+              <div class="card p-6 hover:border-gold-500 transition">
+                <Icon size="32" class="text-gold-700 mb-3" strokeWidth="1.5" />
+                <h3 class="font-display text-lg text-forest-700 font-semibold mb-1">{n.name}</h3>
+                <p class="text-sm text-ink-500">{n.desc}</p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
 
-    <!-- WHY THIS LOCATION -->
-    <section class="section bg-gradient-to-br from-primary-dark to-primary text-white">
-      <div class="container">
-        <div class="max-w-3xl mx-auto text-center">
-          <span class="eyebrow text-secondary">Mengapa Lokasi Ini</span>
-          <h2 class="heading-display text-white mb-md">3 Alasan Bandung Timur</h2>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-lg mt-2xl">
-            <div>
-              <div class="text-4xl mb-sm">🌡️</div>
-              <h3 class="heading-3 text-white mb-xs">Sejuk 18-24°C</h3>
-              <p class="text-sm text-white/75">Udara pegunungan bersih, bebas polusi, ideal untuk retreat.</p>
-            </div>
-            <div>
-              <div class="text-4xl mb-sm">📈</div>
-              <h3 class="heading-3 text-white mb-xs">Naik 28% YoY</h3>
-              <p class="text-sm text-white/75">Capital gain property Bandung Timur tertinggi di area Bandung.</p>
-            </div>
-            <div>
-              <div class="text-4xl mb-sm">🏢</div>
-              <h3 class="heading-3 text-white mb-xs">Korporat Nearby</h3>
-              <p class="text-sm text-white/75">PT KAHATEX, Mayora, Tirta Fresindo = pasar corporate tenant.</p>
-            </div>
+    <section class="section section-cream">
+      <div class="container-tight">
+        <div class="text-center mb-12">
+          <span class="eyebrow">3 Alasan</span>
+          <h2 class="heading-title mt-4">Mengapa <em>Bandung Timur?</em></h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="card p-10 text-center">
+            <div class="text-5xl mb-4">🌡️</div>
+            <h3 class="heading text-xl mb-3">Sejuk 18-24°C</h3>
+            <p class="text-body text-ink-500">Udara pegunungan bersih, bebas polusi, ideal untuk retreat.</p>
+          </div>
+          <div class="card p-10 text-center">
+            <div class="text-5xl mb-4">📈</div>
+            <h3 class="heading text-xl mb-3">Naik 28% YoY</h3>
+            <p class="text-body text-ink-500">Capital gain property Bandung Timur tertinggi di area Bandung.</p>
+          </div>
+          <div class="card p-10 text-center">
+            <div class="text-5xl mb-4">🏢</div>
+            <h3 class="heading text-xl mb-3">Korporat Nearby</h3>
+            <p class="text-body text-ink-500">PT KAHATEX, Mayora, Tirta Fresindo = pasar corporate tenant.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="section bg-accent">
-      <div class="container text-center">
-        <h2 class="heading-display mb-md">Lihat Langsung<br/><span class="text-secondary">Lokasi Villa Impian Anda</span></h2>
-        <p class="text-body-lg text-ink-soft mb-xl max-w-2xl mx-auto">
-          Survei lokasi gratis, termasuk transport dari pool meeting point Bandung.
-          Hubungi kami untuk jadwal.
-        </p>
-        <a href={waLink('Halo, saya ingin survei lokasi')} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">💬 Jadwalkan Survei Gratis</a>
+    <section class="section section-cream-dark text-center">
+      <div class="container-tight">
+        <h2 class="heading-title mb-6">Lihat Langsung <em class="text-gold-700">Lokasinya.</em></h2>
+        <p class="text-body-lg text-ink-500 max-w-2xl mx-auto mb-8">Survei lokasi gratis, termasuk transport dari pool meeting point Bandung.</p>
+        <a href={waLink('Halo, saya mau survei lokasi')} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">
+          <MessageCircle size="18" /> Jadwalkan Survei Gratis
+        </a>
       </div>
     </section>
   </main>

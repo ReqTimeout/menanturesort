@@ -1,0 +1,38 @@
+---
+import siteData from '../../data/site.json';
+import { waUrl } from '../../lib/utils';
+import { ArrowRight, Shield } from 'lucide-svelte';
+const waLink = waUrl(siteData.contact.whatsapp, 'Halo, saya ingin booking unit villa Menantu Resort', 'homepage_final_cta');
+---
+<section class="section section-cream-dark relative overflow-hidden">
+  <div class="absolute inset-0 pattern-dots opacity-30"></div>
+  <div class="container-tight relative">
+    <div class="max-w-3xl mx-auto text-center">
+      <div class="inline-flex items-center gap-2 bg-gold-500/15 text-gold-700 px-4 py-2 mb-8">
+        <span class="w-2 h-2 bg-gold-500 rounded-full animate-pulse-gold"></span>
+        <span class="text-xs font-semibold uppercase tracking-widest">Hanya 16 Unit Tersisa dari 74</span>
+      </div>
+
+      <h2 class="heading-title mb-6">
+        Booking Fee <em class="text-gold-700">Rp 10 Juta.</em><br/>Lock Harga Hari Ini.
+      </h2>
+      <p class="text-body-lg text-ink-500 max-w-2xl mx-auto mb-10">
+        100% refundable dalam 30 hari jika berubah pikiran. Sudah termasuk dalam harga jual.
+        Amankan unit favorit Anda sebelum fase berikutnya.
+      </p>
+
+      <div class="flex flex-wrap gap-4 justify-center mb-12">
+        <a href={waLink} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">
+          Booking via WhatsApp
+          <ArrowRight size="18" strokeWidth="2" />
+        </a>
+        <a href="/villa" class="btn btn-outline btn-lg">Lihat Tipe Villa</a>
+      </div>
+
+      <div class="flex items-center justify-center gap-2 text-sm text-ink-700">
+        <Shield size="16" class="text-forest-500" />
+        <span>Pembayaran sah hanya melalui rekening resmi BNI · BCA · BSI</span>
+      </div>
+    </div>
+  </div>
+</section>

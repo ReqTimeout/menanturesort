@@ -1,0 +1,37 @@
+---
+import siteData from '../../data/site.json';
+import { Quote } from 'lucide-svelte';
+---
+<section class="section section-cream">
+  <div class="container-tight">
+    <div class="text-center mb-16">
+      <span class="eyebrow">Apa Kata Mereka</span>
+      <h2 class="heading-title mt-4">
+        Investor Sudah <em>Membuktikan</em><br/>Sebelum Anda.
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+      {siteData.testimonials.map((t) => {
+        const initials = t.name.split(' ').map(n => n[0]).join('').slice(0, 2);
+        return (
+          <article class="card p-8 md:p-10 flex flex-col">
+            <Quote size="32" class="text-gold-500 mb-6" strokeWidth="1.5" />
+            <p class="font-quote italic text-lg text-forest-700 leading-relaxed mb-8 flex-1">
+              "{t.text}"
+            </p>
+            <div class="flex items-center gap-3 pt-6 border-t border-cream-100">
+              <div class="w-12 h-12 rounded-full bg-gradient-to-br from-forest-500 to-forest-700 text-gold-500 flex items-center justify-center font-display font-bold">
+                {initials}
+              </div>
+              <div>
+                <div class="font-display text-sm font-semibold text-forest-700">{t.name}</div>
+                <div class="text-xs text-ink-700">{t.role} · {t.location}</div>
+              </div>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </div>
+</section>

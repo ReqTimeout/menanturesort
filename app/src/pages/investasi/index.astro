@@ -3,189 +3,167 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Navbar from '../../components/astro/Navbar.astro';
 import Footer from '../../components/astro/Footer.astro';
 import WhatsAppFloating from '../../components/astro/WhatsAppFloating.astro';
-import siteData from '../../data/site.json';
-import { formatRupiah, formatShort, waUrl } from '../../lib/format';
 import KprCalculator from '../../components/svelte/KprCalculator.svelte';
+import siteData from '../../data/site.json';
+import villaData from '../../data/villa.json';
+import { formatShort, waUrl } from '../../lib/utils';
+import { ArrowRight, MessageCircle, Building2, TrendingUp, Users, Shield, Check } from 'lucide-svelte';
 
 const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'investasi_overview');
-const heroCta = waLink('Halo, saya ingin konsultasi skema investasi Menantu Resort');
-
-const scenarios = [
-  { id: 'bijak', name: 'Menantu Bijak', price: 1200000000, dpBank: 360000000, cicilanBank: 9720000, passiveIncome: 9750000 },
-  { id: 'idaman', name: 'Menantu Idaman', price: 1600000000, dpBank: 480000000, cicilanBank: 11670000, passiveIncome: 12000000, bestValue: true },
-  { id: 'mapan', name: 'Menantu Mapan', price: 2000000000, dpBank: 600000000, cicilanBank: 14580000, passiveIncome: 15000000 },
-];
-
-const formatIDR = (n: number) => formatRupiah(n, true);
+const scenarios = villaData.types.map((v) => ({
+  ...v,
+  surplus: v.passiveIncome - v.cicilanBank,
+}));
 ---
 <BaseLayout
   title="Skema Investasi & Passive Income"
-  description="Pelajari 2 skema KPR (Bank & Developer), simulasi passive income, dan perbandingan cicilan untuk semua tipe villa Menantu Resort. ROI 10% p.a. guarantee 2 tahun."
+  description="Cicilan villa Anda, ditutup income villa. Dua skema KPR: Bank (5% tenor 20thn) atau Developer (7% tanpa BI Checking). ROI 10% guarantee."
 >
   <Navbar />
-  <main>
-    <section class="relative bg-gradient-to-br from-primary-dark to-primary text-white py-3xl overflow-hidden">
-      <div class="absolute inset-0 pattern-subtle opacity-20"></div>
-      <div class="container relative z-10">
-        <div class="max-w-3xl">
-          <span class="eyebrow text-secondary">Investment Hub</span>
-          <h1 class="heading-display text-white mb-md">
-            Cicilan Anda, <br/><span class="text-secondary italic">Ditutup Income Anda.</span>
-          </h1>
-          <p class="text-body-lg text-white/85 mb-xl max-w-2xl">
-            Dua skema pembayaran — pilih yang sesuai profil risiko Anda. Semua tipe villa dirancang agar <strong class="text-secondary">passive income ≥ cicilan</strong>.
-          </p>
-          <div class="flex flex-wrap gap-md">
-            <a href={heroCta} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">💬 Konsultasi via WhatsApp</a>
-            <a href="/villa" class="btn btn-outline-light btn-lg">Lihat Tipe Villa</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="bg-accent py-md">
-      <div class="container">
-        <p class="text-sm text-ink-soft text-center max-w-3xl mx-auto">
-          ⚠️ <strong>Disclaimer:</strong> Seluruh angka passive income, capital gain, dan simulasi cicilan di halaman ini adalah <strong>ilustrasi edukatif</strong>, bukan jaminan.
+  <main class="pt-20">
+    <section class="section section-cream">
+      <div class="container-tight text-center">
+        <span class="eyebrow">Investment Hub</span>
+        <h1 class="heading-title mt-4 mb-6">
+          Cicilan Anda, <br/><em>Ditutup Income Anda.</em>
+        </h1>
+        <p class="text-body-lg text-ink-500 max-w-2xl mx-auto">
+          Dua skema pembayaran — pilih yang sesuai profil Anda.
+          Semua tipe villa dirancang agar passive income menutup cicilan, dengan surplus.
         </p>
       </div>
     </section>
 
-    <section class="section">
-      <div class="container">
-        <div class="text-center mb-2xl">
-          <span class="eyebrow">2 Skema Pembiayaan</span>
-          <h2 class="heading-display">Pilih Jalur Investasi<br/><span class="text-secondary">yang Sesuai Profil Anda</span></h2>
-        </div>
+    <section class="section-tight section-white">
+      <div class="container-tight">
+        <KprCalculator client:visible />
+      </div>
+    </section>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-xl">
-          <article class="card p-2xl">
-            <div class="flex items-start gap-md mb-lg">
-              <div class="w-14 h-14 bg-primary text-white flex items-center justify-center text-2xl flex-shrink-0">🏦</div>
-              <div>
-                <span class="badge badge-gold mb-xs">TENOR PANJANG</span>
-                <h3 class="heading-2 mb-xs">KPR Bank</h3>
-                <p class="text-sm text-ink-soft">Bunga flat 5% · Tenor 15-20 tahun</p>
+    <section class="section section-cream">
+      <div class="container-tight">
+        <div class="text-center mb-12">
+          <span class="eyebrow">2 Skema Pembiayaan</span>
+          <h2 class="heading-title mt-4">Pilih Jalur <em>Anda.</em></h2>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <article class="card accent-line p-10">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-12 h-12 bg-forest-500 text-gold-500 flex items-center justify-center">
+                <Building2 size="20" />
               </div>
+              <span class="badge badge-gold">Tenor Panjang</span>
             </div>
-            <ul class="space-y-sm mb-xl">
-              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Bunga lebih rendah (5% flat)</span></li>
-              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Tenor hingga 20 tahun — cicilan paling ringan</span></li>
-              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>DP mulai 30% (Rp 360jt / 480jt / 600jt)</span></li>
-              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Wajib BI Checking lancar</span></li>
-              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Asuransi & notaris sesuai bank</span></li>
+            <h3 class="heading text-2xl mb-2">KPR Bank</h3>
+            <p class="text-sm text-ink-700 mb-6">Bunga flat 5% · Tenor 15-20 tahun · Wajib BI Checking</p>
+            <ul class="space-y-2 text-sm text-ink-500 mb-8">
+              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> Bunga lebih rendah</li>
+              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> Tenor hingga 20 tahun</li>
+              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> DP mulai 30%</li>
             </ul>
-            <a href="/investasi/skema-bank" class="btn btn-primary w-full">Detail Skema KPR Bank →</a>
+            <a href="/investasi/skema-bank" class="btn btn-primary w-full">Detail Skema KPR Bank</a>
           </article>
 
-          <article class="card p-2xl border-2 border-secondary">
-            <div class="flex items-start gap-md mb-lg">
-              <div class="w-14 h-14 bg-secondary text-primary-dark flex items-center justify-center text-2xl flex-shrink-0">⚡</div>
-              <div>
-                <span class="badge badge-gold mb-xs">TANPA BI CHECKING</span>
-                <h3 class="heading-2 mb-xs">KPR Developer</h3>
-                <p class="text-sm text-ink-soft">Bunga flat 7% · Tenor 15 tahun</p>
+          <article class="card accent-line p-10 border-2 border-gold-500">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-12 h-12 bg-gold-500 text-forest-700 flex items-center justify-center">
+                <Users size="20" />
               </div>
+              <span class="badge badge-gold">Tanpa BI Checking</span>
             </div>
-            <ul class="space-y-sm mb-xl">
-              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Tanpa BI Checking — disetujui lebih mudah</span></li>
-              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Proses approval lebih cepat (≤ 7 hari)</span></li>
-              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>DP lebih ringan (mulai 25%)</span></li>
-              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Akad jelas, transparan, terikat notaris</span></li>
-              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Cocok untuk first-time investor</span></li>
+            <h3 class="heading text-2xl mb-2">KPR Developer</h3>
+            <p class="text-sm text-ink-700 mb-6">Bunga flat 7% · Tenor 15 tahun · Approval 7 hari</p>
+            <ul class="space-y-2 text-sm text-ink-500 mb-8">
+              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> Tanpa BI Checking</li>
+              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> Approval lebih cepat</li>
+              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> DP lebih ringan (25%)</li>
             </ul>
-            <a href="/investasi/skema-developer" class="btn btn-primary w-full">Detail Skema KPR Developer →</a>
+            <a href="/investasi/skema-developer" class="btn btn-primary w-full">Detail Skema KPR Developer</a>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="section bg-accent">
-      <div class="container">
-        <div class="text-center mb-2xl">
-          <span class="eyebrow">Perbandingan Tipe Villa</span>
-          <h2 class="heading-display">Cicilan vs Passive Income<br/><span class="text-secondary">Semua Tipe Villa</span></h2>
+    <section class="section section-white">
+      <div class="container-tight">
+        <div class="text-center mb-12">
+          <span class="eyebrow">Perbandingan Semua Vila</span>
+          <h2 class="heading-title mt-4">Cicilan vs <em>Passive Income.</em></h2>
         </div>
-
-        <div class="overflow-x-auto card p-md">
+        <div class="overflow-x-auto card p-6 md:p-10">
           <table class="w-full text-left min-w-[640px]">
             <thead>
-              <tr class="border-b-2 border-primary text-sm uppercase tracking-wider text-ink-mute">
-                <th class="py-md pr-md font-semibold">Tipe Villa</th>
-                <th class="py-md pr-md font-semibold">Harga</th>
-                <th class="py-md pr-md font-semibold">DP Min</th>
-                <th class="py-md pr-md font-semibold">Cicilan / Bulan</th>
-                <th class="py-md pr-md font-semibold">Passive Income</th>
-                <th class="py-md font-semibold">Surplus</th>
+              <tr class="border-b-2 border-forest-500 text-xs uppercase tracking-wider text-ink-700">
+                <th class="py-4 pr-4 font-semibold">Tipe Vila</th>
+                <th class="py-4 pr-4 font-semibold">Harga</th>
+                <th class="py-4 pr-4 font-semibold">DP 30%</th>
+                <th class="py-4 pr-4 font-semibold">Cicilan</th>
+                <th class="py-4 pr-4 font-semibold">Income</th>
+                <th class="py-4 font-semibold">Surplus</th>
               </tr>
             </thead>
             <tbody>
-              {scenarios.map((s) => {
-                const surplus = s.passiveIncome - s.cicilanBank;
-                return (
-                  <tr class="border-b border-ink-mute/20 hover:bg-white transition">
-                    <td class="py-md pr-md font-semibold">
-                      {s.name}
-                      {s.bestValue && <span class="badge badge-gold text-xs ml-xs">Best Value</span>}
-                    </td>
-                    <td class="py-md pr-md">{formatIDR(s.price)}</td>
-                    <td class="py-md pr-md text-ink-soft">{formatShort(s.dpBank)}</td>
-                    <td class="py-md pr-md">{formatShort(s.cicilanBank)}</td>
-                    <td class="py-md pr-md text-primary font-semibold">{formatShort(s.passiveIncome)}</td>
-                    <td class="py-md font-semibold text-secondary">+{formatShort(surplus)}/bln</td>
-                  </tr>
-                );
-              })}
+              {scenarios.map((s) => (
+                <tr class="border-b border-cream-100 last:border-0 hover:bg-cream-50 transition">
+                  <td class="py-4 pr-4 font-semibold text-forest-700">
+                    {s.name} {s.bestValue && <span class="badge badge-gold text-xs ml-2">Best</span>}
+                  </td>
+                  <td class="py-4 pr-4 font-mono text-sm">{s.priceDisplay}</td>
+                  <td class="py-4 pr-4 text-sm text-ink-500">{formatShort(s.dpBank)}</td>
+                  <td class="py-4 pr-4 font-mono text-sm">{formatShort(s.cicilanBank)}</td>
+                  <td class="py-4 pr-4 font-mono text-sm text-forest-500 font-semibold">{formatShort(s.passiveIncome)}</td>
+                  <td class="py-4 font-mono text-sm text-success font-semibold">+{formatShort(s.surplus)}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
-        <p class="text-xs text-ink-mute text-center mt-md">
-          * Contoh simulasi KPR Bank: DP 30%, bunga 5% flat, tenor 15 tahun. Passive income ilustratif 50% okupansi.
-        </p>
       </div>
     </section>
 
-    <section class="section">
-      <div class="container">
-        <div class="text-center mb-2xl">
-          <span class="eyebrow">Kenapa Passive Income Konsisten?</span>
-          <h2 class="heading-display">3 Pilar Pendapatan<br/><span class="text-secondary">yang Bekerja Otomatis</span></h2>
+    <section class="section section-cream">
+      <div class="container-tight">
+        <div class="text-center mb-12">
+          <span class="eyebrow">3 Pilar</span>
+          <h2 class="heading-title mt-4">Kenapa <em>Passive Income Konsisten?</em></h2>
         </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-xl">
-          <article class="card p-xl text-center">
-            <div class="w-16 h-16 mx-auto mb-md bg-primary text-secondary flex items-center justify-center text-3xl">🏨</div>
-            <h3 class="heading-3 mb-sm">Sahid Operasional</h3>
-            <p class="text-body text-ink-soft">Dikelola harian oleh tim Sahid Hotel & Resort — standar hospitality bintang 5, okupansi terjaga.</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <article class="card p-10 text-center">
+            <Shield size="32" class="text-gold-700 mx-auto mb-4" />
+            <h3 class="heading text-xl mb-3">Sahid Operasional</h3>
+            <p class="text-body text-ink-500">Dikelola harian oleh tim Sahid Hotel & Resort — standar hospitality bintang 5, okupansi terjaga.</p>
           </article>
-          <article class="card p-xl text-center">
-            <div class="w-16 h-16 mx-auto mb-md bg-primary text-secondary flex items-center justify-center text-3xl">📊</div>
-            <h3 class="heading-3 mb-sm">ROI Guarantee 10%</h3>
-            <p class="text-body text-ink-soft">Jaminan minimal 10% per tahun untuk 2 tahun pertama — melindungi stabilitas cashflow awal.</p>
+          <article class="card p-10 text-center">
+            <TrendingUp size="32" class="text-gold-700 mx-auto mb-4" />
+            <h3 class="heading text-xl mb-3">ROI Guarantee 10%</h3>
+            <p class="text-body text-ink-500">Jaminan minimal 10% per tahun untuk 2 tahun pertama — melindungi cashflow awal.</p>
           </article>
-          <article class="card p-xl text-center">
-            <div class="w-16 h-16 mx-auto mb-md bg-primary text-secondary flex items-center justify-center text-3xl">🤝</div>
-            <h3 class="heading-3 mb-sm">Bagi Hasil 70-30</h3>
-            <p class="text-body text-ink-soft">70% untuk pemilik, 30% untuk operasional. Transparan, dikirim bulanan ke rekening Anda.</p>
+          <article class="card p-10 text-center">
+            <Users size="32" class="text-gold-700 mx-auto mb-4" />
+            <h3 class="heading text-xl mb-3">Bagi Hasil 70-30</h3>
+            <p class="text-body text-ink-500">70% untuk pemilik, 30% untuk operasional. Transparan, dikirim bulanan ke rekening Anda.</p>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="section bg-gradient-to-br from-primary-dark to-primary text-white">
-      <div class="container text-center">
-        <span class="eyebrow text-secondary">Langkah Awal Anda</span>
-        <h2 class="heading-display text-white mb-md">Booking Fee Rp 10 Juta<br/><span class="text-secondary">Lock Harga, Refundable 30 Hari</span></h2>
-        <p class="text-body-lg text-white/85 mb-xl max-w-2xl mx-auto">
-          Booking fee sudah termasuk harga, refundable 100% dalam 30 hari jika berubah pikiran. Amankan unit favorit Anda sebelum harga naik di fase berikutnya.
-        </p>
-        <div class="flex flex-wrap gap-md justify-center">
-          <a href={heroCta} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">💬 Booking via WhatsApp</a>
-          <a href="/villa" class="btn btn-outline-light btn-lg">Pilih Tipe Villa</a>
+    <section class="section section-cream-dark relative overflow-hidden">
+      <div class="absolute inset-0 pattern-dots opacity-30"></div>
+      <div class="container-tight relative text-center">
+        <div class="inline-flex items-center gap-2 bg-gold-500/15 text-gold-700 px-4 py-2 mb-6">
+          <span class="w-2 h-2 bg-gold-500 rounded-full animate-pulse-gold"></span>
+          <span class="text-xs font-semibold uppercase tracking-widest">Hanya 16 Unit Tersisa</span>
         </div>
-        <p class="text-xs text-white/60 mt-lg">
-          🔒 Pembayaran sah hanya melalui rekening resmi: BNI · BCA · BSI (PT Cipta Multikarya Propertindo).
+        <h2 class="heading-title mb-6">Booking Fee <em class="text-gold-700">Rp 10 Juta.</em></h2>
+        <p class="text-body-lg text-ink-500 max-w-2xl mx-auto mb-8">
+          Lock harga, refundable 30 hari. Amankan unit favorit sebelum fase berikutnya.
         </p>
+        <div class="flex flex-wrap gap-3 justify-center">
+          <a href={waLink('Halo, saya ingin booking')} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">
+            <MessageCircle size="18" /> Booking via WhatsApp
+          </a>
+          <a href="/villa" class="btn btn-outline btn-lg">Lihat Tipe Villa</a>
+        </div>
       </div>
     </section>
   </main>

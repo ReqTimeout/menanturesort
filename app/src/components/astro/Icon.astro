@@ -1,0 +1,8 @@
+---
+import { Shield, Award, Sparkles, TrendingUp, Home, Key, MapPin, Users, CheckCircle2, Building2, Briefcase, LineChart, Wallet, Calendar, Check, ArrowRight, MessageCircle, Phone, Eye, Banknote, Bed, Maximize, Layers, Star, Quote, ChevronLeft, ChevronRight, Menu, X } from 'lucide-svelte';
+
+const { name, size = 20, class: className = '', strokeWidth = 2 } = Astro.props;
+const icons = { Shield, Award, Sparkles, TrendingUp, Home, Key, MapPin, Users, CheckCircle2, Building2, Briefcase, LineChart, Wallet, Calendar, Check, ArrowRight, MessageCircle, Phone, Eye, Banknote, Bed, Maximize, Layers, Star, Quote, ChevronLeft, ChevronRight, Menu, X };
+const Cmp = icons[name] || Shield;
+---
+<Cmp size={size} class={className} strokeWidth={strokeWidth} />
