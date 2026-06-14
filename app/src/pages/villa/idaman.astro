@@ -1,0 +1,180 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/astro/Navbar.astro';
+import Footer from '../../components/astro/Footer.astro';
+import WhatsAppFloating from '../../components/astro/WhatsAppFloating.astro';
+import siteData from '../../data/site.json';
+import villaData from '../../data/villa.json';
+import { waUrl } from '../../lib/format';
+
+const villa = villaData.types.find(v => v.id === 'idaman')!;
+const otherVillas = villaData.types.filter(v => v.id !== 'idaman');
+const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, `villa_idaman_detail`);
+---
+<BaseLayout
+  title={`${villa.name} — ${villa.tagline}`}
+  description={`${villa.name} villa Menantu Resort Bandung. ${villa.lb}m², ${villa.bedrooms} kamar tidur, mulai ${villa.priceDisplay}. SHM, dikelola Sahid.`}
+  type="article"
+>
+  <Navbar />
+
+  <main class="pt-20">
+    <!-- HERO -->
+    <section class="relative bg-gradient-to-br from-primary to-primary-dark text-white py-3xl overflow-hidden">
+      <div class="absolute inset-0 pattern-subtle opacity-20"></div>
+      <div class="container relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-xl items-center">
+          <div>
+            {villa.bestValue && <span class="badge badge-gold mb-md inline-block">⭐ BEST VALUE</span>}
+            <h1 class="heading-display text-white mb-md">{villa.name}</h1>
+            <p class="text-quote text-secondary mb-lg">"{villa.tagline}"</p>
+            <div class="text-4xl font-display font-bold text-secondary mb-sm">{villa.priceDisplay}</div>
+            <div class="text-white/70 text-sm mb-lg">Booking fee Rp 10 juta (lock harga, refundable 30 hari)</div>
+            <div class="flex flex-wrap gap-sm">
+              <a href={waLink(`Halo, saya tertarik dengan ${villa.name}`)} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">💬 Tanya Tipe Ini</a>
+              <a href="/kontak" class="btn btn-secondary btn-lg">📅 Jadwalkan Kunjungan</a>
+            </div>
+          </div>
+          <div class="card overflow-hidden aspect-[4/3] bg-accent">
+            <img src="/images/placeholders/villa-card-placeholder.svg" alt={villa.name} class="w-full h-full object-cover" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SPECS BAR -->
+    <section class="bg-accent py-md">
+      <div class="container">
+        <div class="grid grid-cols-2 md:grid-cols-6 gap-md text-center text-sm">
+          <div><div class="text-2xl mb-xs">🏠</div><div class="font-semibold">{villa.floors} Lantai</div></div>
+          <div><div class="text-2xl mb-xs">🛏️</div><div class="font-semibold">{villa.bedrooms} KT</div></div>
+          <div><div class="text-2xl mb-xs">🚿</div><div class="font-semibold">{villa.bathrooms} KM</div></div>
+          <div><div class="text-2xl mb-xs">📐</div><div class="font-semibold">{villa.lb} m² LB</div></div>
+          <div><div class="text-2xl mb-xs">📏</div><div class="font-semibold">{villa.lt} m² LT</div></div>
+          <div><div class="text-2xl mb-xs">📄</div><div class="font-semibold text-primary">SHM</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DESCRIPTION -->
+    <section class="section">
+      <div class="container-narrow">
+        <span class="eyebrow">Tentang Tipe Ini</span>
+        <h2 class="heading-1 mb-lg">Kenapa Memilih {villa.name}?</h2>
+        <p class="text-body-lg mb-xl text-gray-700">
+          {villa.name} dirancang untuk {villa.target.toLowerCase()}.
+          Dengan {villa.bestFor}, tipe ini menawarkan keseimbangan ideal antara
+          investasi dan gaya hidup.
+        </p>
+
+        <h3 class="heading-3 mb-md">Cocok untuk:</h3>
+        <p class="text-body mb-lg text-text">{villa.target}</p>
+
+        <h3 class="heading-3 mb-md">Keunggulan {villa.name}:</h3>
+        <ul class="space-y-sm mb-2xl">
+          <li class="flex items-start gap-sm"><span class="text-secondary text-lg">✓</span><span>Sweet spot harga, luas, dan income</span></li>
+          <li class="flex items-start gap-sm"><span class="text-secondary text-lg">✓</span><span>Passive income surplus positif (signifikan)</span></li>
+          <li class="flex items-start gap-sm"><span class="text-secondary text-lg">✓</span><span>Cocok disewakan sebagai family stay atau double occupancy</span></li>
+          <li class="flex items-start gap-sm"><span class="text-secondary text-lg">✓</span><span>SHM atas nama pribadi, aset seumur hidup</span></li>
+          <li class="flex items-start gap-sm"><span class="text-secondary text-lg">✓</span><span>Dikelola profesional oleh Sahid Hotel & Resort</span></li>
+        </ul>
+
+        <!-- Simulasi -->
+        <div class="card bg-primary text-white p-xl">
+          <h3 class="heading-3 text-white mb-lg">Simulasi Cicilan & Passive Income</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-md mb-lg">
+            <div class="bg-white/10 rounded-md p-md">
+              <div class="text-white/60 text-sm mb-xs">Cicilan KPR Bank / bulan</div>
+              <div class="text-2xl font-bold text-secondary">Rp 11.670.000</div>
+              <div class="text-xs text-white/50 mt-xs">Bunga flat 5%, tenor 15 tahun</div>
+            </div>
+            <div class="bg-white/10 rounded-md p-md">
+              <div class="text-white/60 text-sm mb-xs">Cicilan KPR Developer / bulan</div>
+              <div class="text-2xl font-bold text-secondary">Rp 11.388.889</div>
+              <div class="text-xs text-white/50 mt-xs">Bunga flat 7%, tenor 15 tahun</div>
+            </div>
+            <div class="bg-white/10 rounded-md p-md">
+              <div class="text-white/60 text-sm mb-xs">Passive Income / bulan</div>
+              <div class="text-2xl font-bold text-secondary">Rp 12.000.000</div>
+              <div class="text-xs text-white/50 mt-xs">Asumsi okupansi 50%, tarif Rp 2,2jt/malam</div>
+            </div>
+            <div class="bg-white/10 rounded-md p-md">
+              <div class="text-white/60 text-sm mb-xs">Surplus per bulan (Bank)</div>
+              <div class="text-2xl font-bold text-success">+Rp 333.000</div>
+              <div class="text-xs text-white/50 mt-xs">Income menutup cicilan</div>
+            </div>
+          </div>
+          <div class="border-t border-white/10 pt-md">
+            <div class="text-white/60 text-sm mb-xs">Proyeksi Capital Gain 15 Tahun</div>
+            <div class="text-lg">
+              <span class="text-white/80">Konservatif:</span> <strong>Rp 2.200.000.000</strong>
+              <span class="mx-2 text-white/40">|</span>
+              <span class="text-white/80">Optimis:</span> <strong class="text-secondary">Rp 3.300.000.000</strong>
+            </div>
+          </div>
+        </div>
+        <p class="text-xs text-gray-500 mt-md text-center">
+          *Simulasi edukatif, bukan jaminan. Performa aktual bervariasi sesuai okupansi & kondisi pasar.
+        </p>
+      </div>
+    </section>
+
+    <!-- GALLERY PLACEHOLDER -->
+    <section class="section section-cream">
+      <div class="container">
+        <h2 class="heading-1 text-center mb-2xl">Galeri {villa.name}</h2>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-md">
+          {[1,2,3,4,5,6].map(i => (
+            <div class="card aspect-[4/3] overflow-hidden">
+              <img src="/images/placeholders/villa-card-placeholder.svg" alt="" class="w-full h-full object-cover hover:scale-105 transition-transform" loading="lazy" />
+            </div>
+          ))}
+        </div>
+        <div class="text-center mt-xl">
+          <a href="/galeri" class="btn btn-secondary">Lihat Galeri Lengkap →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section section-dark text-center">
+      <div class="container-narrow">
+        <h2 class="heading-1 text-white">Tertarik dengan {villa.name}?</h2>
+        <p class="text-body-lg text-white/80 mt-md mb-xl">
+          Chat WhatsApp untuk konsultasi gratis atau jadwalkan kunjungan ke lokasi.
+        </p>
+        <div class="flex flex-wrap gap-md justify-center">
+          <a href={waLink(`Halo, saya tertarik dengan ${villa.name}`)} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">💬 Tanya Tipe {villa.name.replace('Menantu ', '')}</a>
+          <a href="/kontak" class="btn btn-secondary btn-lg">📅 Jadwalkan Kunjungan</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- RELATED -->
+    <section class="section">
+      <div class="container">
+        <h2 class="heading-1 text-center mb-2xl">Tipe Villa Lainnya</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+          {otherVillas.map(v => (
+            <a href={`/villa/${v.id}`} class="card card-hover group block">
+              <div class="aspect-[4/3] overflow-hidden">
+                <img src="/images/placeholders/villa-card-placeholder.svg" alt={v.name} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+              </div>
+              <div class="p-lg">
+                <h3 class="heading-3 mb-xs">{v.name}</h3>
+                <p class="text-sm text-gray-500 italic mb-md">"{v.tagline}"</p>
+                <div class="flex justify-between items-center">
+                  <span class="text-xl font-display font-bold text-primary">{v.priceDisplay}</span>
+                  <span class="text-secondary text-sm font-semibold group-hover:underline">Lihat Detail →</span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+  <WhatsAppFloating />
+</BaseLayout>

@@ -1,0 +1,101 @@
+---
+import siteData from '../../data/site.json';
+import { waUrl } from '../../lib/format';
+
+const waLink = waUrl(siteData.contact.whatsapp, 'Halo, saya tertarik dengan Menantu Resort', 'footer');
+const currentYear = new Date().getFullYear();
+---
+<footer class="bg-primary-dark text-white">
+  <!-- Anti-fraud warning -->
+  <div class="border-b border-white/10">
+    <div class="container py-md">
+      <div class="flex items-start gap-md">
+        <div class="text-2xl">⚠️</div>
+        <div class="text-sm">
+          <strong class="text-secondary">PERINGATAN PENIPUAN:</strong>
+          Hati-hati penipuan mengatasnamakan Menantu Resort atau {siteData.developer.name}.
+          Pembayaran SAH hanya melalui rekening resmi:
+          {siteData.bankAccounts.map((b, i) => (
+            <span class="font-mono ml-1">{b.bank}: {b.number}</span>
+          )).reduce((acc, el) => acc.concat(typeof acc[acc.length-1] === 'object' ? [<span>, </span>, el] : [acc, <span>, </span>, el]), [] as any[])}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main footer -->
+  <div class="container py-3xl">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-xl">
+      <!-- Brand -->
+      <div>
+        <div class="flex items-center gap-sm mb-md">
+          <div class="w-10 h-10 rounded-full bg-secondary flex items-center justify-center font-display font-bold text-xl text-primary-dark">M</div>
+          <div>
+            <div class="font-display font-semibold text-base">Menantu Resort</div>
+            <div class="text-xs text-white/60 tracking-widest uppercase">Managed by Sahid</div>
+          </div>
+        </div>
+        <p class="text-sm text-white/70 leading-relaxed">
+          Villa produktif eco-resort 3,5 hektar di Cicalengka, Bandung Timur. Dikelola Sahid Hotel & Resort.
+        </p>
+      </div>
+
+      <!-- Villa -->
+      <div>
+        <h4 class="font-display font-semibold text-base mb-md text-secondary">Tipe Villa</h4>
+        <ul class="space-y-sm text-sm">
+          <li><a href="/villa/bijak" class="text-white/80 hover:text-secondary">Menantu Bijak</a></li>
+          <li><a href="/villa/idaman" class="text-white/80 hover:text-secondary">Menantu Idaman</a></li>
+          <li><a href="/villa/mapan" class="text-white/80 hover:text-secondary">Menantu Mapan</a></li>
+          <li><a href="/villa" class="text-white/80 hover:text-secondary">Lihat Semua →</a></li>
+        </ul>
+      </div>
+
+      <!-- Investasi -->
+      <div>
+        <h4 class="font-display font-semibold text-base mb-md text-secondary">Investasi</h4>
+        <ul class="space-y-sm text-sm">
+          <li><a href="/investasi/simulasi-kpr" class="text-white/80 hover:text-secondary">Simulasi KPR</a></li>
+          <li><a href="/investasi/skema-bank" class="text-white/80 hover:text-secondary">KPR Bank</a></li>
+          <li><a href="/investasi/skema-developer" class="text-white/80 hover:text-secondary">KPR Developer</a></li>
+          <li><a href="/investasi/passive-income" class="text-white/80 hover:text-secondary">Passive Income</a></li>
+        </ul>
+      </div>
+
+      <!-- Kontak -->
+      <div>
+        <h4 class="font-display font-semibold text-base mb-md text-secondary">Kontak</h4>
+        <ul class="space-y-sm text-sm text-white/80">
+          <li>
+            <a href={waLink} target="_blank" rel="noopener" class="hover:text-secondary">
+              💬 {siteData.contact.whatsappDisplay}
+            </a>
+          </li>
+          <li>✉️ {siteData.contact.email}</li>
+          <li>📍 {siteData.contact.address}</li>
+          <li class="pt-sm">
+            <a href="https://instagram.com/{siteData.social.instagram.replace('@','')}" target="_blank" rel="noopener" class="inline-flex items-center gap-xs text-secondary hover:underline">
+              Instagram {siteData.social.instagram}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="border-white/10 my-xl" />
+
+    <!-- Disclaimer -->
+    <p class="text-xs text-white/60 leading-relaxed mb-md">
+      <strong>DISCLAIMER:</strong> Seluruh angka passive income, capital gain, dan simulasi cicilan yang ditampilkan di website ini adalah ILUSTRASI EDUKATIF, bukan jaminan. Performa aktual tergantung pada kondisi pasar, tingkat okupansi, suku bunga, biaya operasional, dan faktor lain di luar kendali developer atau pengelola. Persetujuan KPR dan skema pembayaran tunduk pada kebijakan bank atau lembaga pembiayaan masing-masing. Harga dapat berubah sewaktu-waktu sesuai kebijakan perusahaan.
+    </p>
+
+    <div class="flex flex-col md:flex-row items-center justify-between gap-md text-sm text-white/60">
+      <div>© {currentYear} {siteData.developer.name}. All rights reserved.</div>
+      <div class="flex gap-md">
+        <a href="/syarat-dan-ketentuan" class="hover:text-secondary">Syarat & Ketentuan</a>
+        <a href="/kebijakan-privasi" class="hover:text-secondary">Kebijakan Privasi</a>
+        <a href="/faq" class="hover:text-secondary">FAQ</a>
+      </div>
+    </div>
+  </div>
+</footer>

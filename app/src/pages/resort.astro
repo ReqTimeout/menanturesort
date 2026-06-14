@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/astro/Navbar.astro';
+import Footer from '../components/astro/Footer.astro';
+import WhatsAppFloating from '../components/astro/WhatsAppFloating.astro';
+import siteData from '../data/site.json';
+import { waUrl } from '../lib/format';
+
+const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'resort');
+
+const fasilitas = [
+  { icon: '🏊', name: 'Infinity Pool', desc: 'Kolam utama 15×6m, view perbukitan' },
+  { icon: '🏛️', name: 'Ballroom', desc: '500 pax, untuk event & gathering' },
+  { icon: '🍽️', name: 'Restaurant', desc: 'Open-air, 80 seat, menu lokal & internasional' },
+  { icon: '☕', name: 'Café & Lounge', desc: 'Coffee shop dengan WiFi kencang' },
+  { icon: '💪', name: 'Fitness Center', desc: '24 jam, peralatan lengkap' },
+  { icon: '⛳', name: 'Golf & Tennis', desc: 'Mini golf + tennis court profesional' },
+  { icon: '🕌', name: 'Mosque', desc: 'Masjid resort, kapasitas 200' },
+  { icon: '🎠', name: 'Playground', desc: 'Area bermain anak, family-friendly' },
+  { icon: '🏃', name: 'Jogging Track', desc: '2 km track, view taman tropis' },
+  { icon: '🚗', name: 'Charging Station', desc: 'EV charger + parking 200 mobil' },
+  { icon: '🛡️', name: '24/7 Security', desc: 'Private access, CCTV, security patrol' },
+  { icon: '🌄', name: '360° View Deck', desc: 'Sunset deck, photo spot, yoga space' },
+];
+---
+<BaseLayout
+  title="Fasilitas Resort — Hotel Standar Bintang 5"
+  description="Fasilitas lengkap Menantu Resort: infinity pool, ballroom, restaurant, fitness, golf, 24/7 security. Dikelola standar Sahid Hotel."
+>
+  <Navbar />
+  <main>
+    <section class="relative bg-gradient-to-br from-primary-dark to-primary text-white py-3xl overflow-hidden">
+      <div class="absolute inset-0 pattern-subtle opacity-20"></div>
+      <div class="container relative z-10">
+        <div class="max-w-3xl">
+          <span class="eyebrow text-secondary">Fasilitas Resort</span>
+          <h1 class="heading-display text-white mb-md">
+            Standar Hotel Bintang 5,<br/><span class="text-secondary italic">untuk Villa Pribadi Anda.</span>
+          </h1>
+          <p class="text-body-lg text-white/85 mb-xl">
+            12 fasilitas premium yang dioperasikan tim Sahid setiap hari —
+            dari housekeeping bintang 5 hingga maintenance preventif.
+          </p>
+          <a href={waLink('Halo, saya ingin tau detail fasilitas resort')} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">💬 Tanya Detail Fasilitas</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
+          {fasilitas.map((f) => (
+            <div class="card p-xl hover:border-secondary transition">
+              <div class="text-4xl mb-md">{f.icon}</div>
+              <h3 class="heading-3 mb-xs">{f.name}</h3>
+              <p class="text-sm text-ink-soft">{f.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section bg-accent">
+      <div class="container">
+        <div class="max-w-3xl mx-auto text-center">
+          <span class="eyebrow">Dikelola Oleh</span>
+          <h2 class="heading-display mb-md">Sahid Hotel & Resort<br/><span class="text-secondary">50+ Tahun Track Record</span></h2>
+          <p class="text-body-lg text-ink-soft mb-xl">
+            Tim operasional Sahid yang sudah mengelola 20+ hotel & resort di Indonesia
+            akan menangani villa Anda setiap hari — dari kebersihan hingga marketing.
+          </p>
+          <a href={waLink('Halo, saya ingin tau lebih tentang manajemen Sahid')} target="_blank" rel="noopener" class="btn btn-primary btn-lg">Pelajari Manajemen Sahid</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+  <WhatsAppFloating />
+</BaseLayout>

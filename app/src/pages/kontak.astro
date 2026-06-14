@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/astro/Navbar.astro';
+import Footer from '../components/astro/Footer.astro';
+import WhatsAppFloating from '../components/astro/WhatsAppFloating.astro';
+import siteData from '../data/site.json';
+import { waUrl, formatRupiah } from '../lib/format';
+
+const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'kontak');
+const waUtama = waLink('Halo, saya ingin konsultasi investasi villa Menantu Resort');
+---
+<BaseLayout
+  title="Kontak & Konsultasi"
+  description="Hubungi tim sales Menantu Resort untuk konsultasi gratis. WhatsApp responsif, lokasi Cicalengka Bandung Timur, rekening resmi BNI/BCA/BSI."
+>
+  <Navbar />
+  <main>
+    <section class="relative bg-gradient-to-br from-primary to-primary-dark text-white py-3xl overflow-hidden">
+      <div class="absolute inset-0 pattern-subtle opacity-20"></div>
+      <div class="container relative z-10">
+        <div class="max-w-3xl">
+          <span class="eyebrow text-secondary">Hubungi Kami</span>
+          <h1 class="heading-display text-white mb-md">
+            Konsultasi Gratis,<br/><span class="text-secondary italic">Tanpa Komitmen.</span>
+          </h1>
+          <p class="text-body-lg text-white/85 mb-xl">
+            Tim sales kami siap memandu dari pertanyaan pertama hingga akad.
+            WhatsApp responsif di jam kerja.
+          </p>
+          <a href={waUtama} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">💬 Chat WhatsApp Sekarang</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+          <article class="card p-2xl">
+            <h2 class="heading-2 mb-lg">Informasi Kontak</h2>
+
+            <div class="space-y-lg">
+              <div>
+                <div class="text-sm text-ink-mute uppercase tracking-wider mb-xs">WhatsApp</div>
+                <a href={waUtama} target="_blank" rel="noopener" class="text-2xl font-display font-bold text-primary hover:text-secondary transition">
+                  {siteData.contact.whatsappDisplay}
+                </a>
+                <p class="text-sm text-ink-soft mt-xs">Responsif 09:00 - 21:00 WIB setiap hari</p>
+              </div>
+
+              <div>
+                <div class="text-sm text-ink-mute uppercase tracking-wider mb-xs">Email</div>
+                <a href={`mailto:${siteData.contact.email}`} class="text-lg text-primary hover:text-secondary transition">
+                  {siteData.contact.email}
+                </a>
+              </div>
+
+              <div>
+                <div class="text-sm text-ink-mute uppercase tracking-wider mb-xs">Alamat Marketing Office</div>
+                <p class="text-body text-ink-soft">{siteData.contact.address}</p>
+              </div>
+
+              <div>
+                <div class="text-sm text-ink-mute uppercase tracking-wider mb-xs">Media Sosial</div>
+                <a href={`https://instagram.com/${siteData.social.instagram.replace('@','')}`} target="_blank" rel="noopener" class="text-primary hover:text-secondary">
+                  Instagram {siteData.social.instagram}
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <article class="card p-2xl bg-accent">
+            <h2 class="heading-2 mb-lg">Rekening Resmi</h2>
+            <p class="text-sm text-ink-soft mb-lg">
+              ⚠️ <strong>Anti-fraud:</strong> Pembayaran SAH hanya melalui rekening di bawah ini.
+              Jangan transfer ke rekening pribadi siapapun yang mengatasnamakan Menantu Resort.
+            </p>
+            <div class="space-y-md">
+              {siteData.bankAccounts.map((bank) => (
+                <div class="bg-white p-md">
+                  <div class="flex items-center justify-between">
+                    <div class="font-bold text-primary text-lg">{bank.bank}</div>
+                    <button type="button" class="text-xs text-secondary hover:underline" onclick={`navigator.clipboard.writeText('${bank.number.replace(/\s/g, '')}')`}>
+                      Copy
+                    </button>
+                  </div>
+                  <div class="font-mono text-base mt-xs">{bank.number}</div>
+                  <div class="text-xs text-ink-soft mt-xs">a.n. {bank.name}</div>
+                </div>
+              ))}
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section bg-primary-dark text-white">
+      <div class="container text-center">
+        <h2 class="heading-display text-white mb-md">Proses Cepat & Mudah</h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-lg mt-2xl max-w-5xl mx-auto">
+          <div>
+            <div class="text-4xl text-secondary mb-sm">1</div>
+            <h3 class="heading-3 text-white text-base mb-xs">Chat WhatsApp</h3>
+            <p class="text-sm text-white/70">Konsultasi awal, pilih tipe villa</p>
+          </div>
+          <div>
+            <div class="text-4xl text-secondary mb-sm">2</div>
+            <h3 class="heading-3 text-white text-base mb-xs">Booking Fee</h3>
+            <p class="text-sm text-white/70">Rp 10 juta (refundable 30 hari)</p>
+          </div>
+          <div>
+            <div class="text-4xl text-secondary mb-sm">3</div>
+            <h3 class="heading-3 text-white text-base mb-xs">Survei Lokasi</h3>
+            <p class="text-sm text-white/70">Gratis, termasuk transport</p>
+          </div>
+          <div>
+            <div class="text-4xl text-secondary mb-sm">4</div>
+            <h3 class="heading-3 text-white text-base mb-xs">Akad Notaris</h3>
+            <p class="text-sm text-white/70">SHM atas nama pribadi</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+  <WhatsAppFloating />
+</BaseLayout>

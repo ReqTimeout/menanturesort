@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="gsky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1B4332"/>
+      <stop offset="100%" stop-color="#D4A574"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#gsky)"/>
+  <g opacity="0.4" stroke="#FFFFFF" stroke-width="1" fill="none">
+    <path d="M 0 400 Q 200 300 400 400 T 800 400 T 1200 400"/>
+    <path d="M 0 500 Q 200 400 400 500 T 800 500 T 1200 500"/>
+  </g>
+  <text x="600" y="400" text-anchor="middle" font-family="'Playfair Display', serif" font-size="80" font-weight="700" font-style="italic" fill="rgba(255,255,255,0.3)">Menantu Resort</text>
+</svg>

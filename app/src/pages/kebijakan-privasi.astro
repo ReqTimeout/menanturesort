@@ -1,0 +1,89 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/astro/Navbar.astro';
+import Footer from '../components/astro/Footer.astro';
+import WhatsAppFloating from '../components/astro/WhatsAppFloating.astro';
+import siteData from '../data/site.json';
+---
+<BaseLayout
+  title="Kebijakan Privasi"
+  description="Kebijakan privasi menantu-resort.com — bagaimana kami mengelola data pribadi Anda."
+>
+  <Navbar />
+
+  <main class="pt-32 pb-3xl">
+    <div class="container-narrow">
+      <h1 class="heading-1 mb-md">Kebijakan Privasi</h1>
+      <p class="text-sm text-gray-500 mb-2xl">Terakhir diperbarui: 1 Juni 2026</p>
+
+      <div class="prose prose-lg max-w-none space-y-xl">
+        <section>
+          <h2 class="heading-3 mb-md">Komitmen Kami</h2>
+          <p>PT Cipta Multikarya Propertindo ("Kami") berkomitmen melindungi privasi dan data pribadi Anda. Kebijakan ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi informasi yang Anda berikan melalui website menantu-resort.com.</p>
+        </section>
+
+        <section>
+          <h2 class="heading-3 mb-md">1. Data yang Kami Kumpulkan</h2>
+          <ul class="list-disc pl-xl space-y-xs">
+            <li><strong>Data identitas:</strong> nama, email, nomor WhatsApp/telepon</li>
+            <li><strong>Data preferensi:</strong> tipe villa yang diminati, budget, tujuan investasi</li>
+            <li><strong>Data teknis:</strong> alamat IP, browser, device, halaman yang dikunjungi (via cookies & analytics)</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="heading-3 mb-md">2. Cara Kami Menggunakan Data</h2>
+          <ul class="list-disc pl-xl space-y-xs">
+            <li>Merespons pertanyaan dan permintaan konsultasi Anda</li>
+            <li>Mengirimkan informasi terkait unit, promo, dan update proyek</li>
+            <li>Meningkatkan kualitas website dan layanan</li>
+            <li>Analitik dan riset pasar (data agregat, tidak individual)</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="heading-3 mb-md">3. Cookies & Analytics</h2>
+          <p>Kami menggunakan Google Analytics 4 (GA4) untuk memahami pola kunjungan. Data dikumpulkan secara anonim dan agregat. Anda dapat menonaktifkan cookies melalui pengaturan browser.</p>
+        </section>
+
+        <section>
+          <h2 class="heading-3 mb-md">4. Pembagian Data ke Pihak Ketiga</h2>
+          <p>Kami <strong>tidak akan menjual atau membagikan</strong> data pribadi Anda ke pihak ketiga untuk tujuan pemasaran. Data hanya dibagikan ke:</p>
+          <ul class="list-disc pl-xl space-y-xs">
+            <li>Sahid Hotel & Resort (sebagai operator, untuk pengelolaan villa Anda)</li>
+            <li>Bank atau lembaga pembiayaan (hanya jika Anda mengajukan KPR, dan atas persetujuan Anda)</li>
+            <li>Penyedia layanan teknologi (analytics, email) yang telah terikat perjanjian kerahasiaan</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="heading-3 mb-md">5. Keamanan Data</h2>
+          <p>Kami menerapkan langkah-langkah keamanan standar industri untuk melindungi data Anda, termasuk enkripsi HTTPS, akses terbatas, dan penyimpanan di server yang aman.</p>
+        </section>
+
+        <section>
+          <h2 class="heading-3 mb-md">6. Hak Anda</h2>
+          <p>Anda berhak untuk:</p>
+          <ul class="list-disc pl-xl space-y-xs">
+            <li>Mengakses data pribadi yang kami simpan</li>
+            <li>Meminta koreksi atau penghapusan data</li>
+            <li>Menarik persetujuan komunikasi pemasaran kapan saja</li>
+            <li>Mengajukan keluhan ke otoritas perlindungan data</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="heading-3 mb-md">7. Hubungi Kami</h2>
+          <p>Untuk pertanyaan, permintaan akses data, atau penghapusan data:</p>
+          <ul class="list-none space-y-xs">
+            <li>📧 {siteData.contact.email}</li>
+            <li>💬 WhatsApp: {siteData.contact.whatsappDisplay}</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+  <WhatsAppFloating />
+</BaseLayout>

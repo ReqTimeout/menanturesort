@@ -1,0 +1,194 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/astro/Navbar.astro';
+import Footer from '../../components/astro/Footer.astro';
+import WhatsAppFloating from '../../components/astro/WhatsAppFloating.astro';
+import siteData from '../../data/site.json';
+import { formatRupiah, formatShort, waUrl } from '../../lib/format';
+import KprCalculator from '../../components/svelte/KprCalculator.svelte';
+
+const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'investasi_overview');
+const heroCta = waLink('Halo, saya ingin konsultasi skema investasi Menantu Resort');
+
+const scenarios = [
+  { id: 'bijak', name: 'Menantu Bijak', price: 1200000000, dpBank: 360000000, cicilanBank: 9720000, passiveIncome: 9750000 },
+  { id: 'idaman', name: 'Menantu Idaman', price: 1600000000, dpBank: 480000000, cicilanBank: 11670000, passiveIncome: 12000000, bestValue: true },
+  { id: 'mapan', name: 'Menantu Mapan', price: 2000000000, dpBank: 600000000, cicilanBank: 14580000, passiveIncome: 15000000 },
+];
+
+const formatIDR = (n: number) => formatRupiah(n, true);
+---
+<BaseLayout
+  title="Skema Investasi & Passive Income"
+  description="Pelajari 2 skema KPR (Bank & Developer), simulasi passive income, dan perbandingan cicilan untuk semua tipe villa Menantu Resort. ROI 10% p.a. guarantee 2 tahun."
+>
+  <Navbar />
+  <main>
+    <section class="relative bg-gradient-to-br from-primary-dark to-primary text-white py-3xl overflow-hidden">
+      <div class="absolute inset-0 pattern-subtle opacity-20"></div>
+      <div class="container relative z-10">
+        <div class="max-w-3xl">
+          <span class="eyebrow text-secondary">Investment Hub</span>
+          <h1 class="heading-display text-white mb-md">
+            Cicilan Anda, <br/><span class="text-secondary italic">Ditutup Income Anda.</span>
+          </h1>
+          <p class="text-body-lg text-white/85 mb-xl max-w-2xl">
+            Dua skema pembayaran — pilih yang sesuai profil risiko Anda. Semua tipe villa dirancang agar <strong class="text-secondary">passive income ≥ cicilan</strong>.
+          </p>
+          <div class="flex flex-wrap gap-md">
+            <a href={heroCta} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">💬 Konsultasi via WhatsApp</a>
+            <a href="/villa" class="btn btn-outline-light btn-lg">Lihat Tipe Villa</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-accent py-md">
+      <div class="container">
+        <p class="text-sm text-ink-soft text-center max-w-3xl mx-auto">
+          ⚠️ <strong>Disclaimer:</strong> Seluruh angka passive income, capital gain, dan simulasi cicilan di halaman ini adalah <strong>ilustrasi edukatif</strong>, bukan jaminan.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="text-center mb-2xl">
+          <span class="eyebrow">2 Skema Pembiayaan</span>
+          <h2 class="heading-display">Pilih Jalur Investasi<br/><span class="text-secondary">yang Sesuai Profil Anda</span></h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-xl">
+          <article class="card p-2xl">
+            <div class="flex items-start gap-md mb-lg">
+              <div class="w-14 h-14 bg-primary text-white flex items-center justify-center text-2xl flex-shrink-0">🏦</div>
+              <div>
+                <span class="badge badge-gold mb-xs">TENOR PANJANG</span>
+                <h3 class="heading-2 mb-xs">KPR Bank</h3>
+                <p class="text-sm text-ink-soft">Bunga flat 5% · Tenor 15-20 tahun</p>
+              </div>
+            </div>
+            <ul class="space-y-sm mb-xl">
+              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Bunga lebih rendah (5% flat)</span></li>
+              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Tenor hingga 20 tahun — cicilan paling ringan</span></li>
+              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>DP mulai 30% (Rp 360jt / 480jt / 600jt)</span></li>
+              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Wajib BI Checking lancar</span></li>
+              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Asuransi & notaris sesuai bank</span></li>
+            </ul>
+            <a href="/investasi/skema-bank" class="btn btn-primary w-full">Detail Skema KPR Bank →</a>
+          </article>
+
+          <article class="card p-2xl border-2 border-secondary">
+            <div class="flex items-start gap-md mb-lg">
+              <div class="w-14 h-14 bg-secondary text-primary-dark flex items-center justify-center text-2xl flex-shrink-0">⚡</div>
+              <div>
+                <span class="badge badge-gold mb-xs">TANPA BI CHECKING</span>
+                <h3 class="heading-2 mb-xs">KPR Developer</h3>
+                <p class="text-sm text-ink-soft">Bunga flat 7% · Tenor 15 tahun</p>
+              </div>
+            </div>
+            <ul class="space-y-sm mb-xl">
+              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Tanpa BI Checking — disetujui lebih mudah</span></li>
+              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Proses approval lebih cepat (≤ 7 hari)</span></li>
+              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>DP lebih ringan (mulai 25%)</span></li>
+              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Akad jelas, transparan, terikat notaris</span></li>
+              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Cocok untuk first-time investor</span></li>
+            </ul>
+            <a href="/investasi/skema-developer" class="btn btn-primary w-full">Detail Skema KPR Developer →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section bg-accent">
+      <div class="container">
+        <div class="text-center mb-2xl">
+          <span class="eyebrow">Perbandingan Tipe Villa</span>
+          <h2 class="heading-display">Cicilan vs Passive Income<br/><span class="text-secondary">Semua Tipe Villa</span></h2>
+        </div>
+
+        <div class="overflow-x-auto card p-md">
+          <table class="w-full text-left min-w-[640px]">
+            <thead>
+              <tr class="border-b-2 border-primary text-sm uppercase tracking-wider text-ink-mute">
+                <th class="py-md pr-md font-semibold">Tipe Villa</th>
+                <th class="py-md pr-md font-semibold">Harga</th>
+                <th class="py-md pr-md font-semibold">DP Min</th>
+                <th class="py-md pr-md font-semibold">Cicilan / Bulan</th>
+                <th class="py-md pr-md font-semibold">Passive Income</th>
+                <th class="py-md font-semibold">Surplus</th>
+              </tr>
+            </thead>
+            <tbody>
+              {scenarios.map((s) => {
+                const surplus = s.passiveIncome - s.cicilanBank;
+                return (
+                  <tr class="border-b border-ink-mute/20 hover:bg-white transition">
+                    <td class="py-md pr-md font-semibold">
+                      {s.name}
+                      {s.bestValue && <span class="badge badge-gold text-xs ml-xs">Best Value</span>}
+                    </td>
+                    <td class="py-md pr-md">{formatIDR(s.price)}</td>
+                    <td class="py-md pr-md text-ink-soft">{formatShort(s.dpBank)}</td>
+                    <td class="py-md pr-md">{formatShort(s.cicilanBank)}</td>
+                    <td class="py-md pr-md text-primary font-semibold">{formatShort(s.passiveIncome)}</td>
+                    <td class="py-md font-semibold text-secondary">+{formatShort(surplus)}/bln</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-xs text-ink-mute text-center mt-md">
+          * Contoh simulasi KPR Bank: DP 30%, bunga 5% flat, tenor 15 tahun. Passive income ilustratif 50% okupansi.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="text-center mb-2xl">
+          <span class="eyebrow">Kenapa Passive Income Konsisten?</span>
+          <h2 class="heading-display">3 Pilar Pendapatan<br/><span class="text-secondary">yang Bekerja Otomatis</span></h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-xl">
+          <article class="card p-xl text-center">
+            <div class="w-16 h-16 mx-auto mb-md bg-primary text-secondary flex items-center justify-center text-3xl">🏨</div>
+            <h3 class="heading-3 mb-sm">Sahid Operasional</h3>
+            <p class="text-body text-ink-soft">Dikelola harian oleh tim Sahid Hotel & Resort — standar hospitality bintang 5, okupansi terjaga.</p>
+          </article>
+          <article class="card p-xl text-center">
+            <div class="w-16 h-16 mx-auto mb-md bg-primary text-secondary flex items-center justify-center text-3xl">📊</div>
+            <h3 class="heading-3 mb-sm">ROI Guarantee 10%</h3>
+            <p class="text-body text-ink-soft">Jaminan minimal 10% per tahun untuk 2 tahun pertama — melindungi stabilitas cashflow awal.</p>
+          </article>
+          <article class="card p-xl text-center">
+            <div class="w-16 h-16 mx-auto mb-md bg-primary text-secondary flex items-center justify-center text-3xl">🤝</div>
+            <h3 class="heading-3 mb-sm">Bagi Hasil 70-30</h3>
+            <p class="text-body text-ink-soft">70% untuk pemilik, 30% untuk operasional. Transparan, dikirim bulanan ke rekening Anda.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section bg-gradient-to-br from-primary-dark to-primary text-white">
+      <div class="container text-center">
+        <span class="eyebrow text-secondary">Langkah Awal Anda</span>
+        <h2 class="heading-display text-white mb-md">Booking Fee Rp 10 Juta<br/><span class="text-secondary">Lock Harga, Refundable 30 Hari</span></h2>
+        <p class="text-body-lg text-white/85 mb-xl max-w-2xl mx-auto">
+          Booking fee sudah termasuk harga, refundable 100% dalam 30 hari jika berubah pikiran. Amankan unit favorit Anda sebelum harga naik di fase berikutnya.
+        </p>
+        <div class="flex flex-wrap gap-md justify-center">
+          <a href={heroCta} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">💬 Booking via WhatsApp</a>
+          <a href="/villa" class="btn btn-outline-light btn-lg">Pilih Tipe Villa</a>
+        </div>
+        <p class="text-xs text-white/60 mt-lg">
+          🔒 Pembayaran sah hanya melalui rekening resmi: BNI · BCA · BSI (PT Cipta Multikarya Propertindo).
+        </p>
+      </div>
+    </section>
+  </main>
+  <Footer />
+  <WhatsAppFloating />
+</BaseLayout>

@@ -1,0 +1,130 @@
+---
+import Logo from './Logo.astro';
+import siteData from '../../data/site.json';
+import { waUrl } from '../../lib/format';
+
+const navLinks = [
+  { href: '/', label: 'Beranda' },
+  { href: '/villa', label: 'Tipe Villa' },
+  { href: '/investasi', label: 'Investasi' },
+  { href: '/resort', label: 'Resort' },
+  { href: '/lokasi', label: 'Lokasi' },
+  { href: '/artikel', label: 'Artikel' },
+  { href: '/kontak', label: 'Kontak' },
+];
+
+const currentPath = Astro.url.pathname;
+const waLink = waUrl(siteData.contact.whatsapp, 'Halo, saya tertarik dengan Menantu Resort', 'navbar');
+---
+<header id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+  <div class="container">
+    <div class="flex items-center justify-between h-20">
+      <Logo />
+
+      <!-- Desktop nav -->
+      <nav class="hidden lg:flex items-center gap-lg">
+        {navLinks.map(link => (
+          <a
+            href={link.href}
+            class={`font-body text-sm font-medium transition-colors hover:text-secondary ${
+              currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href))
+                ? 'text-secondary font-semibold'
+                : 'text-text'
+            }`}
+          >
+            {link.label}
+          </a>
+        ))}
+      </nav>
+
+      <div class="flex items-center gap-sm">
+        <a
+          href={waLink}
+          target="_blank"
+          rel="noopener"
+          class="hidden md:inline-flex btn btn-whatsapp btn-sm"
+          data-track="whatsapp_click"
+          data-source="navbar"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.4-.1-.6.1-.2.3-.7.9-.8 1-.1.2-.3.2-.5.1-.3-.1-1.2-.5-2.3-1.5-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.4.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.2-.4.1-.2 0-.3 0-.5-.1-.1-.6-1.5-.8-2.1-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4 0 1.4 1 2.8 1.2 3 .1.2 2 3 4.8 4.2.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.2-.3-.2-.5-.4zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.5 1.3 5L2 22l5.2-1.4c1.4.8 3 1.2 4.8 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
+          Chat Sales
+        </a>
+
+        <!-- Mobile menu button (will be hydrated by Svelte island if needed) -->
+        <button id="menu-toggle" class="lg:hidden p-sm" aria-label="Toggle menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile menu (hidden by default, toggled via JS) -->
+<div id="mobile-menu" class="fixed inset-0 z-40 bg-primary-dark text-white transform translate-x-full transition-transform duration-300 lg:hidden">
+  <div class="container pt-24 pb-xl">
+    <nav class="flex flex-col gap-lg">
+      {navLinks.map(link => (
+        <a
+          href={link.href}
+          class="font-display text-3xl font-semibold text-white hover:text-secondary transition-colors"
+        >
+          {link.label}
+        </a>
+      ))}
+      <hr class="border-white/10 my-md" />
+      <a
+        href={waLink}
+        target="_blank"
+        rel="noopener"
+        class="btn btn-whatsapp btn-lg w-full"
+      >
+        💬 Chat WhatsApp
+      </a>
+    </nav>
+  </div>
+</div>
+
+<script is:inline>
+  // Navbar scroll + mobile menu (vanilla JS, no Svelte island needed)
+  const navbar = document.getElementById('navbar');
+  const menuToggle = document.getElementById('menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  function handleScroll() {
+    if (window.scrollY > 50) {
+      navbar?.classList.add('scrolled');
+    } else {
+      navbar?.classList.remove('scrolled');
+    }
+  }
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  handleScroll();
+
+  menuToggle?.addEventListener('click', () => {
+    mobileMenu?.classList.toggle('translate-x-full');
+    document.body.style.overflow = mobileMenu?.classList.contains('translate-x-full') ? '' : 'hidden';
+  });
+
+  mobileMenu?.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      mobileMenu.classList.add('translate-x-full');
+      document.body.style.overflow = '';
+    });
+  });
+</script>
+
+<style>
+  #navbar { background: transparent; }
+  #navbar.scrolled {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  }
+  #navbar.scrolled :global(.font-display) { color: #1B4332; }
+  #navbar.scrolled :global(.text-gray-500) { color: #6B7280; }
+</style>

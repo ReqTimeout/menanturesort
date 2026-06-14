@@ -1,0 +1,37 @@
+---
+const { data } = Astro.props;
+---
+<script type="application/ld+json" set:html={JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'RealEstateAgent',
+  name: 'Menantu Resort',
+  description: 'Villa produktif eco-resort di Bandung, dikelola Sahid Hotel',
+  url: 'https://menantu-resort.com',
+  logo: 'https://menantu-resort.com/images/logo/menantu-resort-logo.webp',
+  image: 'https://menantu-resort.com/og/og-image.webp',
+  telephone: data.contact.whatsappDisplay,
+  email: data.contact.email,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Jalan Curug Cinulang, Tenjolaya',
+    addressLocality: 'Cicalengka',
+    addressRegion: 'Jawa Barat',
+    postalCode: '40395',
+    addressCountry: 'ID',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: -7.05,
+    longitude: 107.78,
+  },
+  openingHoursSpecification: {
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    opens: '09:00',
+    closes: '18:00',
+  },
+  priceRange: 'Rp 1,200,000,000 - Rp 2,000,000,000',
+  sameAs: [
+    `https://instagram.com/${data.social.instagram.replace('@', '')}`,
+  ],
+})} />

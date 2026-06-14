@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a3a2a"/>
+      <stop offset="40%" stop-color="#2d5440"/>
+      <stop offset="80%" stop-color="#D4A574"/>
+      <stop offset="100%" stop-color="#E8C896"/>
+    </linearGradient>
+    <linearGradient id="mtn" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1B4332" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#0D1B14" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="villa" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F5F0E8"/>
+      <stop offset="100%" stop-color="#A8845C"/>
+    </linearGradient>
+    <linearGradient id="pool" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#E8C896"/>
+      <stop offset="100%" stop-color="#D4A574" stop-opacity="0.5"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="75%" cy="35%" r="40%">
+      <stop offset="0%" stop-color="#FFE4B5" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#D4A574" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#sky)"/>
+  <rect width="1920" height="1080" fill="url(#sun)"/>
+  <polygon points="0,650 200,500 380,580 580,460 760,540 940,420 1100,500 1280,440 1480,520 1680,460 1920,520 1920,800 0,800" fill="url(#mtn)" opacity="0.7"/>
+  <polygon points="0,720 180,620 340,680 520,600 700,660 880,580 1080,640 1280,580 1480,640 1680,600 1920,640 1920,1080 0,1080" fill="#0D1B14" opacity="0.95"/>
+  <g>
+    <rect x="640" y="580" width="240" height="180" fill="url(#villa)"/>
+    <polygon points="620,580 760,460 900,580" fill="#0D1B14"/>
+    <rect x="930" y="540" width="320" height="220" fill="url(#villa)"/>
+    <polygon points="910,540 1090,400 1270,540" fill="#0D1B14"/>
+    <rect x="350" y="640" width="220" height="120" fill="url(#villa)"/>
+    <polygon points="330,640 460,560 590,640" fill="#0D1B14"/>
+    <g fill="#D4A574" opacity="0.7">
+      <rect x="690" y="640" width="50" height="60"/>
+      <rect x="770" y="640" width="50" height="60"/>
+      <rect x="980" y="600" width="60" height="80"/>
+      <rect x="1080" y="600" width="60" height="80"/>
+      <rect x="1180" y="600" width="60" height="80"/>
+      <rect x="400" y="680" width="40" height="50"/>
+      <rect x="470" y="680" width="40" height="50"/>
+    </g>
+  </g>
+  <ellipse cx="960" cy="850" rx="380" ry="30" fill="url(#pool)"/>
+  <g opacity="0.6">
+    <line x1="0" y1="780" x2="1920" y2="780" stroke="#D4A574" stroke-width="0.5"/>
+    <line x1="0" y1="800" x2="1920" y2="800" stroke="#D4A574" stroke-width="0.5"/>
+    <line x1="0" y1="820" x2="1920" y2="820" stroke="#D4A574" stroke-width="0.5"/>
+  </g>
+  <rect width="1920" height="1080" fill="url(#sun)" opacity="0.3"/>
+</svg>

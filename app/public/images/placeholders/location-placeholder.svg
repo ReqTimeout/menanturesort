@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="lsky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0D1B14"/>
+      <stop offset="50%" stop-color="#1B4332"/>
+      <stop offset="100%" stop-color="#3D4A40"/>
+    </linearGradient>
+    <linearGradient id="lmtn" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1B4332"/>
+      <stop offset="100%" stop-color="#0D1B14"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#lsky)"/>
+  <g>
+    <polygon points="0,500 100,350 200,420 320,280 460,400 580,260 720,380 860,300 1000,420 1120,340 1200,400 1200,900 0,900" fill="url(#lmtn)" opacity="0.85"/>
+    <polygon points="0,600 150,480 280,540 420,420 560,520 700,400 840,500 980,440 1100,520 1200,480 1200,900 0,900" fill="#0D1B14" opacity="0.95"/>
+  </g>
+  <g opacity="0.6">
+    <rect x="100" y="750" width="20" height="80" fill="#0D1B14"/>
+    <rect x="200" y="700" width="20" height="130" fill="#0D1B14"/>
+    <rect x="300" y="730" width="20" height="100" fill="#0D1B14"/>
+    <rect x="500" y="720" width="20" height="110" fill="#0D1B14"/>
+    <rect x="600" y="750" width="20" height="80" fill="#0D1B14"/>
+    <rect x="900" y="700" width="20" height="130" fill="#0D1B14"/>
+    <rect x="1000" y="720" width="20" height="110" fill="#0D1B14"/>
+  </g>
+  <g transform="translate(560, 380)">
+    <circle r="20" fill="#D4A574"/>
+    <circle r="8" fill="#FFFFFF"/>
+    <text x="0" y="50" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#D4A574" letter-spacing="2">MENANTU RESORT</text>
+  </g>
+</svg>

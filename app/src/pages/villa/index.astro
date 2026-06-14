@@ -1,0 +1,123 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/astro/Navbar.astro';
+import Footer from '../../components/astro/Footer.astro';
+import WhatsAppFloating from '../../components/astro/WhatsAppFloating.astro';
+import siteData from '../../data/site.json';
+import villaData from '../../data/villa.json';
+import { formatRupiah, waUrl } from '../../lib/format';
+
+const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'villa_listing');
+---
+<BaseLayout
+  title="Tipe Villa Menantu Resort"
+  description="Pilih villa impian Anda di Menantu Resort. 3 tipe: Bijak (Rp 1,2 M), Idaman (Rp 1,6 M), Mapan (Rp 2 M). Semua SHM, dikelola Sahid."
+>
+  <Navbar />
+
+  <main class="pt-32 pb-3xl">
+    <div class="container">
+      <div class="text-center mb-2xl">
+        <span class="eyebrow">3 Tipe Villa</span>
+        <h1 class="heading-display">Pilih Villa yang Sesuai<br/><span class="text-secondary">Tujuan & Budget Anda</span></h1>
+        <p class="text-body-lg mt-md text-gray-700 max-w-2xl mx-auto">
+          Semua villa Menantu Resort berstatus SHM atas nama pribadi, fully furnished,
+          dan dikelola profesional oleh Sahid Hotel & Resort.
+        </p>
+      </div>
+
+      <div class="space-y-2xl">
+        {villaData.types.map((villa, idx) => (
+          <article class={`grid grid-cols-1 lg:grid-cols-2 gap-xl items-center ${idx % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
+            <div class={idx % 2 === 1 ? 'lg:order-2' : ''}>
+              <div class="card overflow-hidden aspect-[4/3]">
+                <img
+                  src="/images/placeholders/villa-card-placeholder.svg"
+                  alt={villa.name}
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+            <div class={idx % 2 === 1 ? 'lg:order-1' : ''}>
+              {villa.bestValue && (
+                <span class="badge badge-gold mb-md">⭐ BEST VALUE — Rekomendasi Kami</span>
+              )}
+              <h2 class="heading-1 mb-sm">{villa.name}</h2>
+              <p class="text-body-lg italic text-gray-500 mb-lg">"{villa.tagline}"</p>
+
+              <div class="grid grid-cols-2 gap-md mb-lg">
+                <div>
+                  <div class="text-xs text-gray-500">Luas Bangunan</div>
+                  <div class="font-semibold">{villa.lb} m²</div>
+                </div>
+                <div>
+                  <div class="text-xs text-gray-500">Luas Tanah</div>
+                  <div class="font-semibold">{villa.lt} m²</div>
+                </div>
+                <div>
+                  <div class="text-xs text-gray-500">Kamar Tidur</div>
+                  <div class="font-semibold">{villa.bedrooms}</div>
+                </div>
+                <div>
+                  <div class="text-xs text-gray-500">Lantai</div>
+                  <div class="font-semibold">{villa.floors}</div>
+                </div>
+              </div>
+
+              <div class="border-t border-b border-gray-200 py-md mb-lg">
+                <div class="text-3xl font-display font-bold text-primary">{villa.priceDisplay}</div>
+                <div class="text-xs text-gray-500">Booking fee Rp 10 juta (refundable 30 hari)</div>
+              </div>
+
+              <div class="text-body mb-lg">
+                <strong class="text-primary">Cocok untuk:</strong> {villa.target}
+              </div>
+
+              <div class="flex flex-wrap gap-sm">
+                <a href={`/villa/${villa.id}`} class="btn btn-primary">Lihat Detail Lengkap →</a>
+                <a href={waLink(`Halo, saya tertarik dengan ${villa.name}`)} target="_blank" rel="noopener" class="btn btn-whatsapp">💬 Tanya Tipe Ini</a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <!-- Perbandingan Singkat -->
+      <section class="mt-4xl">
+        <h2 class="heading-1 text-center mb-2xl">Perbandingan Tipe Villa</h2>
+        <div class="card overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-primary text-white">
+              <tr>
+                <th class="text-left p-md">Spesifikasi</th>
+                {villaData.types.map(v => <th class="p-md text-center">{v.name.replace('Menantu ', '')}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { label: 'Harga', get: (v: any) => v.priceDisplay },
+                { label: 'Luas Bangunan', get: (v: any) => `${v.lb} m²` },
+                { label: 'Luas Tanah', get: (v: any) => `${v.lt} m²` },
+                { label: 'Kamar Tidur', get: (v: any) => v.bedrooms },
+                { label: 'Kamar Mandi', get: (v: any) => v.bathrooms },
+                { label: 'Lantai', get: (v: any) => v.floors },
+                { label: 'Cicilan KPR Bank', get: (v: any) => formatRupiah(v.cicilanBank) + '/bln' },
+                { label: 'Passive Income', get: (v: any) => formatRupiah(v.passiveIncome) + '/bln' },
+                { label: 'Capital Gain 15 th', get: (v: any) => `Rp ${(v.capitalGainOptimis/1_000_000_000).toFixed(1)} M` },
+              ].map((row, i) => (
+                <tr class={i % 2 === 0 ? 'bg-white' : 'bg-accent/30'}>
+                  <td class="p-md font-semibold text-text">{row.label}</td>
+                  {villaData.types.map(v => <td class="p-md text-center">{row.get(v)}</td>)}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+  <WhatsAppFloating />
+</BaseLayout>

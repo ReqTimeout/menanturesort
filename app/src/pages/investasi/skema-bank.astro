@@ -1,0 +1,118 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/astro/Navbar.astro';
+import Footer from '../../components/astro/Footer.astro';
+import WhatsAppFloating from '../../components/astro/WhatsAppFloating.astro';
+import siteData from '../../data/site.json';
+import { formatRupiah, formatShort, waUrl } from '../../lib/format';
+
+const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'investasi');
+const ctaWa = waLink('Halo, saya tertarik dengan skema ini');
+---
+<BaseLayout
+  title="KPR Bank — Bunga 5% Tenor 15-20 Tahun"
+  description="KPR Bank untuk villa Menantu Resort: bunga flat 5% p.a., tenor 15-20 tahun, DP mulai 30%. Syarat, dokumen, dan simulasi cicilan lengkap."
+>
+  <Navbar />
+  <main>
+    <section class="relative bg-gradient-to-br from-primary-dark to-primary text-white py-3xl overflow-hidden">
+      <div class="absolute inset-0 pattern-subtle opacity-20"></div>
+      <div class="container relative z-10">
+        <div class="max-w-3xl">
+          <a href="/investasi" class="text-secondary text-sm hover:underline">← Kembali ke Investment Hub</a>
+          <span class="eyebrow text-secondary mt-md">Skema Pembiayaan</span>
+          <h1 class="heading-display text-white mb-md">
+            KPR Bank — <br/><span class="text-secondary italic">Bunga Ringan, Tenor Panjang.</span>
+          </h1>
+          <p class="text-body-lg text-white/85 mb-xl">
+            Bunga flat 5% per tahun, tenor fleksibel 15-20 tahun. Cocok untuk Anda yang punya
+            cashflow rutin dan ingin cicilan paling ringan.
+          </p>
+          <a href={ctaWa} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">💬 Konsultasi KPR Bank</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-xl mb-2xl">
+          <div class="card p-xl text-center">
+            <div class="text-sm text-ink-mute uppercase tracking-wider mb-xs">Bunga</div>
+            <div class="text-4xl font-display font-bold text-primary">5%</div>
+            <div class="text-sm text-ink-soft">flat per tahun</div>
+          </div>
+          <div class="card p-xl text-center">
+            <div class="text-sm text-ink-mute uppercase tracking-wider mb-xs">Tenor</div>
+            <div class="text-4xl font-display font-bold text-primary">15-20</div>
+            <div class="text-sm text-ink-soft">tahun</div>
+          </div>
+          <div class="card p-xl text-center">
+            <div class="text-sm text-ink-mute uppercase tracking-wider mb-xs">DP Minimum</div>
+            <div class="text-4xl font-display font-bold text-primary">30%</div>
+            <div class="text-sm text-ink-soft">(Rp 360jt / 480jt / 600jt)</div>
+          </div>
+        </div>
+
+        <div class="card p-2xl mb-2xl">
+          <h2 class="heading-2 mb-lg">Simulasi Cicilan KPR Bank</h2>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left min-w-[640px]">
+              <thead>
+                <tr class="border-b-2 border-primary text-sm uppercase tracking-wider text-ink-mute">
+                  <th class="py-md pr-md font-semibold">Tipe Villa</th>
+                  <th class="py-md pr-md font-semibold">Harga</th>
+                  <th class="py-md pr-md font-semibold">DP 30%</th>
+                  <th class="py-md pr-md font-semibold">Pokok Pinjaman</th>
+                  <th class="py-md pr-md font-semibold">Cicilan / Bln (15 thn)</th>
+                  <th class="py-md font-semibold">Cicilan / Bln (20 thn)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="border-b border-ink-mute/20"><td class="py-md pr-md font-semibold">Menantu Bijak</td><td class="py-md pr-md">Rp 1,2 M</td><td class="py-md pr-md">Rp 360jt</td><td class="py-md pr-md">Rp 840jt</td><td class="py-md pr-md">Rp 9,7jt</td><td class="py-md">Rp 8,2jt</td></tr>
+                <tr class="border-b border-ink-mute/20"><td class="py-md pr-md font-semibold">Menantu Idaman</td><td class="py-md pr-md">Rp 1,6 M</td><td class="py-md pr-md">Rp 480jt</td><td class="py-md pr-md">Rp 1,12 M</td><td class="py-md pr-md">Rp 11,7jt</td><td class="py-md">Rp 9,9jt</td></tr>
+                <tr class="border-b border-ink-mute/20"><td class="py-md pr-md font-semibold">Menantu Mapan</td><td class="py-md pr-md">Rp 2 M</td><td class="py-md pr-md">Rp 600jt</td><td class="py-md pr-md">Rp 1,4 M</td><td class="py-md pr-md">Rp 14,6jt</td><td class="py-md">Rp 12,3jt</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-xs text-ink-mute mt-md">* Simulasi dengan bunga flat 5% p.a. Suku bunga efektif akan lebih rendah karena pola annuity. Total bayar akan lebih kecil dari nominal bunga × tahun.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+          <article class="card p-xl">
+            <h3 class="heading-3 mb-md text-primary">Syarat Pengajuan</h3>
+            <ul class="space-y-sm">
+              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Warga Negara Indonesia (WNI), usia 21-55 thn</span></li>
+              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Penghasilan min Rp 15jt/bulan (take home pay)</span></li>
+              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>BI Checking kolektibilitas 1 (lancar)</span></li>
+              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Masa kerja min 2 tahun (karyawan) / 3 tahun (wiraswasta)</span></li>
+              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>NPWP pribadi</span></li>
+            </ul>
+          </article>
+          <article class="card p-xl">
+            <h3 class="heading-3 mb-md text-primary">Dokumen yang Diperlukan</h3>
+            <ul class="space-y-sm">
+              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>KTP, Kartu Keluarga, Akta Nikah (jika已婚)</span></li>
+              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Slip gaji 3 bulan terakhir / SPT</span></li>
+              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Rekening koran 3-6 bulan</span></li>
+              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Surat keterangan kerja / izin praktik</span></li>
+              <li class="flex gap-sm"><span class="text-secondary">✓</span><span>Booking fee & DP (tanda jadi)</span></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section bg-accent">
+      <div class="container text-center">
+        <h2 class="heading-display mb-md">Siap Ajukan KPR Bank?</h2>
+        <p class="text-body-lg text-ink-soft mb-xl max-w-2xl mx-auto">
+          Tim Sahid & Developer akan membantu proses dari awal hingga akad.
+          Konsultasi gratis, tidak ada komitmen.
+        </p>
+        <a href={ctaWa} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">💬 Mulai Konsultasi</a>
+      </div>
+    </section>
+  </main>
+  <Footer />
+  <WhatsAppFloating />
+</BaseLayout>

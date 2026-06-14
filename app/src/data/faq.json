@@ -1,0 +1,125 @@
+[
+  {
+    "category": "Skema Pembelian",
+    "items": [
+      {
+        "q": "Apa saja tipe villa yang tersedia?",
+        "a": "Tersedia 3 tipe: Menantu Bijak (Rp 1,2 M, 55 m²), Menantu Idaman (Rp 1,6 M, 65 m²), dan Menantu Mapan (Rp 2 M, 90 m²). Semua dengan status SHM atas nama pribadi."
+      },
+      {
+        "q": "Apa bedanya KPR Bank dan KPR Developer?",
+        "a": "KPR Bank: bunga flat 5%, tenor sampai 20 tahun, Anda terikat bank, perlu BI Checking. KPR Developer: bunga flat 7%, tenor 15 tahun, cicilan langsung ke developer, lebih fleksibel dan tidak butuh BI Checking. Coba hitung simulasi di halaman Simulator KPR."
+      },
+      {
+        "q": "Berapa booking fee dan apakah refundable?",
+        "a": "Booking fee Rp 10 juta, sudah termasuk dalam harga jual. 100% refundable jika Anda membatalkan pembelian dalam 30 hari."
+      },
+      {
+        "q": "Kapan saya mulai membayar cicilan?",
+        "a": "Untuk KPR Developer, cicilan dimulai setelah serah terima unit (sekitar 12-18 bulan dari booking). Untuk KPR Bank, mengikuti kebijakan bank masing-masing."
+      }
+    ]
+  },
+  {
+    "category": "Passive Income & Investasi",
+    "items": [
+      {
+        "q": "Berapa passive income yang bisa saya harapkan?",
+        "a": "Simulasi dengan okupansi 50% dan tarif Rp 2,2 juta/malam: Bijak Rp 9,75 jt/bulan, Idaman Rp 12 jt/bulan, Mapan Rp 15 jt/bulan. Ini ILUSTRASI edukatif, performa aktual bervariasi."
+      },
+      {
+        "q": "Bagaimana cara kerja profit share 70%?",
+        "a": "Pendapatan kotor villa dipotong biaya operasional 20% (housekeeping, maintenance, marketing), lalu 70% dari net revenue menjadi bagian Anda. Sahid tidak mengambil keuntungan dari villa Anda, hanya dari fee manajemen."
+      },
+      {
+        "q": "Bagaimana kalau okupansi turun?",
+        "a": "Mitigasi: (1) Marketing terintegrasi (OTA + direct + corporate), (2) Tim Sahid yang sudah 50+ tahun di industri, (3) Target okupansi 60-70% untuk resort bintang 4. Plus, cicilan Anda tetap harus dibayar — ini bukan passive 100%, tapi secara historis resort yang dikelola profesional punya track record lebih baik."
+      },
+      {
+        "q": "Berapa capital gain yang realistis?",
+        "a": "Simulasi 15 tahun: Bijak Rp 1,7-2,7 M, Idaman Rp 2,2-3,3 M, Mapan Rp 2,7-4,2 M. Asumsi: konservatif 5% p.a., benchmark 10% p.a., optimis 15% p.a. Angka ini edukatif, bukan jaminan."
+      }
+    ]
+  },
+  {
+    "category": "Legal & Aset",
+    "items": [
+      {
+        "q": "Apakah statusnya SHM atau Hak Pakai?",
+        "a": "SHM (Sertifikat Hak Milik) atas nama pribadi Anda. Bukan Hak Pakai. Aset seumur hidup, bisa diwariskan."
+      },
+      {
+        "q": "Berapa biaya notaris dan pajak saat akad?",
+        "a": "Estimasi Rp 30-50 juta, termasuk: PPN 12%, BPHTB, PPH, AJB, BN SHM, dan asuransi. Belum termasuk harga villa."
+      },
+      {
+        "q": "Bagaimana jika ada kelebihan tanah dari tipe standar?",
+        "a": "Kelebihan tanah dihitung Rp 3.500.000/meter. Detail ukuran villa: Bijak 55 m² LB / 60 m² LT, Idaman 65/77, Mapan 90/88."
+      }
+    ]
+  },
+  {
+    "category": "Manajemen & Operasional",
+    "items": [
+      {
+        "q": "Apa yang dikerjakan Sahid sebagai pengelola?",
+        "a": "Sahid Hotel & Resort (50+ tahun) mengelola: pemasaran & booking, housekeeping, maintenance, laporan income bulanan, dan strategi okupansi. Anda tidak perlu terlibat operasional."
+      },
+      {
+        "q": "Kapan saya menerima laporan income?",
+        "a": "Laporan dikirim bulanan via email & dashboard online. Transfer income biasanya masuk di awal bulan berikutnya."
+      },
+      {
+        "q": "Bisakah saya menggunakan villa sendiri untuk liburan?",
+        "a": "Ya, dengan sistem blokir kalender. Anda bisa blokir tanggal tertentu untuk penggunaan pribadi, dan tim Sahid akan menyesuaikan listing di platform booking."
+      }
+    ]
+  },
+  {
+    "category": "Pembayaran & Keamanan",
+    "items": [
+      {
+        "q": "Ke rekening mana pembayaran harus ditransfer?",
+        "a": "Hanya ke rekening resmi PT Cipta Multikarya Propertindo: BNI 511 202 178 9, BCA 139 651 666 8, BSI 725 363 305 5. Hati-hati penipuan mengatasnamakan developer."
+      },
+      {
+        "q": "Bagaimana cara saya tahu ini bukan penipuan?",
+        "a": "Booking fee Rp 10 juta ditransfer ke rekening resmi di atas atas nama PT Cipta Multikarya Propertindo. Anda akan menerima kuitansi resmi. Kami tidak pernah meminta transfer ke rekening pribadi atau via link mencurigakan."
+      }
+    ]
+  },
+  {
+    "category": "Lokasi & Akses",
+    "items": [
+      {
+        "q": "Di mana lokasi pasti Menantu Resort?",
+        "a": "Jl. Curug Cinulang, Tenjolaya, Kec. Cicalengka, Kab. Bandung, Jawa Barat 40395. 45 menit dari Gerbang Tol Cileunyi, 2.5 jam dari Jakarta via Tol Cipularang."
+      },
+      {
+        "q": "Apa saja wisata & fasilitas di sekitar?",
+        "a": "Curug Cinulang (5 menit), Bukit Teletubbies Cicalengka (15 menit), Cicalengka Dreamland (10 menit), Gunung Masigit Kareumbi (20 menit). Korporat besar seperti PT KAHATEX, Mayora, Tirta Fresindo ada di area yang sama."
+      },
+      {
+        "q": "Bagaimana akses transport umum?",
+        "a": "Stasiun KAI Cicalengka 8 menit dari lokasi. Bus antarkota tersedia di terminal Cicalengka. Untuk investasi, kebanyakan owner menggunakan kendaraan pribadi atau Grab/Gojek."
+      }
+    ]
+  },
+  {
+    "category": "Manajemen & Operasional",
+    "items": [
+      {
+        "q": "Siapa yang mengelola villa setiap hari?",
+        "a": "Tim Sahid Hotel & Resort — operator 50+ tahun dengan 20+ hotel aktif. Standar operasional mengacu pada hotel bintang 5: housekeeping harian, maintenance preventif, marketing OTA, dan customer service 24/7."
+      },
+      {
+        "q": "Apakah saya boleh menginap di villa saya sendiri?",
+        "a": "Ya. Anda bisa menggunakan villa pribadi Anda untuk menginap kapan saja dengan konfirmasi minimal H-7. Bahkan saat Anda tidak menginap, villa tetap diikutsertakan dalam pool rental — sehingga income Anda tetap berjalan."
+      },
+      {
+        "q": "Bagaimana transparansi laporan keuangan?",
+        "a": "Owner mendapat laporan bulanan via dashboard online: okupansi, gross revenue, operasional, net share. Transfer profit share ke rekening Anda setiap tanggal 10 bulan berikutnya."
+      }
+    ]
+  }
+]

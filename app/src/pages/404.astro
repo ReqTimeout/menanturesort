@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/astro/Navbar.astro';
+import Footer from '../components/astro/Footer.astro';
+import WhatsAppFloating from '../components/astro/WhatsAppFloating.astro';
+import siteData from '../data/site.json';
+import { waUrl } from '../lib/format';
+
+const waLink = waUrl(siteData.contact.whatsapp, 'Halo, saya tidak menemukan halaman yang dicari', '404_page');
+---
+<BaseLayout title="Halaman Tidak Ditemukan" noindex={true}>
+  <Navbar />
+
+  <main class="min-h-screen flex items-center justify-center pt-20">
+    <div class="container text-center py-3xl">
+      <div class="text-9xl font-display text-secondary mb-md">404</div>
+      <h1 class="heading-1 mb-md">Halaman Tidak Ditemukan</h1>
+      <p class="text-body-lg text-gray-700 mb-xl max-w-md mx-auto">
+        Maaf, halaman yang Anda cari tidak ada atau sudah dipindahkan.
+      </p>
+      <div class="flex flex-wrap gap-md justify-center">
+        <a href="/" class="btn btn-primary">← Kembali ke Beranda</a>
+        <a href={waLink} target="_blank" rel="noopener" class="btn btn-whatsapp">💬 Tanya via WhatsApp</a>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+  <WhatsAppFloating />
+</BaseLayout>

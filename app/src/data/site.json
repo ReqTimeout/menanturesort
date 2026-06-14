@@ -1,0 +1,247 @@
+{
+  "name": "Menantu Resort",
+  "tagline": "Villa Modern Produktif Cicalengka, Bandung",
+  "subtitle": "Masa Depan Lebih Mapan — Passive Income Setiap Bulan dari Villa Resort Mewah",
+  "concept": "Green Ethnic Eco Resort — kawasan 3,5 Ha di Bandung Timur, dipadu kelestarian alam dan design culture",
+  "description": "Villa produktif eco-resort 3.5 hektar di Cicalengka, Bandung Timur, dikelola Sahid Hotel & Resort. Mulai Rp 1,2 Miliar. SHM + izin komersial, ROI 10% p.a. guarantee 2 tahun pertama, bagi hasil 70% untuk pemilik.",
+  "url": "https://menantu-resort.com",
+  "ogImage": "/og/og-image.webp",
+  "logo": "/images/logo/menantu-resort-logo.webp",
+  "favicon": "/favicon.svg",
+  "developer": {
+    "name": "PT Cipta Multikarya Propertindo",
+    "shortName": "PT Cipta Multikarya",
+    "brand": "MK LAND",
+    "experience": "15+ tahun",
+    "founder": "Taufik Yudha Perdana S.TP M.Si",
+    "vision": "Menjadi pengembang properti 10 besar nasional di tahun 2034 dalam menyediakan solusi Properti Investasi Pariwisata yang inovatif"
+  },
+  "manager": {
+    "name": "Sahid Hotel & Resort",
+    "shortName": "Sahid",
+    "experience": "50+ tahun",
+    "properties": "20+ properti aktif (hotel, resort, serviced apartment)",
+    "notableHotels": [
+      "Grand Sahid Jaya Jakarta",
+      "Sahid Resort & Convention Yogyakarta",
+      "Sahid Serpong (BSD)",
+      "Sahid Hotel Skyland City Jatinangor",
+      "Sahid Prince Solo",
+      "Grand Sahid Jaya Solo",
+      "Sahid Batam Hotel & Convention",
+      "Sahid Raya Hotel & Convention Yogyakarta"
+    ]
+  },
+  "contact": {
+    "whatsapp": "6285925942277",
+    "whatsappDisplay": "+62 859-2594-2277",
+    "email": "sales@menantu-resort.com",
+    "address": "Jalan Curug Cinulang, Tenjolaya, Kec. Cicalengka, Kab. Bandung, Jawa Barat 40395",
+    "mapsEmbed": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15838.29!2d107.78!3d-7.05"
+  },
+  "social": {
+    "instagram": "@menanturesort",
+    "website": "www.menanturesort.id"
+  },
+  "bankAccounts": [
+    {
+      "bank": "BNI",
+      "number": "511 202 178 9",
+      "name": "PT Cipta Multikarya Propertindo"
+    },
+    {
+      "bank": "BCA",
+      "number": "139 651 666 8",
+      "name": "PT Cipta Multikarya Propertindo"
+    },
+    {
+      "bank": "BSI",
+      "number": "725 363 305 5",
+      "name": "PT Cipta Multikarya Propertindo"
+    }
+  ],
+  "stats": {
+    "totalUnits": 74,
+    "unitsSold": 58,
+    "kawasanSize": "3.5 Ha",
+    "passiveIncomeMin": 9,
+    "passiveIncomeMax": 15,
+    "profitShare": 70,
+    "capitalGainMin": 15,
+    "capitalGainMax": 30,
+    "sahidYears": 50,
+    "developerYears": 15,
+    "rentalYield": "10% p.a.",
+    "firstTwoYearsYield": "10% p.a. guarantee (2 tahun pertama)",
+    "annualIncome": "Rp 224 juta/tahun (Mapan, okupansi 50%)",
+    "rentalYieldMin": 9,
+    "rentalYieldMax": 15,
+    "roiGuarantee": "10% p.a. minimum 2 tahun",
+    "promoDiscount": "Rp 200 Juta",
+    "promoBonus": "Mobil listrik + survei gratis",
+    "soldThisMonth": 12,
+    "activeViewers": 8
+  },
+  "bookingFee": 10000000,
+  "reservationFee": 5000000,
+  "excessLandPrice": 3500000,
+  "additionalCostsEstimate": "Rp 30.000.000 - 50.000.000",
+  "taxes": [
+    "PPN 12%",
+    "BPHTB",
+    "PPH"
+  ],
+  "facilities": {
+    "publicArea": [
+      "Eco Resort",
+      "Mosque",
+      "Playground",
+      "Jogging Track",
+      "Fitness Center",
+      "Food Court",
+      "Golf",
+      "Tennis"
+    ],
+    "publicServices": [
+      "Infinity Pool",
+      "Ballroom",
+      "Meeting Room",
+      "Restaurant",
+      "Charging Station",
+      "Cafe & Lounge",
+      "360° Views"
+    ]
+  },
+  "nearbyTourism": [
+    "Curug Cinulang",
+    "Gunung Masigit Kareumbi",
+    "Wisata Air Karinding",
+    "Bukit Teletubbies Cicalengka",
+    "Cicalengka Dreamland",
+    "Taman Renang Alam Nagreg"
+  ],
+  "nearbyFacilities": [
+    "Stasiun Cicalengka",
+    "RSUD Cicalengka",
+    "Gerbang Tol Cileunyi",
+    "Alun-alun Cicalengka",
+    "KAI Cicalengka"
+  ],
+  "nearbyIndustry": [
+    "PT KAHATEX",
+    "PT Tirta Fresindo Jaya Mayora"
+  ],
+  "keyFeatures": [
+    {
+      "title": "SHM",
+      "desc": "Status legal tertinggi atas nama pribadi investor"
+    },
+    {
+      "title": "Dikelola SAHID",
+      "desc": "Branding & operational hotel profesional 50+ tahun"
+    },
+    {
+      "title": "Tangible Asset",
+      "desc": "Aset nyata, bukan janji spekulatif"
+    },
+    {
+      "title": "Brand Ownership",
+      "desc": "Villa atas nama investor"
+    },
+    {
+      "title": "Resort View 360°",
+      "desc": "Bandung Timur, kawasan hijau asri"
+    },
+    {
+      "title": "Smart Home",
+      "desc": "Teknologi rumah pintar"
+    },
+    {
+      "title": "Keamanan 24 Jam",
+      "desc": "Private access & security terjadwal"
+    },
+    {
+      "title": "Fully Furnished",
+      "desc": "Siap huni, siap sewakan"
+    }
+  ],
+  "market": {
+    "domestic": "Wisatawan domestik",
+    "international": "Wisatawan mancanegara",
+    "corporate": "Korporasi & komunitas (PT KAHATEX, Mayora)",
+    "antiHotel": "Perpindahan dari hotel ke villa boutique produktif"
+  },
+  "portfolioMKLand": [
+    "Pakuhaji Highland Eco-Resort (Ngamprah, Bandung Barat)",
+    "Townhouse Firdaus Garden (Pakuhaji)",
+    "Kinyono Regency (Pakuhaji, Bandung Barat)",
+    "Grand Cimahi City (Cimahi Utara)",
+    "Cilame Living Garden",
+    "Menantu Resort managed by Sahid Hotel (Cicalengka, Bandung)"
+  ],
+  "testimonials": [
+    {
+      "name": "Ir. H. Dedy Kusnadi",
+      "location": "Jakarta",
+      "role": "Investor Properti",
+      "text": "Awalnya saya ragu beli properti jauh di pinggiran. Tapi setelah melihat konsep Sahid Menantu Resort yang dikelola langsung oleh Sahid Hospitality secara profesional dengan skema bagi hasil transparan, kecemasan saya hilang. Ini adalah warisan produktif yang nyata untuk pensiun saya.",
+      "rating": 5
+    },
+    {
+      "name": "dr. Farah Medina, Sp.A",
+      "location": "Bandung",
+      "role": "Dokter & Investor",
+      "text": "Sangat cocok untuk tempat istirahat keluarga sekaligus investasi pasif. Udara Cicalengka, Bandung Timur masih sangat bersih dan sejuk. Managed by Sahid memastikan villa saya selalu bersih, terawat, dan terhindar dari pusing mencari penyewa sendiri.",
+      "rating": 5
+    },
+    {
+      "name": "Alexander Hartanto",
+      "location": "Surabaya",
+      "role": "Pengusaha",
+      "text": "View 360° perbukitan Bandung-nya menakjubkan sekali. Saya mendapatkan brosur promonya secara lengkap via email, penawaran diskon 200 juta langsung saya amankan. Legalitas SHM juga aman, transaksi sangat transparan sampai selesai.",
+      "rating": 5
+    }
+  ],
+  "keyBenefits": [
+    {
+      "icon": "shield",
+      "title": "SHM + Izin Operasional Komersial",
+      "desc": "Sertifikat Hak Milik pribadi clean & clear, dijamin bebas sengketa. Dilengkapi izin komersial resmi dari Sahid."
+    },
+    {
+      "icon": "chart",
+      "title": "ROI 10% p.a. Guarantee 2 Tahun",
+      "desc": "Jaminan Return On Investment minimal 10% per tahun selama 2 tahun pertama sejak handover, melindungi kestabilan passive income awal."
+    },
+    {
+      "icon": "users",
+      "title": "Bagi Hasil 70-30 Transparan",
+      "desc": "Pendapatan bersih villa setelah operasional 20% dibagi 70% untuk pemilik. Tercatat teratur, dikirim bulanan ke rekening investor."
+    },
+    {
+      "icon": "home",
+      "title": "Furnished Standar Hotel Sahid",
+      "desc": "Villa fully furnished dengan standar hospitality bintang 5. Siap huni, siap sewakan, tanpa biaya renovasi tambahan."
+    },
+    {
+      "icon": "key",
+      "title": "Warisan Produktif Seumur Hidup",
+      "desc": "Aset tangible atas nama pribadi, bisa diwariskan. Bukan Hak Pakai, bukan sewa — milik Anda selamanya."
+    },
+    {
+      "icon": "shield-check",
+      "title": "Operasional 50+ Tahun Sahid",
+      "desc": "Dikelola harian oleh manajemen Sahid Hotels & Resorts yang sudah 50+ tahun di industri hospitality Indonesia."
+    },
+    {
+      "icon": "trending-up",
+      "title": "Bonus Mobil Listrik + Diskon 200jt",
+      "desc": "Program promo khusus minggu ini: diskon Rp 200 juta untuk unit terpilih, plus bonus mobil listrik dan survei lokasi gratis."
+    },
+    {
+      "icon": "map",
+      "title": "Lokasi 360° View Bandung Timur",
+      "desc": "Cicalengka, udara sejuk pegunungan, view 360° perbukitan. 45 menit dari Gerbang Tol Cileunyi, hidden gem bukan overtourism."
+    }
+  ]
+}

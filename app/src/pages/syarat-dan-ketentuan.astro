@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/astro/Navbar.astro';
+import Footer from '../components/astro/Footer.astro';
+import WhatsAppFloating from '../components/astro/WhatsAppFloating.astro';
+import siteData from '../data/site.json';
+---
+<BaseLayout
+  title="Syarat & Ketentuan"
+  description="Syarat dan ketentuan pembelian villa di Menantu Resort managed by Sahid."
+>
+  <Navbar />
+
+  <main class="pt-32 pb-3xl">
+    <div class="container-narrow">
+      <h1 class="heading-1 mb-md">Syarat & Ketentuan</h1>
+      <p class="text-sm text-gray-500 mb-2xl">Terakhir diperbarui: 1 Juni 2026</p>
+
+      <div class="prose prose-lg max-w-none space-y-xl">
+        <section>
+          <h2 class="heading-3 mb-md">1. Umum</h2>
+          <p>Website <strong>menantu-resort.com</strong> dikelola oleh PT Cipta Multikarya Propertindo ("Kami"), bekerja sama dengan PT Sahid International Hotels Group sebagai operator pengelolaan villa. Dengan mengakses dan menggunakan website ini, Anda ("Pengguna") dianggap telah membaca, memahami, dan menyetujui seluruh syarat dan ketentuan yang berlaku.</p>
+        </section>
+
+        <section>
+          <h2 class="heading-3 mb-md">2. Informasi Produk</h2>
+          <p>Seluruh informasi produk, harga, spesifikasi, dan ketersediaan unit villa yang ditampilkan di website ini dapat berubah sewaktu-waktu tanpa pemberitahuan terlebih dahulu, sesuai dengan kebijakan perusahaan. Harga yang tercantum belum termasuk biaya notaris, PPJB, pajak (PPN 12%, BPHTB, PPH), AJB, BN SHM, dan asuransi, dengan estimasi biaya tambahan Rp 30-50 juta.</p>
+        </section>
+
+        <section>
+          <h2 class="heading-3 mb-md">3. Simulasi & Ilustrasi</h2>
+          <p>Seluruh angka passive income, capital gain, dan simulasi cicilan yang ditampilkan di website ini adalah <strong>ILUSTRASI EDUKATIF</strong>, bukan jaminan performa aktual. Performa aktual tergantung pada kondisi pasar, tingkat okupansi, suku bunga, biaya operasional, dan faktor lain di luar kendali developer atau pengelola.</p>
+        </section>
+
+        <section>
+          <h2 class="heading-3 mb-md">4. Skema Pembayaran</h2>
+          <p>Booking fee sebesar Rp 10.000.000 (sepuluh juta rupiah) sudah termasuk dalam harga jual dan dapat di-refund 100% dalam waktu 30 hari kalender. Pembayaran sah hanya melalui rekening resmi:</p>
+          <ul class="list-disc pl-xl space-y-xs">
+            {siteData.bankAccounts.map(b => (
+              <li><strong>{b.bank}</strong>: {b.number} a.n. {b.name}</li>
+            ))}
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="heading-3 mb-md">5. Skema KPR</h2>
+          <p>KPR Bank tunduk pada kebijakan bank masing-masing dan membutuhkan BI Checking. KPR Developer (langsung ke developer) tidak membutuhkan BI Checking dengan tenor hingga 15 tahun. Persetujuan KPR dan suku bunga final ditentukan oleh bank atau lembaga pembiayaan.</p>
+        </section>
+
+        <section>
+          <h2 class="heading-3 mb-md">6. Hak & Tanggung Jawab</h2>
+          <p>Pembeli memiliki hak penuh atas unit villa berupa Sertifikat Hak Milik (SHM) atas nama pribadi. Semua villa dikelola oleh Sahid Hotel & Resort sesuai standar operasional yang berlaku. Laporan income dikirimkan bulanan.</p>
+        </section>
+
+        <section>
+          <h2 class="heading-3 mb-md">7. Privasi</h2>
+          <p>Data pribadi yang Anda berikan melalui form konsultasi akan digunakan hanya untuk kepentingan komunikasi terkait Menantu Resort. Kami tidak akan membagikan data Anda ke pihak ketiga tanpa persetujuan. Lihat detail di halaman <a href="/kebijakan-privasi" class="text-secondary hover:underline">Kebijakan Privasi</a>.</p>
+        </section>
+
+        <section>
+          <h2 class="heading-3 mb-md">8. Hukum yang Berlaku</h2>
+          <p>Syarat dan ketentuan ini tunduk pada hukum Republik Indonesia. Segala sengketa yang timbul akan diselesaikan melalui musyawarah, dan apabila tidak tercapai kesepakatan, akan diselesaikan melalui jalur hukum di wilayah hukum Bandung.</p>
+        </section>
+
+        <section>
+          <h2 class="heading-3 mb-md">9. Kontak</h2>
+          <p>Untuk pertanyaan terkait syarat dan ketentuan, hubungi kami di:</p>
+          <ul class="list-none space-y-xs">
+            <li>📧 {siteData.contact.email}</li>
+            <li>💬 WhatsApp: {siteData.contact.whatsappDisplay}</li>
+            <li>📍 {siteData.contact.address}</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+  <WhatsAppFloating />
+</BaseLayout>

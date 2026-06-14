@@ -1,0 +1,59 @@
+# Node
+node_modules/
+npm-debug.log
+.pnpm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Build
+dist/
+.astro/
+.cache/
+.output/
+.vercel/
+.netlify/
+
+# Environment
+.env
+.env.local
+.env.production
+.env.development
+.env.nanobanana
+.nanobanana.env
+~/.nanobanana.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+logs/
+*.log
+
+# Sensitive
+*.pem
+*.key
+id_rsa
+id_rsa.pub
+
+# Research temp files
+/tmp/
+/.python-version
+__pycache__/
+*.pyc
+
+# SSH keys (any name with id_rsa)
+id_rsa*
+*id_rsa*
+
+# Workspace generated
+.codex/
+.agents/
+test-image/

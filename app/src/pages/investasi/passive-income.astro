@@ -1,0 +1,136 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/astro/Navbar.astro';
+import Footer from '../../components/astro/Footer.astro';
+import WhatsAppFloating from '../../components/astro/WhatsAppFloating.astro';
+import siteData from '../../data/site.json';
+import { formatRupiah, formatShort, waUrl } from '../../lib/format';
+
+const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'investasi');
+const ctaWa = waLink('Halo, saya tertarik dengan skema ini');
+---
+<BaseLayout
+  title="Passive Income Rp 9-15 Juta per Bulan"
+  description="Simulasi passive income villa Menantu Resort: Rp 9,75jt (Bijak), Rp 12jt (Idaman), Rp 15jt (Mapan) per bulan. ROI guarantee 10% p.a. 2 tahun pertama."
+>
+  <Navbar />
+  <main>
+    <section class="relative bg-gradient-to-br from-primary to-secondary text-white py-3xl overflow-hidden">
+      <div class="absolute inset-0 pattern-subtle opacity-20"></div>
+      <div class="container relative z-10">
+        <div class="max-w-3xl">
+          <a href="/investasi" class="text-white text-sm hover:underline">← Kembali ke Investment Hub</a>
+          <span class="eyebrow text-white mt-md">Passive Income</span>
+          <h1 class="heading-display text-white mb-md">
+            Passive Income Rp 9-15 Juta<br/><span class="text-white italic">per Bulan, Otomatis.</span>
+          </h1>
+          <p class="text-body-lg text-white/85 mb-xl">
+            Villa Anda bekerja untuk Anda setiap hari. Dikelola profesional Sahid,
+            okupansi terjaga, pembayaran bulanan ke rekening Anda.
+          </p>
+          <a href={ctaWa} target="_blank" rel="noopener" class="btn btn-primary btn-lg bg-white text-primary hover:bg-accent">💬 Pelajari Lebih Lanjut</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="text-center mb-2xl">
+          <span class="eyebrow">Proyeksi Passive Income</span>
+          <h2 class="heading-display">3 Tipe Villa,<br/><span class="text-secondary">3 Tingkat Cashflow</span></h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-xl">
+          <article class="card p-xl">
+            <span class="badge mb-md">Menantu Bijak</span>
+            <div class="text-display text-4xl text-primary font-display font-bold mb-xs">Rp 9,75jt</div>
+            <p class="text-sm text-ink-soft mb-lg">per bulan (okupansi 50%)</p>
+            <ul class="space-y-xs text-sm">
+              <li>• Setara Rp 117jt / tahun</li>
+              <li>• Yield 8,1% per tahun (gross)</li>
+              <li>• Yield 5,5% per tahun (setelah operasional 20%)</li>
+              <li>• Surplus cicilan KPR Bank: +Rp 28rb/bln</li>
+            </ul>
+          </article>
+          <article class="card p-xl border-2 border-secondary">
+            <span class="badge badge-gold mb-md">⭐ Best Value — Idaman</span>
+            <div class="text-display text-4xl text-primary font-display font-bold mb-xs">Rp 12jt</div>
+            <p class="text-sm text-ink-soft mb-lg">per bulan (okupansi 50%)</p>
+            <ul class="space-y-xs text-sm">
+              <li>• Setara Rp 144jt / tahun</li>
+              <li>• Yield 9% per tahun (gross)</li>
+              <li>• Yield 6,5% per tahun (setelah operasional 20%)</li>
+              <li>• Surplus cicilan KPR Bank: +Rp 333rb/bln</li>
+            </ul>
+          </article>
+          <article class="card p-xl">
+            <span class="badge mb-md">Menantu Mapan</span>
+            <div class="text-display text-4xl text-primary font-display font-bold mb-xs">Rp 15jt</div>
+            <p class="text-sm text-ink-soft mb-lg">per bulan (okupansi 50%)</p>
+            <ul class="space-y-xs text-sm">
+              <li>• Setara Rp 180jt / tahun</li>
+              <li>• Yield 9% per tahun (gross)</li>
+              <li>• Yield 7,5% per tahun (setelah operasional 20%)</li>
+              <li>• Surplus cicilan KPR Bank: +Rp 417rb/bln</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section bg-accent">
+      <div class="container">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-xl items-center">
+          <div>
+            <span class="eyebrow">Asumsi Perhitungan</span>
+            <h2 class="heading-display mb-md">Bagaimana Passive Income<br/><span class="text-secondary">Dihitung?</span></h2>
+            <p class="text-body-lg text-ink-soft mb-md">
+              Berikut asumsi yang dipakai untuk simulasi. Angka aktual dapat bervariasi
+              tergantung okupansi, season, dan event.
+            </p>
+            <a href={ctaWa} target="_blank" rel="noopener" class="btn btn-primary">💬 Tanya Detail Asumsi</a>
+          </div>
+          <div class="card p-2xl">
+            <h3 class="heading-3 mb-md">Formula Sederhana</h3>
+            <ol class="space-y-md">
+              <li>
+                <strong class="text-primary">1. Gross Monthly Revenue</strong>
+                <p class="text-sm text-ink-soft">Tarif Rp 2,2jt/malam × 30 hari × okupansi (50% = 15 hari)</p>
+              </li>
+              <li>
+                <strong class="text-primary">2. Operasional (20%)</strong>
+                <p class="text-sm text-ink-soft">Sahid hotel standard: cleaning, maintenance, marketing, utilitas</p>
+              </li>
+              <li>
+                <strong class="text-primary">3. Net Revenue (80%)</strong>
+                <p class="text-sm text-ink-soft">Pendapatan bersih setelah operasional</p>
+              </li>
+              <li>
+                <strong class="text-primary">4. Owner Share (70%)</strong>
+                <p class="text-sm text-ink-soft">70% × Net Revenue = passive income bulanan</p>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="card p-2xl bg-gradient-to-br from-primary-dark to-primary text-white">
+          <div class="text-center max-w-2xl mx-auto">
+            <span class="eyebrow text-secondary">Jaminan Kami</span>
+            <h2 class="heading-display text-white mb-md">ROI Guarantee 10%<br/><span class="text-secondary">2 Tahun Pertama</span></h2>
+            <p class="text-body-lg text-white/85 mb-lg">
+              Jika passive income aktual di bawah 10% p.a. pada 2 tahun pertama,
+              developer akan menutup selisihnya. Ini jaminan tertulis dalam akad.
+            </p>
+            <a href={ctaWa} target="_blank" rel="noopener" class="btn btn-secondary btn-lg">💬 Pelajari Garansi ROI</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+  <WhatsAppFloating />
+</BaseLayout>

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="intbg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F5F0E8"/>
+      <stop offset="100%" stop-color="#E8DCC8"/>
+    </linearGradient>
+    <linearGradient id="intwindow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1B4332"/>
+      <stop offset="100%" stop-color="#3D4A40"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#intbg)"/>
+  <polygon points="0,0 1200,0 1200,150 0,250" fill="url(#intwindow)" opacity="0.85"/>
+  <g opacity="0.3" stroke="#0D1B14" stroke-width="1">
+    <line x1="300" y1="0" x2="300" y2="170"/>
+    <line x1="600" y1="0" x2="600" y2="125"/>
+    <line x1="900" y1="0" x2="900" y2="200"/>
+  </g>
+  <g opacity="0.5" fill="#0D1B14">
+    <rect x="100" y="200" width="20" height="400"/>
+    <rect x="80" y="600" width="60" height="20"/>
+    <rect x="1080" y="200" width="20" height="400"/>
+    <rect x="1060" y="600" width="60" height="20"/>
+  </g>
+  <g>
+    <rect x="200" y="450" width="280" height="180" fill="#A8845C" rx="0"/>
+    <rect x="220" y="430" width="240" height="40" fill="#D4A574"/>
+    <rect x="500" y="450" width="200" height="180" fill="#A8845C"/>
+    <rect x="900" y="480" width="180" height="150" fill="#0D1B14" opacity="0.6"/>
+  </g>
+  <ellipse cx="500" cy="640" rx="450" ry="20" fill="#A8845C" opacity="0.3"/>
+  <line x1="0" y1="640" x2="1200" y2="640" stroke="#A8845C" stroke-width="0.5" opacity="0.5"/>
+</svg>

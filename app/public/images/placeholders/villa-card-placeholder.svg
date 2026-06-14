@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky-v" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1B4332"/>
+      <stop offset="50%" stop-color="#3D4A40"/>
+      <stop offset="100%" stop-color="#D4A574"/>
+    </linearGradient>
+    <linearGradient id="villa-v" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F5F0E8"/>
+      <stop offset="100%" stop-color="#A8845C"/>
+    </linearGradient>
+    <linearGradient id="ground-v" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0D1B14"/>
+      <stop offset="100%" stop-color="#061009"/>
+    </linearGradient>
+    <radialGradient id="sun-v" cx="80%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#FFE4B5" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#D4A574" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#sky-v)"/>
+  <rect width="1200" height="900" fill="url(#sun-v)"/>
+  <rect y="700" width="1200" height="200" fill="url(#ground-v)"/>
+  <g>
+    <rect x="350" y="380" width="500" height="320" fill="url(#villa-v)"/>
+    <polygon points="320,380 600,260 880,380" fill="#0D1B14"/>
+    <rect x="380" y="430" width="100" height="80" fill="#D4A574" opacity="0.7"/>
+    <rect x="500" y="430" width="100" height="80" fill="#D4A574" opacity="0.7"/>
+    <rect x="620" y="430" width="100" height="80" fill="#D4A574" opacity="0.7"/>
+    <rect x="740" y="430" width="100" height="80" fill="#D4A574" opacity="0.7"/>
+    <rect x="450" y="560" width="80" height="140" fill="#0D1B14"/>
+    <rect x="670" y="560" width="80" height="140" fill="#0D1B14"/>
+  </g>
+  <g opacity="0.7">
+    <circle cx="200" cy="650" r="40" fill="#0D1B14"/>
+    <circle cx="180" cy="620" r="35" fill="#0D1B14"/>
+    <circle cx="220" cy="620" r="30" fill="#0D1B14"/>
+    <rect x="195" y="650" width="10" height="60" fill="#0D1B14"/>
+    <circle cx="1000" cy="650" r="50" fill="#0D1B14"/>
+    <circle cx="980" cy="620" r="40" fill="#0D1B14"/>
+    <circle cx="1020" cy="620" r="35" fill="#0D1B14"/>
+    <rect x="995" y="650" width="12" height="70" fill="#0D1B14"/>
+  </g>
+  <ellipse cx="600" cy="730" rx="200" ry="15" fill="#D4A574" opacity="0.3"/>
+  <line x1="0" y1="780" x2="1200" y2="780" stroke="#D4A574" stroke-width="0.5" opacity="0.4"/>
+  <line x1="0" y1="800" x2="1200" y2="800" stroke="#D4A574" stroke-width="0.5" opacity="0.3"/>
+</svg>

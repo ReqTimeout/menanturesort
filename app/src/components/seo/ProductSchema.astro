@@ -1,0 +1,25 @@
+---
+import villaData from '../../data/villa.json';
+const { types } = villaData;
+---
+<script type="application/ld+json" set:html={JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: types.map((villa, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'Product',
+      name: villa.name,
+      description: villa.tagline,
+      brand: { '@type': 'Brand', name: 'Menantu Resort' },
+      offers: {
+        '@type': 'Offer',
+        price: villa.price,
+        priceCurrency: 'IDR',
+        availability: 'https://schema.org/InStock',
+        url: `https://menantu-resort.com/villa/${villa.id}`,
+      },
+    },
+  })),
+})} />
