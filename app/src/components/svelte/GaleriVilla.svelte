@@ -94,7 +94,7 @@
           class="relative flex-1 aspect-[16/10] overflow-hidden transition-all {activeIndex === i ? 'ring-2 ring-gold-500 ring-offset-2 ring-offset-white' : 'opacity-60 hover:opacity-100'}"
           aria-label={`Image ${i + 1}`}
         >
-          <img src={img} alt="" class="w-full h-full object-cover" loading="lazy" />
+          <img src={img} alt="" class="w-full h-full object-cover" loading="lazy" decoding="async" />
         </button>
       {/each}
     </div>

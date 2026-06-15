@@ -18,6 +18,20 @@ export default defineConfig({
     sitemap({
       changefreq: 'weekly',
       priority: 0.7,
+      lastmod: new Date(),
+      filter: (page) => !page.includes('/404'),
+      serialize(item) {
+        // Higher priority for important pages
+        let priority = 0.7;
+        if (item.url === 'https://menantu-resort.com/') priority = 1.0;
+        else if (item.url.includes('/villa/') || item.url.includes('/artikel/')) priority = 0.8;
+        else if (item.url.includes('/investasi') || item.url.includes('/lokasi') || item.url.includes('/resort')) priority = 0.9;
+        return {
+          ...item,
+          priority,
+          changefreq: 'weekly',
+        };
+      },
     }),
   ],
   build: {

@@ -714,7 +714,12 @@ body.has-cookie-banner-desktop {
 .marquee-track {
   display: inline-flex;
   align-items: center;
-  animation: marquee-scroll linear infinite;
+  white-space: nowrap;
+  min-width: 200%;
+  animation-name: marquee-scroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-duration: 60s;
   will-change: transform;
 }
 .marquee-item {

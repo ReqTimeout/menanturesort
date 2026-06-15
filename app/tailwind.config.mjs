@@ -154,9 +154,10 @@ export default {
         '3xl': '24px',
       },
       fontFamily: {
-        display: ['"Playfair Display"', 'Georgia', 'serif'],
-        body: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        quote: ['"Cormorant Garamond"', 'serif'],
+        display: ['"Fraunces"', '"Plus Jakarta Sans"', 'Georgia', 'serif'],
+        displayAlt: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
+        body: ['"Plus Jakarta Sans"', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        quote: ['"Fraunces"', '"Plus Jakarta Sans"', 'serif'],
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       fontSize: {

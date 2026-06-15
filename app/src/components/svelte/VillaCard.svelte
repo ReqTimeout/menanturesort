@@ -58,6 +58,7 @@
       src={imageSrc}
       alt={imageAlt}
       loading="lazy"
+      decoding="async"
       class="w-full h-full object-cover transition-transform duration-700 ease-premium group-hover:scale-105"
     />
     <!-- Label badge -->
