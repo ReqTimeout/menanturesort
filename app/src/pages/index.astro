@@ -36,18 +36,26 @@ const heroBody = 'Bayangkan: setiap bulan, villa resort Anda di Bandung Timur me
 
 // ── Marquee — Trust + FOMO + Storytelling ──
 const marqueeItems = [
-  '<span class="highlight">SHM Bersih</span> · Bukan Hak Pakai',
-  '<span class="highlight">Dikelola Sahid</span> 50+ Tahun',
-  '<span class="highlight">ROI 10%</span> Guarantee 2 Tahun',
-  'Passive Income <span class="highlight">Rp 9-15 jt/bulan</span>',
-  'Cicilan Mulai <span class="highlight">Rp 9 Juta</span>',
-  '<span class="highlight">16 dari 74 Unit</span> Tersisa',
-  'Free <span class="highlight">BPJS + PBB Tahun 1</span>',
-  'Survey Lokasi <span class="highlight">GRATIS</span> · Setiap Sabtu',
-  'Booking Fee Hanya <span class="highlight">Rp 5 Juta</span> · Bisa DP',
-  '<span class="highlight">Free Stay 2 Malam</span> untuk 50 Buyer Pertama',
+  '<span class="highlight">SHM Bersih</span> · Bukan Hak Pakai · Aset Warisan Sejati',
+  '<span class="highlight">Dikelola Sahid</span> · 50+ Tahun Track Record Hospitality',
+  '<span class="highlight">ROI 10%</span> / Tahun · Guarantee 2 Tahun Pertama',
+  'Passive Income <span class="highlight">Rp 9–15 Juta</span> / Bulan · Otomatis',
+  'Cicilan Mulai <span class="highlight">Rp 9 Juta</span> / Bulan · KPR 20 Tahun',
+  'Sisa <span class="highlight">16 dari 74 Unit</span> · Sebelum Sold Out',
+  'Free <span class="highlight">BPJS + PBB + IPL</span> · Tahun Pertama',
+  'Survey Lokasi <span class="highlight">GRATIS</span> · Shuttle dari Bandung · Setiap Sabtu',
+  'Booking Fee Hanya <span class="highlight">Rp 5 Juta</span> · Refundable 30 Hari',
+  '<span class="highlight">Free Stay 2 Malam</span> · 50 Buyer Pertama',
   'Promo <span class="highlight">Cashback Rp 50 Juta</span> · Berlaku Juni 2026',
-  'Buyer Hari Ini dapat <span class="highlight">Souvenir Eksklusif Sahid</span>',
+  'Buyer Hari Ini · Bonus <span class="highlight">Souvenir Eksklusif Sahid</span>',
+  'Capital Gain <span class="highlight">2,2–3,3 Miliar</span> · 10 Tahun Proyeksi',
+  '<span class="highlight">Cicilan Lebih Kecil</span> dari Income · Cashflow Positif Hari 1',
+  '<span class="highlight">Sahid Standard</span> · Material, Finishing, Service Bintang 5',
+  '<span class="highlight">Bandung Timur</span> · Cicalengka · 35 Menit dari Tol Cisumdawu',
+  'Lokasi <span class="highlight">3,5 Hektar</span> Eco-Resort Private & Tenang',
+  'Akses <span class="highlight">12 Fasilitas Resort</span> · Pool, Gym, Resto, Spa',
+  'Booking Sekarang · <span class="highlight">Lock Harga 90 Hari</span>',
+  'Konsultasi <span class="highlight">GRATIS</span> · Tim Profesional 24/7 di WhatsApp',
 ];
 
 // ── Villa data (pakai real images dari V5.1) ──
@@ -78,7 +86,7 @@ const showcaseVillas = villaData.types.map((v) => ({
     />
 
     <!-- ═══ 2. MARQUEE (trust badges horizontal) ═══ -->
-    <Marquee client:visible items={marqueeItems} speed={75} />
+    <Marquee client:visible items={marqueeItems} speed={90} />
 
     <!-- ═══ 3. CONCERNS (V5.2 NEW: port dari existing PROVEN) ═══ -->
     <ConcernsSection client:visible concerns={siteData.concerns} />

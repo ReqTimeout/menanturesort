@@ -8,6 +8,7 @@ import Footer from '../components/astro/Footer.astro';
 import PageHero from '../components/astro/PageHero.astro';
 import SectionDivider from '../components/astro/SectionDivider.astro';
 import Pattern from '../components/astro/Pattern.astro';
+import SectionBackground from '../components/astro/SectionBackground.astro';
 import Accordion from '../lib/components/ui/Accordion.svelte';
 import faqData from '../data/faq.json';
 import siteData from '../data/site.json';
@@ -52,6 +53,7 @@ const faqSchema = {
 
     <!-- FAQ Accordion -->
     <section class="relative bg-white py-20 md:py-32 gsap-fade" data-section="faq-list">
+      <SectionBackground variant="cream" pattern={true} orbs={true} intensity="subtle" />
       <Pattern variant="dots-dense" color="forest" opacity={0.04} />
       <div class="container-wide relative space-y-12">
         {faqData.map((category) => (

@@ -37,8 +37,10 @@
         Tiga villa, <em class="text-gold-700 font-medium">satu standar.</em>
       </h2>
       <p class="font-body text-ink-700 leading-[1.7] text-base md:text-[17px] max-w-[640px] mx-auto">
-        Setiap villa dirancang dengan presisi dan dedikasi yang sama — beda kapasitas, satu kualitas.
-        Pilih yang sesuai dengan tahap hidup dan target investasi Anda.
+        Setiap villa dirancang dengan presisi dan dedikasi yang sama — beda kapasitas, <em class="text-gold-700 font-semibold">satu kualitas</em>. Material, finishing, housekeeping, dan standar operasional semuanya idéntik dengan resort bintang 5 Sahid. Tidak ada kelas B di Menantu Resort.
+      </p>
+      <p class="font-body text-ink-700 leading-[1.7] text-sm md:text-[15px] max-w-[640px] mx-auto mt-3">
+        Pilih yang sesuai dengan tahap hidup dan target investasi Anda — semua sudah terbukti cashflow positif dari hari pertama.
       </p>
     </motion.div>
 
