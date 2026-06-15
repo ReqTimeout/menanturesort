@@ -15,7 +15,7 @@
   let { villas = [], class: className = '' } = $props();
 </script>
 
-<section class={cn('gsap-fade section-tight section-white relative overflow-hidden reveal', className)}>
+<section id="villa-types" class={cn('gsap-fade section-tight section-white relative overflow-hidden reveal', className)}>
   <!-- Dots pattern overlay -->
   <div class="absolute inset-0 pointer-events-none opacity-[0.05]" style="background-image: radial-gradient(circle, #1B4332 1px, transparent 1px); background-size: 24px 24px;"></div>
   <div class="relative">

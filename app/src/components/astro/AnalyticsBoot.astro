@@ -1,30 +1,122 @@
 ---
 /**
- * AnalyticsBoot.astro — GA4 + pageview tracking
- * Loads gtag.js script and configures with PUBLIC_GA4_ID
+ * AnalyticsBoot.astro — GA4 + Google Ads + Enhanced Conversions
+ *
+ * Loads gtag.js script and configures with PUBLIC_GA4_ID + PUBLIC_GOOGLE_ADS_ID
+ * Supports Enhanced Conversions (hashed user data) for better attribution
+ *
+ * Set env vars in .env or cPanel Node.js app:
+ *   PUBLIC_GA4_ID=G-XXXXXXXXXX
+ *   PUBLIC_GOOGLE_ADS_ID=AW-XXXXXXXXXX
+ *   PUBLIC_GTM_ID=GTM-XXXXXXX (optional)
  */
-const GA4_ID = import.meta.env.PUBLIC_GA4_ID;
-const ADS_ID = import.meta.env.PUBLIC_GOOGLE_ADS_ID;
+const GA4_ID = import.meta.env.PUBLIC_GA4_ID || 'G-39JSBHZY3T';
+const ADS_ID = import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-18240219652';
+const GTM_ID = import.meta.env.PUBLIC_GTM_ID || '';
+const ADS_CONVERSION_LABEL = import.meta.env.PUBLIC_ADS_CONVERSION_LABEL || '';
 ---
 
 {GA4_ID && (
   <>
-    <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`} />
-    <script is:inline define:vars={{ GA4_ID, ADS_ID }}>
+    <!-- Google tag (gtag.js) - GA4 + Google Ads unified -->
+    <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}></script>
+    <script is:inline define:vars={{ GA4_ID, ADS_ID, GTM_ID, ADS_CONVERSION_LABEL }}>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){ window.dataLayer.push(arguments); }
+      function gtag(){ dataLayer.push(arguments); }
       window.gtag = gtag;
       gtag('js', new Date());
-      gtag('config', GA4_ID, { anonymize_ip: true, send_page_view: true });
-      if (ADS_ID) gtag('config', ADS_ID);
 
+      // Configure GA4
+      gtag('config', GA4_ID, {
+        anonymize_ip: true,
+        send_page_view: true,
+        // Enhanced Conversions: auto-detect user data from forms
+        enhanced_conversions: { gdpr_consent_enabled: false }
+      });
+
+      // Configure Google Ads (if ID set)
+      if (ADS_ID) {
+        gtag('config', ADS_ID, {
+          allow_enhanced_conversions: true,
+          send_page_view: true
+        });
+      }
+
+      // ====== Enhanced Conversions helper ======
+      // Hashes user data with SHA-256 (Google requirement: SHA-256, normalized)
+      window.mrEnhancedConversions = {
+        hashData: async function(data) {
+          const encoder = new TextEncoder();
+          const normalize = (str) => String(str || '').trim().toLowerCase().replace(/\s+/g, '');
+          const hash = async (str) => {
+            if (!str) return undefined;
+            const normalized = normalize(str);
+            if (!normalized) return undefined;
+            const buffer = await crypto.subtle.digest('SHA-256', encoder.encode(normalized));
+            return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+          };
+          return {
+            email: await hash(data.email),
+            phone_number: await hash(data.phone),
+            first_name: await hash(data.firstName),
+            last_name: await hash(data.lastName),
+            address: data.address ? {
+              street: await hash(data.address.street),
+              city: await hash(data.address.city),
+              region: await hash(data.address.region),
+              postal_code: data.address.postal ? String(data.address.postal).replace(/\s/g, '') : undefined,
+              country: data.address.country || 'ID'
+            } : undefined
+          };
+        },
+        trackConversion: async function(eventName, userData, conversionData) {
+          const hashed = await this.hashData(userData);
+          if (typeof window.gtag === 'function') {
+            window.gtag('event', eventName, {
+              ...conversionData,
+              enhanced_conversions_data: hashed,
+              send_to: ADS_ID || GA4_ID
+            });
+          }
+        }
+      };
+
+      // ====== Site analytics helper ======
       window.mrAnalytics = {
         trackEvent: function (name, params) {
-          if (typeof window.gtag === 'function') window.gtag('event', name, params || {});
+          if (typeof window.gtag === 'function') {
+            window.gtag('event', name, params || {});
+          }
         },
         trackPageview: function (path) {
-          if (typeof window.gtag === 'function') window.gtag('event', 'page_view', { page_path: path, page_title: document.title });
+          if (typeof window.gtag === 'function') {
+            window.gtag('event', 'page_view', {
+              page_path: path,
+              page_title: document.title,
+              send_to: GA4_ID
+            });
+          }
         },
+        // Track WhatsApp click with destination
+        trackWhatsApp: function (source, label) {
+          if (typeof window.gtag === 'function') {
+            window.gtag('event', 'whatsapp_click', {
+              event_category: 'engagement',
+              event_label: label || source,
+              source: source,
+              send_to: ADS_ID ? [GA4_ID, ADS_ID] : GA4_ID
+            });
+          }
+        },
+        // Track form submission (enhanced conversion)
+        trackLead: async function (formData) {
+          await window.mrEnhancedConversions.trackConversion('generate_lead', formData, {
+            event_category: 'lead',
+            event_label: formData.leadType || 'general',
+            value: formData.estimatedValue || 0,
+            currency: 'IDR'
+          });
+        }
       };
     </script>
   </>

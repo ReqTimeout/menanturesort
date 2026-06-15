@@ -701,6 +701,10 @@ body.has-cookie-banner-desktop {
   overflow: hidden;
   white-space: nowrap;
   position: relative;
+  background: linear-gradient(90deg, #0D1B14 0%, #1B4332 50%, #0D1B14 100%);
+  border-top: 1px solid rgba(212, 165, 116, 0.2);
+  border-bottom: 1px solid rgba(212, 165, 116, 0.2);
+  padding: 0.75rem 0;
 }
 .marquee-track {
   display: inline-flex;
@@ -709,23 +713,32 @@ body.has-cookie-banner-desktop {
   will-change: transform;
 }
 .marquee-item {
-  font-family: 'Playfair Display', serif;
-  font-style: italic;
-  font-size: clamp(2rem, 5vw, 4.5rem);
-  font-weight: 400;
-  color: #1B4332;
-  padding-right: 3rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: clamp(0.75rem, 1.1vw, 0.95rem);
+  color: #F5F0E8;
+  padding: 0 1.5rem;
   line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.marquee-item .highlight {
+  color: #D4A574;
+  font-weight: 700;
 }
 .marquee-sep {
   color: #D4A574;
-  margin: 0 3rem;
-  font-size: 0.6em;
+  margin: 0 0.5rem;
+  font-size: 0.5em;
   vertical-align: middle;
+  opacity: 0.6;
 }
 @keyframes marquee-scroll {
   from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-25%, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
 }
 @media (prefers-reduced-motion: reduce) {
   .marquee-track { animation: none; }

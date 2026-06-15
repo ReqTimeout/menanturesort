@@ -121,15 +121,24 @@
       </ul>
     {/if}
 
-    <!-- CTA -->
-    <a
-      href={waLink}
-      target="_blank"
-      rel="noopener noreferrer"
-      class="btn btn-secondary w-full group/cta"
-    >
-      Detail Villa
-      <ArrowRight class="w-4 h-4 transition-transform group-hover/cta:translate-x-1" />
-    </a>
+    <!-- CTA: Dual button (Detail page + WA chat) -->
+    <div class="flex gap-2 mt-auto">
+      <a
+        href={`/villa/${villa?.id ?? 'idaman'}`}
+        class="btn btn-outline flex-1 group/cta text-[13px] font-bold uppercase tracking-wider py-3"
+      >
+        Lihat Detail
+        <ArrowRight class="w-4 h-4 transition-transform group-hover/cta:translate-x-1" />
+      </a>
+      <a
+        href={waLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn-secondary flex-1 text-[13px] font-bold uppercase tracking-wider py-3"
+        aria-label={`Chat WhatsApp tentang ${villa?.name ?? 'Villa'}`}
+      >
+        Chat WA
+      </a>
+    </div>
   </div>
 </motion.article>
