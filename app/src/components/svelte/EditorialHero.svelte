@@ -203,7 +203,7 @@
       <div class="grid grid-cols-12 gap-6 sm:gap-8 items-end">
         <div class="col-span-12 md:col-span-6 lg:col-span-5">
           <motion.p
-            class="font-body text-cream-50/85 leading-relaxed text-sm sm:text-base md:text-lg mb-5 sm:mb-6"
+            class="font-body text-cream-50/85 leading-relaxed text-[15px] sm:text-base md:text-lg mb-5 sm:mb-6 max-w-[34ch] sm:max-w-[42ch] md:max-w-[48ch]"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.55, ease: [0.16, 1, 0.3, 1] }}

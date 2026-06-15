@@ -52,10 +52,40 @@
           initial={{ opacity: 0, y: 30 }}
           animate={isLoaded ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          class="font-quote italic text-2xl text-ink-500 mb-6"
+          class="font-quote italic text-xl md:text-2xl text-ink-500 mb-5 max-w-xl"
         >
           "{villa.tagline}"
         </motion.p>
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.25 }}
+          class="font-body text-base text-ink-500 leading-relaxed mb-6 max-w-xl"
+        >
+          {villa.story || villa.description}
+        </motion.p>
+
+        {#if villa.highlights && villa.highlights.length}
+          <motion.ul
+            initial={{ opacity: 0 }}
+            animate={isLoaded ? { opacity: 1 } : {}}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            class="mb-7 space-y-2 max-w-xl"
+          >
+            {#each (villa.highlights || []).slice(0, 4) as h, i}
+              <motion.li
+                initial={{ opacity: 0, x: -10 }}
+                animate={isLoaded ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.4, delay: 0.35 + i * 0.06 }}
+                class="flex items-start gap-3 text-sm text-ink-soft"
+              >
+                <span class="mt-1.5 h-1.5 w-1.5 rounded-full bg-gold-500 flex-shrink-0"></span>
+                <span class="font-body">{h}</span>
+              </motion.li>
+            {/each}
+          </motion.ul>
+        {/if}
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -132,7 +162,7 @@
         transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
         class="relative"
       >
-        <div class="relative aspect-[4/3] overflow-hidden border border-cream-100 bg-cream-100">
+        <div class="relative aspect-[16/11] overflow-hidden border border-cream-100 bg-cream-100">
           {#each images as img, i}
             <motion.img
               src={img}

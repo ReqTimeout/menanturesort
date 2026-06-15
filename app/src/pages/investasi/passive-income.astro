@@ -9,6 +9,7 @@ import Footer from '../../components/astro/Footer.astro';
 import PageHero from '../../components/astro/PageHero.astro';
 import SectionDivider from '../../components/astro/SectionDivider.astro';
 import Pattern from '../../components/astro/Pattern.astro';
+import SectionBackground from '../../components/astro/SectionBackground.astro';
 import WhatsAppFloating from '../../components/astro/WhatsAppFloating.astro';
 import siteData from '../../data/site.json';
 import villaData from '../../data/villa.json';
@@ -57,6 +58,7 @@ const formula = [
 
     <!-- 3 Villa Projections -->
     <section class="relative bg-white py-20 md:py-32 gsap-fade" data-section="projections">
+      <SectionBackground variant="cream" pattern={true} orbs={true} intensity="subtle" />
       <Pattern variant="dots" color="gold" opacity={0.05} />
       <div class="container-wide relative">
         <div class="grid grid-cols-12 gap-8 mb-12">
@@ -108,6 +110,7 @@ const formula = [
 
     <!-- Formula -->
     <section class="relative section-cream py-20 md:py-32 gsap-fade" data-section="formula">
+      <SectionBackground variant="gold" pattern={true} orbs={true} intensity="subtle" />
       <Pattern variant="diagonal" color="forest" opacity={0.04} />
       <div class="container-wide relative">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -149,6 +152,7 @@ const formula = [
 
     <!-- ROI Guarantee -->
     <section class="relative bg-white py-20 md:py-32 gsap-fade" data-section="guarantee">
+      <SectionBackground variant="cream" pattern={true} orbs={true} intensity="subtle" />
       <Pattern variant="gold-sparkle" color="gold" opacity={0.05} />
       <div class="container-wide relative">
         <div class="max-w-3xl mx-auto">

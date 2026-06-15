@@ -9,6 +9,7 @@ import Footer from '../../components/astro/Footer.astro';
 import PageHero from '../../components/astro/PageHero.astro';
 import SectionDivider from '../../components/astro/SectionDivider.astro';
 import Pattern from '../../components/astro/Pattern.astro';
+import SectionBackground from '../../components/astro/SectionBackground.astro';
 import WhatsAppFloating from '../../components/astro/WhatsAppFloating.astro';
 import siteData from '../../data/site.json';
 import { waUrl } from '../../lib/utils';
@@ -38,6 +39,7 @@ const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'kpr_devel
 
     <!-- 3 Stat Cards -->
     <section class="relative bg-white py-16 md:py-20 gsap-fade" data-section="stat-cards">
+      <SectionBackground variant="cream" pattern={true} orbs={true} intensity="subtle" />
       <Pattern variant="dots-dense" color="gold" opacity={0.06} />
       <div class="container-wide relative">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -62,6 +64,7 @@ const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'kpr_devel
 
     <!-- USP: 3 Benefits -->
     <section class="relative bg-cream-50 py-16 md:py-20 gsap-fade" data-section="usp">
+      <SectionBackground variant="forest" pattern={true} orbs={true} intensity="subtle" />
       <div class="container-wide relative">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="text-center">
@@ -85,6 +88,7 @@ const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'kpr_devel
 
     <!-- Simulasi Cicilan Table -->
     <section class="relative bg-white py-20 md:py-28 gsap-fade" data-section="simulasi">
+      <SectionBackground variant="cream" pattern={true} orbs={true} intensity="subtle" />
       <Pattern variant="grid" color="forest" opacity={0.04} />
       <div class="container-wide relative">
         <div class="text-center mb-10">
@@ -133,6 +137,7 @@ const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'kpr_devel
 
     <!-- Syarat & Dokumen -->
     <section class="relative bg-cream-50 py-20 md:py-28 gsap-fade" data-section="syarat">
+      <SectionBackground variant="forest" pattern={true} orbs={true} intensity="subtle" />
       <Pattern variant="diagonal" color="forest" opacity={0.03} />
       <div class="container-wide relative">
         <div class="text-center mb-10">

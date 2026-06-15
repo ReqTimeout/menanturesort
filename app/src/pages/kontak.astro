@@ -8,6 +8,7 @@ import Footer from '../components/astro/Footer.astro';
 import PageHero from '../components/astro/PageHero.astro';
 import SectionDivider from '../components/astro/SectionDivider.astro';
 import Pattern from '../components/astro/Pattern.astro';
+import SectionBackground from '../components/astro/SectionBackground.astro';
 import siteData from '../data/site.json';
 import { waUrl } from '../lib/utils';
 import { MessageCircle, Phone, Mail, MapPin, Instagram, Shield, Building2, ArrowRight, MessageSquare } from 'lucide-svelte';
@@ -37,7 +38,9 @@ const waUtama = waUrl(siteData.contact.whatsapp, 'Halo, saya ingin konsultasi in
     <SectionDivider variant="diamond" />
 
     <!-- Contact + Bank -->
-    <section class="relative bg-white py-20 md:py-32 gsap-fade" data-section="info">
+    <section class="relative bg-white py-20 md:py-32 gsap-fade">
+    data-section="info">
+      <SectionBackground variant="cream" pattern={true} orbs={true} intensity="subtle" />
       <Pattern variant="dots" color="gold" opacity={0.05} />
       <div class="container-wide relative">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -92,7 +95,9 @@ const waUtama = waUrl(siteData.contact.whatsapp, 'Halo, saya ingin konsultasi in
     <SectionDivider variant="ornate" />
 
     <!-- 4 Steps -->
-    <section class="relative section-cream py-20 md:py-32 gsap-fade" data-section="steps">
+    <section class="relative section-cream py-20 md:py-32 gsap-fade">
+    data-section="steps">
+      <SectionBackground variant="gold" pattern={true} orbs={true} intensity="subtle" />
       <Pattern variant="grid" color="forest" opacity={0.04} />
       <div class="container-wide relative">
         <div class="grid grid-cols-12 gap-8 mb-12">

@@ -1,8 +1,8 @@
 <script>
   let { items = [], speed = 30, separator = '✦' } = $props();
 
-  // Duplicate items 4x so the -50% scroll creates seamless infinite loop
-  const looped = $derived([...items, ...items, ...items, ...items]);
+  // Duplicate items 2x so the -50% scroll creates seamless infinite loop
+  const looped = $derived([...items, ...items]);
 </script>
 
 <div class="marquee">

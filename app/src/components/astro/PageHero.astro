@@ -64,7 +64,7 @@ const bgClass = bgColor === 'forest' ? 'bg-forest-900 text-cream-50' : bgColor =
         <h1 class:list={['font-display leading-[0.95] tracking-[-0.02em] text-editorial-lg font-bold', bgColor === 'forest' ? 'text-cream-50' : 'text-forest-700', 'mb-6']}>
           {title}{accent && <><br/><em class="text-gold-700">{accent}</em></>}
         </h1>
-        <p class:list={['font-body text-lg leading-relaxed max-w-2xl', bgColor === 'forest' ? 'text-cream-50/80' : 'text-ink-500', image ? '' : 'mx-auto', 'mb-8']}>
+        <p class:list={['font-body text-lg leading-relaxed', image ? 'max-w-2xl' : 'max-w-3xl', bgColor === 'forest' ? 'text-cream-50/80' : 'text-ink-500', image ? '' : 'mx-auto text-center', 'mb-8']}>
           {description}
         </p>
 
@@ -81,7 +81,7 @@ const bgClass = bgColor === 'forest' ? 'bg-forest-900 text-cream-50' : bgColor =
         </div>
 
         {stats.length > 0 && (
-          <div class="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-forest-700/10 max-w-2xl" class:list={[image ? '' : 'mx-auto']}>
+          <div class:list={['grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-forest-700/10', image ? 'max-w-2xl' : 'max-w-2xl mx-auto']}>
             {stats.map((s) => (
               <div>
                 <div class:list={['font-display text-3xl', bgColor === 'forest' ? 'text-gold-500' : 'text-forest-700']}>{s.value}</div>
