@@ -1,334 +1,354 @@
-# 🚀 DEPLOY GUIDE — Menantu Resort ke IDCloudHost cPanel
+# 🚀 DEPLOY GUIDE — Menantu Resort → GitHub + cPanel IDCloudHost
 
-> **Hosting:** IDCloudHost shared (LiteSpeed + cPanel) — IP 103.63.24.139
-> **Runtime:** Node.js 18+ via cPanel "Setup Node.js App"  
-> **Domain:** menantu-resort.com  
-> **Tidak ada SSH** (port 22 closed confirmed) — pakai cPanel/FTP
+> **Last updated:** 15 Juni 2026
+> **Mode:** Hybrid (Static + Node.js SSR)
+> **Repo:** [github.com/ReqTimeout/menanturesort](https://github.com/ReqTimeout/menanturesort)
+> **Live:** https://menantu-resort.com/
 
 ---
 
-## 📋 PRASYARAT
+## 🔐 KREDENSIAL & AKSES
 
-- Akses cPanel: `https://103.63.24.139:2083/` (user: `egokkcmq`)
-- Node.js 18+ sudah tersedia di server (port 3000 Node app running confirmed)
-- Domain `menantu-resort.com` sudah pointing ke server via DNS
-- SSL Let's Encrypt sudah di-install di cPanel (atau pakai AutoSSL)
-- Repo Git di GitHub / GitLab (private recommended)
+### GitHub
+| Item | Value |
+|---|---|
+| **Repository** | `git@github.com:ReqTimeout/menanturesort.git` |
+| **Branch** | `main` |
+| **SSH key** | `~/.ssh/id_rsa` (default Mac SSH) |
+| **Verified** | ✅ `Hi ReqTimeout! You've successfully authenticated` |
+
+### cPanel IDCloudHost
+| Item | Value |
+|---|---|
+| **cPanel URL** | `https://103.63.24.139:2083/` |
+| **Username** | `egokkcmq` |
+| **Server IP** | `103.63.24.139` |
+| **Domain** | `menantu-resort.com` |
+| **Document Root** | `/home/egokkcmq/public_html/` |
+| **App folder (Node)** | `/home/egokkcmq/menantu-app/` |
+
+### Port
+| Service | Port | Status |
+|---|---|---|
+| cPanel Web UI | 2083 (HTTPS) | ✅ Open |
+| FTP | 21 (TLS) | ✅ Open |
+| SSH | 22 | ❌ Closed (pakai cPanel/FTP only) |
+| Node.js App | custom | via cPanel selector |
+
+### FTP Login
+| Item | Value |
+|---|---|
+| **Host** | `103.63.24.139` |
+| **Username** | `egokkcmq` (atau `egokkcmq@menantu-resort.com`) |
+| **Password** | *(cPanel password — lihat IDCloudHost client area)* |
+| **Encryption** | TLS (wajib) |
 
 ---
 
 ## 🏗️ ARSITEKTUR DEPLOY
 
-Project ini punya **2 mode deployment** karena pakai Astro hybrid (`output: 'static'` + Node adapter):
+Project ini pakai **Astro hybrid** (`output: 'static'` + Node adapter). 2 mode:
 
-### Mode A: Pure Static (RECOMMENDED untuk shared hosting)
-- `dist/client/*` di-upload ke `public_html/`
-- 9 halaman di-prerender jadi HTML statis
+### Mode A: Pure Static (RECOMMENDED)
+- Upload `dist/client/*` ke `/home/egokkcmq/public_html/`
+- 16/16 halaman di-prerender jadi HTML statis
 - LiteSpeed serve langsung, no Node process
-- **Paling cepat, paling murah, paling reliable**
+- **Paling simpel, paling reliable, paling murah**
 
-### Mode B: Node SSR (untuk halaman dinamis future)
-- `dist/server/entry.mjs` dijalankan via cPanel Node.js selector
-- Default listen port di-override cPanel (lihat PORT env)
-- Bisa serve SSR halaman tapi menambah overhead
-- **Pakai ini kalau Phase 5/6 butuh halaman dinamis (simulasi KPR interaktif)**
+### Mode B: Node SSR (untuk dynamic features)
+- Upload `dist/server/entry.mjs` + `package.json` ke `/home/egokkcmq/menantu-app/`
+- Register Node.js App di cPanel "Setup Node.js App"
+- Bisa serve API routes (e.g., `/api/health`)
+- Tetap static-render semua pages (output: 'static') — Node hanya untuk future SSR
 
-**Untuk Phase 1-4 (sekarang):** Gunakan **Mode A** (static). Simulasi KPR Svelte bisa di-hydrate di static HTML tanpa Node.
+**Untuk saat ini:** Gunakan **Mode A** (Static). Sudah cukup untuk semua fitur (form, simulasi, gallery).
 
 ---
 
-## 📦 STEP-BY-STEP: MODE A (STATIC)
+## 📋 WORKFLOW LENGKAP: GIT → CPANEL
 
-### 1. Build di local
+### STEP 1: Setup SSH key untuk GitHub (ONE-TIME)
+
+```bash
+# Cek apakah SSH key sudah ada
+ls -la ~/.ssh/id_rsa*
+
+# Test koneksi ke GitHub
+ssh -T git@github.com
+# Expected: "Hi ReqTimeout! You've successfully authenticated"
+```
+
+**Kalau belum ada key** (kalau `~/.ssh/id_rsa` tidak ada):
+
+```bash
+# Generate SSH key baru
+ssh-keygen -t ed25519 -C "your_email@example.com"
+# Tekan Enter 3x (no passphrase untuk simplicity)
+
+# Tambahkan ke ssh-agent
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+
+# Copy public key
+cat ~/.ssh/id_ed25519.pub
+# Paste ke: https://github.com/settings/keys → New SSH key
+```
+
+### STEP 2: Setup Git Remote (ONE-TIME per project)
+
+```bash
+cd /Users/maabook/Desktop/menantu-resort.com
+
+# Add remote (kalau belum)
+git remote add origin git@github.com:ReqTimeout/menanturesort.git
+git remote -v  # verify
+
+# Verify push access
+ssh -T git@github.com
+```
+
+### STEP 3: Commit & Push ke GitHub
+
+```bash
+cd /Users/maabook/Desktop/menantu-resort.com
+
+# Check status
+git status
+
+# Stage semua perubahan (kecuali yang di-ignore)
+git add -A
+
+# Verify yang akan di-commit (pastikan tidak ada SSH keys/env files)
+git diff --cached --name-only | grep -iE "id_rsa|\.env|secret|key"
+# Expected: empty (no sensitive files)
+
+# Commit
+git commit -m "feat: deskripsi perubahan"
+
+# Push
+git push -u origin main
+```
+
+**Auto-push script** (optional, di `~/.zshrc`):
+
+```bash
+alias deploy-menantu="cd /Users/maabook/Desktop/menantu-resort.com && git add -A && git commit -m 'deploy: \$(date +%Y-%m-%d)' && git push origin main"
+```
+
+### STEP 4: Build di Local
 
 ```bash
 cd /Users/maabook/Desktop/menantu-resort.com/app
+
+# Install dependencies (kalau fresh clone)
+npm install
+
+# Build production
 npm run build
-# Output: dist/client/ (HTML statis + asset)
+
+# Verify output
+ls -la dist/server/entry.mjs
+ls -la dist/client/index.html
+ls -la dist/client/.htaccess
 ```
 
-### 2. Verify local (opsional)
+Expected: `dist/client/` ~75MB (mostly images), `dist/server/entry.mjs` ~3KB.
+
+### STEP 5: Upload ke cPanel
+
+#### Opsi A: Pure Static (RECOMMENDED)
+
+**Cara 1: lftp (terminal/SSH-friendly)**
 
 ```bash
-# Pakai Node server (Astro Node adapter)
-PORT=3001 node ./dist/server/entry.mjs
-# Buka http://localhost:3001/
-
-# Atau pakai static server simple
-npx serve dist/client -p 3002
+cd /Users/maabook/Desktop/menantu-resort.com
+./deploy-static.sh
+# Script akan prompt password cPanel
 ```
 
-### 3. Upload ke cPanel
+**Cara 2: Manual via cPanel File Manager**
 
-**Cara A: File Manager (paling mudah)**
 1. Login ke `https://103.63.24.139:2083/`
 2. Buka **File Manager** → navigasi ke `public_html/`
-3. **BACKUP** existing: select all → compress → `public_html_backup_$(date).zip`
+3. **BACKUP existing** (kalau ada):
+   - Select all → Compress → `public_html_backup_$(date).zip`
 4. Hapus isi `public_html/` (atau replace)
-5. Upload `dist/client/` content:
-   - Cara 1: Compress `dist/client/` ke zip → upload zip → extract di server
-   - Cara 2: Upload per-file (lambat)
-6. Pastikan `.htaccess` ter-upload (lihat step 4)
-7. Set permission: files `644`, folders `755`
+5. Upload `menantu-deploy-static.zip` (file yang sudah di-generate):
+   - **Upload** → pilih file → tunggu selesai
+   - Klik kanan zip → **Extract** → extract ke `public_html/`
+6. **Verify** `.htaccess` ter-upload (cek di File Manager)
+7. Set permissions: files `644`, folders `755`
 
-**Cara B: FTP (untuk update rutin)**
-```bash
-# Install lftp atau pakai FileZilla GUI
-lftp -c "open -u egokkcmq,PASSWORD ftp://103.63.24.139; \
-  mirror -R --delete --verbose app/dist/client/ /public_html/"
-```
+**Cara 3: FileZilla (GUI)**
 
-**Cara C: Git version control di cPanel** (RECOMMENDED)
-1. Login cPanel → **Git Version Control** (kalau ada)
-2. Create repository:
-   - URL: `https://github.com/USERNAME/menantu-resort.com.git`
-   - Path: `/home/egokkcmq/menantu-resort-build/`
-3. Pull latest
-4. Setup deploy hook (lihat di bawah)
+1. Download [FileZilla](https://filezilla-project.org)
+2. **File → Site Manager → New Site:**
+   - **Protocol:** FTP over TLS (explicit)
+   - **Host:** `103.63.24.139`
+   - **Port:** 21
+   - **User:** `egokkcmq`
+   - **Password:** *(cPanel password)*
+3. **Connect** (accept cert)
+4. Navigate ke `/public_html/` di remote
+5. Drag-and-drop dari local `app/dist/client/` ke remote
 
-### 4. `.htaccess` untuk LiteSpeed
+#### Opsi B: Node SSR Mode (advanced)
 
-Buat `public_html/.htaccess`:
+**Cara 1: ZIP upload + cPanel Node Setup**
 
-```apache
-# ============================================
-# Menantu Resort — LiteSpeed Configuration
-# ============================================
-
-# Force HTTPS
-RewriteEngine On
-RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-
-# Pretty URLs (hapus .html)
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} !\. [NC]
-RewriteRule ^(.*)$ /$1.html [L]
-
-# 404 fallback ke /404.html (untuk Astro trailing slash)
-ErrorDocument 404 /404.html
-
-# Cache static assets (1 year)
-<IfModule mod_expires.c>
-  ExpiresActive On
-  ExpiresByType image/webp "access plus 1 year"
-  ExpiresByType image/jpeg "access plus 1 year"
-  ExpiresByType image/png "access plus 1 year"
-  ExpiresByType image/svg+xml "access plus 1 year"
-  ExpiresByType text/css "access plus 1 year"
-  ExpiresByType application/javascript "access plus 1 year"
-  ExpiresByType font/woff2 "access plus 1 year"
-  ExpiresDefault "access plus 1 month"
-</IfModule>
-
-# Gzip compression
-<IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json
-  AddOutputFilterByType DEFLATE image/svg+xml application/xml text/xml
-</IfModule>
-
-# Security headers
-<IfModule mod_headers.c>
-  Header set X-Content-Type-Options "nosniff"
-  Header set X-Frame-Options "SAMEORIGIN"
-  Header set Referrer-Policy "strict-origin-when-cross-origin"
-  Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
-</IfModule>
-
-# Disable directory listing
-Options -Indexes
-```
-
-### 5. SSL/HTTPS
-
-- cPanel → **SSL/TLS Status** → run **AutoSSL** untuk `menantu-resort.com`
-- Atau pakai **Let's Encrypt** (free) di cPanel → **SSL/TLS** → **Manage SSL Sites**
-
-### 6. Verify deployment
-
-- Buka `https://menantu-resort.com/` → homepage load
-- Buka `https://menantu-resort.com/villa/` → listing villa
-- Buka `https://menantu-resort.com/villa/bijak/` → detail
-- Buka `https://menantu-resort.com/faq/` → FAQ accordion
-- Test 404: `https://menantu-resort.com/nonexistent/` → 404 page custom
-- Test mobile responsive: Chrome DevTools mobile mode
-- Lighthouse: target Performance 95+, Accessibility 90+, Best Practices 95+, SEO 100
-
----
-
-## 📦 STEP-BY-STEP: MODE B (NODE SSR)
-
-> **Gunakan kalau** Phase 5/6 butuh halaman SSR (misal `/simulasi-kpr` dengan database).
-
-### 1. Build dengan output server
-
-`astro.config.mjs` sudah di-config dengan `output: 'static'` + Node adapter.
-Untuk switch ke SSR mode, edit per-halaman: `export const prerender = false;`
-
-Atau ganti global ke:
-```js
-output: 'server'
-```
-
-### 2. Upload `dist/` (bukan `dist/client/`)
-
-Upload SELURUH `dist/` folder ke `/home/egokkcmq/menantu-resort-app/`
-
-### 3. Setup Node.js App di cPanel
-
-1. cPanel → **Setup Node.js App** (di section "Software")
-2. Klik **Create Application**
-3. Isi:
-   - **Node.js version:** 18.x atau 20.x (pilih yang tersedia)
+1. File Manager → buat folder `/menantu-app/`
+2. Upload `menantu-deploy-node.zip` ke folder itu
+3. Extract zip
+4. **Setup Node.js App** (cPanel → Software section):
+   - Klik **CREATE APPLICATION**
+   - **Node.js version:** `20.x` (atau `18.20.4`)
    - **Application mode:** Production
-   - **Application root:** `menantu-resort-app` (path ke folder `dist/`)
-   - **Application URL:** `menantu-resort.com` (atau `node.menantu-resort.com` kalau static di subdomain lain)
-   - **Application startup file:** `server/entry.mjs`
-   - **Passenger log file:** (auto)
-4. Klik **Create**
-5. Catat **virtual environment** yang di-generate (mis. `/home/egokkcmq/nodevenv/menantu-resort-app/18/`)
+   - **Application root:** `menantu-app`
+   - **Application URL:** `menantu-resort.com`
+   - **Application startup file:** `dist/server/entry.mjs`
+   - **Env vars:** `HOST=0.0.0.0`, `PORT=3000`, `NODE_ENV=production`
+5. Klik **CREATE**
+6. Klik app yang baru dibuat → **Run NPM Install** (atau buka Terminal)
+7. **Restart** app
+8. **Setup reverse proxy** di `public_html/.htaccess` (lihat DEPLOY_IDCLOUDHOST.md)
 
-### 4. Install dependencies di server
-
-cPanel akan jalankan `npm install` otomatis (kalau ada `package.json` di root).
-TAPI kalau pakai `dist/` only (no node_modules), pakai cara ini:
+### STEP 6: Verify Live Site
 
 ```bash
-# Di local, build dengan --external atau copy node_modules
-# Lalu zip dist + package.json + package-lock.json
-# Upload ke server
-# Di cPanel Terminal (kalau ada) atau SSH:
-cd ~/menantu-resort-app
-npm install --production
+# Test homepage
+curl -I https://menantu-resort.com/
+
+# Test static assets
+curl -I https://menantu-resort.com/_astro/[some-file].css
+
+# Test specific page
+curl -I https://menantu-resort.com/villa/
 ```
 
-### 5. Restart Node app
+**Manual checks di browser:**
+- [ ] Homepage load dengan hero parallax
+- [ ] Navbar sticky + menu lengkap
+- [ ] Villa pages accessible: `/villa/bijak/`, `/villa/idaman/`, `/villa/mapan/`
+- [ ] WhatsApp floating button (desktop only)
+- [ ] Sticky mobile CTA (3 buttons)
+- [ ] Form WhatsApp submit buka wa.me link
+- [ ] SSL valid (https, no warning)
+- [ ] Mobile responsive (test 390px width)
 
-cPanel → Setup Node.js App → klik **Restart** untuk aplikasi `menantu-resort-app`.
+---
 
-### 6. Setup reverse proxy (kalau Node listen di port lain)
+## 🔧 DEPLOY SCRIPT (TERMINAL ONLY)
 
-cPanel → **Domains** → `menantu-resort.com` → **Document Root** tetap `public_html/`
-Untuk route traffic Node, pakai `.htaccess` di public_html:
+File `deploy-static.sh` (sudah ada di root project) mengotomasi upload via lftp:
 
-```apache
-# Proxy ke Node server (kalau listen di port 3000)
-RewriteEngine On
-RewriteCond %{REQUEST_URI} ^/api/
-RewriteRule ^(.*)$ http://127.0.0.1:3000/$1 [P,L]
+```bash
+#!/bin/bash
+# Usage: ./deploy-static.sh
+# Akan prompt password cPanel
+
+CPANEL_HOST="103.63.24.139"
+CPANEL_USER="egokkcmq"
+LOCAL_DIST="app/dist/client"
+
+# Backup + mirror upload via lftp
+lftp -c "
+  set ssl:verify-certificate no
+  open -u $CPANEL_USER,PASSWORD ftp://$CPANEL_HOST
+  cd public_html
+  mirror --reverse --delete --only-newer --verbose $LOCAL_DIST/ ./
+  bye
+"
 ```
 
-Atau lebih clean: pisahkan static di `static.menantu-resort.com` + Node di `app.menantu-resort.com`.
-
----
-
-## 🔄 WORKFLOW PUSH-TO-DEPLOY (Recommended)
-
-### Setup GitHub Actions (CI/CD)
-
-`.github/workflows/deploy.yml`:
-
-```yaml
-name: Deploy to IDCloudHost
-
-on:
-  push:
-    branches: [main]
-
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-          cache-dependency-path: app/package-lock.json
-
-      - name: Install
-        working-directory: app
-        run: npm ci
-
-      - name: Build
-        working-directory: app
-        run: npm run build
-
-      - name: Deploy via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4
-        with:
-          server: 103.63.24.139
-          username: ${{ secrets.FTP_USER }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: app/dist/client/
-          server-dir: /public_html/
-          # Optional: delete remote files not in local
-          dangerous-clean-slate: false
+**Run:**
+```bash
+cd /Users/maabook/Desktop/menantu-resort.com
+./deploy-static.sh
 ```
 
-Setup secrets di GitHub repo:
-- `FTP_USER`: `egokkcmq`
-- `FTP_PASSWORD`: (password FTP dari cPanel)
-
-Setiap push ke `main` → build → upload ke server.
+File `deploy-node.sh` (Node SSR mode) — manual cPanel steps.
 
 ---
 
-## 🔐 SECURITY CHECKLIST
+## 🔄 UPDATE ROUTINE (setelah initial deploy)
 
-- [ ] Ganti SSH password (yang lama ke-expose di chat)
-- [ ] Generate FTP password khusus (jangan pakai cPanel password)
-- [ ] Enable 2FA di cPanel kalau tersedia
-- [ ] Set proper file permissions: 644 files, 755 dirs, 600 .env
-- [ ] Backup `public_html/` mingguan ke local (atau pakai cPanel backup)
-- [ ] Monitor uptime dengan UptimeRobot (free) → email/SMS alert
-- [ ] Setup Cloudflare (free tier) untuk DDoS protection + CDN cache
-- [ ] Ganti `siteData.contact.whatsapp` dari dummy `6281234567890` ke nomor asli
-- [ ] Set `PUBLIC_GA4_ID` di cPanel Environment Variables untuk tracking
+Setiap kali ada perubahan di local:
 
----
+```bash
+cd /Users/maabook/Desktop/menantu-resort.com
 
-## 📊 POST-DEPLOY CHECKLIST
+# 1. Commit & push ke GitHub
+git add -A
+git commit -m "feat: update deskripsi"
+git push origin main
 
-- [ ] Submit sitemap ke Google Search Console: `https://menantu-resort.com/sitemap-index.xml`
-- [ ] Test rich results: `https://search.google.com/test/rich-results`
-- [ ] Test PageSpeed: `https://pagespeed.web.dev/`
-- [ ] Verify Schema.org di `https://validator.schema.org/`
-- [ ] Set custom domain email (opsional): `sales@menantu-resort.com` via cPanel Email
-- [ ] Setup Google Business Profile untuk `Menantu Resort` location
-- [ ] Daftar di Google Analytics 4 + Search Console
-- [ ] Monitor 404 errors di cPanel → Apache Error Log
-- [ ] Test mobile page speed dari device asli (3G/4G)
-- [ ] Share link ke WhatsApp Business → preview harus muncul dengan OG image
+# 2. Build
+cd app && npm run build && cd ..
+
+# 3. Deploy (pilih salah satu)
+./deploy-static.sh   # atau manual via FileZilla
+```
 
 ---
 
-## 🆘 TROUBLESHOOTING
+## 📊 FILE SIZES & OPTIMIZATION
 
-### "ERR_TOO_MANY_REDIRECTS" setelah deploy
-→ Cek `.htaccess` HTTPS redirect loop. Pastikan `RewriteCond %{HTTPS} off` di atas rule.
+| File | Size | Notes |
+|---|---|---|
+| `dist/client/` total | ~75MB | Mostly images (68MB) |
+| `dist/client/_astro/*.js` | ~1MB | All JS bundles (minified) |
+| `dist/client/_astro/*.css` | ~80KB | Minified CSS |
+| `dist/server/entry.mjs` | ~3KB | Node entry (untuk SSR) |
+| `menantu-deploy-static.zip` | 59MB | Compressed for upload |
+| `menantu-deploy-node.zip` | 59MB | + package files |
 
-### Halaman 404 di route yang ada
-→ Astro generate URL dengan trailing slash (`/villa/bijak/`). LiteSpeed default support.
-→ Cek `pretty URLs` rule di `.htaccess`.
-
-### Asset (CSS/JS) tidak load
-→ Cek permission file `_astro/` folder (harus 755, file 644).
-→ Cek `.htaccess` `mod_expires` tidak block.
-
-### Font Google tidak load
-→ Pastikan tidak di-block firewall. Preconnect sudah ditambah di `<head>`.
-
-### Build sukses tapi ada error di console browser
-→ Buka DevTools → Console, screenshot errornya. Biasanya error dari Svelte hydration — cek console untuk stack trace.
-
-### Node SSR app tidak start
-→ Cek Node version compatibility. cPanel mungkin punya versi lama.
-→ Cek `package.json` engines field: `"node": ">=18.17.0"`.
+**Optimization tips:**
+- Images already compressed (JPEG/PNG, max 3MB each)
+- `menantu.jpg` di `public/360/` 17MB — consider CDN for production
+- CSS minified by Tailwind
+- JS minified by Astro/Vite
 
 ---
 
-*Last updated: 2026-06-14*
+## 🚨 TROUBLESHOOTING
+
+### "Connection refused" ke cPanel
+- cPanel UI: cek `https://103.63.24.139:2083/` di browser
+- Mungkin firewall/network block dari lokasi Anda
+
+### FTP "530 Login incorrect"
+- Password salah — reset via IDCloudHost client area
+- Atau coba `egokkcmq@menantu-resort.com` sebagai username
+
+### ".htaccess not found" setelah deploy
+- File hidden, enable "Show hidden files" di File Manager
+- Atau `.htaccess` ter-ignore karena nama dia hidden
+
+### 404 di semua page
+- Cek `.htaccess` rewrite rules aktif
+- Cek document root di cPanel "Domains" section
+- Cek DNS A record menantu-resort.com → 103.63.24.139
+
+### Build error "Cannot find module"
+```bash
+cd app
+rm -rf node_modules package-lock.json
+npm install
+npm run build
+```
+
+### Node app "Cannot find module" di server
+- Pastikan `package.json` & `package-lock.json` ter-upload ke `menantu-app/`
+- Run `npm install --omit=dev` di server
+
+---
+
+## 📞 SUPPORT
+
+- **IDCloudHost 24/7 chat:** [idcloudhost.com](https://idcloudhost.com)
+- **GitHub repo:** [github.com/ReqTimeout/menanturesort](https://github.com/ReqTimeout/menanturesort)
+- **Local project lead:** lihat `app/src/data/site.json` contact section
+
+---
+
+*Last updated: 15 Juni 2026 by Codex (V10 audit + deploy prep)*
