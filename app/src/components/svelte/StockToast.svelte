@@ -54,14 +54,14 @@
 
   const waLink = waUrl(
     siteData.contact.whatsapp,
-    'Halo, saya juga tertarik. Masih ada unit tersedia?',
-    'stock_toast_fomo'
+    'Halo, saya tertarik dengan unit yang tersedia. Mohon info detail & jadwal survey.',
+    'live_activity'
   );
 </script>
 
 {#if visible}
   <div
-    class="fixed bottom-20 left-4 right-4 md:left-6 md:right-auto md:bottom-6 md:max-w-sm z-40 transition-all duration-500"
+    class="hidden md:block fixed bottom-6 left-6 z-40 max-w-sm transition-all duration-500"
     class:translate-y-0={visible}
     class:opacity-100={visible}
     class:translate-y-4={!visible}
@@ -80,11 +80,11 @@
           <CheckCircle2 class="w-5 h-5" />
         </div>
         <div class="flex-1 min-w-0">
-          <div class="font-mono text-[10px] uppercase tracking-widest text-gold-700 mb-1">— Baru saja</div>
+          <div class="font-mono text-[10px] uppercase tracking-widest text-gold-700 mb-1">— Aktivitas Terkini</div>
           <p class="text-sm text-ink-700 leading-snug">
             <strong class="text-forest-700">{currentToast.customer}</strong> baru saja memesan villa <strong class="text-forest-700">{currentToast.villa}</strong>
           </p>
-          <p class="text-xs text-ink-mute mt-1">{currentToast.time} · Klik untuk klaim unit terakhir →</p>
+          <p class="text-xs text-ink-mute mt-1">{currentToast.time} · Hubungi kami untuk info ketersediaan →</p>
         </div>
         <button
           type="button"

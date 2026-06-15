@@ -38,9 +38,9 @@
   });
 
   const sizeClass = {
-    sm: { segment: 'min-w-[48px] px-2 py-1', value: 'text-base', label: 'text-[9px]' },
-    md: { segment: 'min-w-[64px] px-3 py-2', value: 'text-2xl', label: 'text-[10px]' },
-    lg: { segment: 'min-w-[80px] px-4 py-3', value: 'text-4xl', label: 'text-xs' },
+    sm: { segment: 'min-w-[42px] px-1.5 py-1', value: 'text-sm', label: 'text-[8px]' },
+    md: { segment: 'min-w-[52px] sm:min-w-[60px] px-2 sm:px-3 py-1.5 sm:py-2', value: 'text-xl sm:text-2xl', label: 'text-[9px] sm:text-[10px]' },
+    lg: { segment: 'min-w-[60px] sm:min-w-[80px] px-2.5 sm:px-4 py-2 sm:py-3', value: 'text-2xl sm:text-4xl', label: 'text-[10px] sm:text-xs' },
   };
 
   const sizes = sizeClass[size];
@@ -61,7 +61,7 @@
     </div>
   {:else}
     <motion.div
-      class="inline-flex items-stretch gap-2"
+      class="inline-flex items-stretch gap-1.5 sm:gap-2"
       initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -72,19 +72,19 @@
         <span class={cn('countdown-value font-mono font-bold text-cream-50', sizes.value)}>{pad2(cd.days)}</span>
         <span class={cn('countdown-label text-cream-50/60 uppercase tracking-widest', sizes.label)}>Hari</span>
       </div>
-      <span class="text-gold-500 font-mono font-bold self-center text-2xl">:</span>
+      <span class="text-gold-500 font-mono font-bold self-center text-lg sm:text-2xl">:</span>
       <!-- Hours -->
       <div class={cn('countdown-segment flex flex-col items-center', sizes.segment)}>
         <span class={cn('countdown-value font-mono font-bold text-cream-50', sizes.value)}>{pad2(cd.hours)}</span>
         <span class={cn('countdown-label text-cream-50/60 uppercase tracking-widest', sizes.label)}>Jam</span>
       </div>
-      <span class="text-gold-500 font-mono font-bold self-center text-2xl">:</span>
+      <span class="text-gold-500 font-mono font-bold self-center text-lg sm:text-2xl">:</span>
       <!-- Minutes -->
       <div class={cn('countdown-segment flex flex-col items-center', sizes.segment)}>
         <span class={cn('countdown-value font-mono font-bold text-cream-50', sizes.value)}>{pad2(cd.minutes)}</span>
         <span class={cn('countdown-label text-cream-50/60 uppercase tracking-widest', sizes.label)}>Menit</span>
       </div>
-      <span class="text-gold-500 font-mono font-bold self-center text-2xl">:</span>
+      <span class="text-gold-500 font-mono font-bold self-center text-lg sm:text-2xl">:</span>
       <!-- Seconds -->
       <div class={cn('countdown-segment flex flex-col items-center', sizes.segment)}>
         <motion.span

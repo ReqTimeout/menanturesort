@@ -9,7 +9,7 @@
   import { motion } from '@humanspeak/svelte-motion';
   import LiveActivityTicker from './LiveActivityTicker.svelte';
   import WhatsAppButton from './WhatsAppButton.svelte';
-  import CountdownTimer from './CountdownTimer.svelte';
+  
   import { Calendar, Wallet, LineChart, Shield, ArrowUpRight } from 'lucide-svelte';
   import { cn } from '@lib/utils';
 
@@ -81,18 +81,7 @@
           </motion.ul>
         </div>
 
-        <!-- Countdown reminder -->
-        {#if promoDeadline}
-          <motion.div
-            class="mb-10 p-6 bg-forest-900/50 border border-forest-800 inline-block"
-                        transition={{ duration: 0.6, delay: 0.4 }}
-          >
-            <p class="text-xs uppercase tracking-widest text-gold-500 font-bold mb-3">
-              ⏰ Promo berakhir dalam:
-            </p>
-            <CountdownTimer target={promoDeadline} size="md" />
-          </motion.div>
-        {/if}
+
 
         <!-- CTAs -->
         <motion.div
