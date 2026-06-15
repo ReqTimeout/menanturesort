@@ -731,9 +731,7 @@ body.has-cookie-banner-desktop {
   gap: 0.5rem;
   white-space: nowrap;
 }
-.marquee:hover .marquee-track {
-  animation-play-state: paused;
-}
+/* Hover pause removed — biar marquee selalu jalan, tidak terasa "diam" ke user */
 .marquee-item .highlight {
   color: #D4A574;
   font-weight: 700;
