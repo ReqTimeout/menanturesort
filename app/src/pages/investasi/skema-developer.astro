@@ -37,7 +37,7 @@ const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'kpr_devel
     <SectionDivider variant="diamond" />
 
     <!-- 3 Stat Cards -->
-    <section class="relative bg-white py-16 md:py-20" data-section="stat-cards">
+    <section class="relative bg-white py-16 md:py-20 gsap-fade" data-section="stat-cards">
       <Pattern variant="dots-dense" color="gold" opacity={0.06} />
       <div class="container-wide relative">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -61,7 +61,7 @@ const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'kpr_devel
     </section>
 
     <!-- USP: 3 Benefits -->
-    <section class="relative bg-cream-50 py-16 md:py-20" data-section="usp">
+    <section class="relative bg-cream-50 py-16 md:py-20 gsap-fade" data-section="usp">
       <div class="container-wide relative">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div class="text-center">
@@ -84,7 +84,7 @@ const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'kpr_devel
     </section>
 
     <!-- Simulasi Cicilan Table -->
-    <section class="relative bg-white py-20 md:py-28" data-section="simulasi">
+    <section class="relative bg-white py-20 md:py-28 gsap-fade" data-section="simulasi">
       <Pattern variant="grid" color="forest" opacity={0.04} />
       <div class="container-wide relative">
         <div class="text-center mb-10">
@@ -132,7 +132,7 @@ const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'kpr_devel
     </section>
 
     <!-- Syarat & Dokumen -->
-    <section class="relative bg-cream-50 py-20 md:py-28" data-section="syarat">
+    <section class="relative bg-cream-50 py-20 md:py-28 gsap-fade" data-section="syarat">
       <Pattern variant="diagonal" color="forest" opacity={0.03} />
       <div class="container-wide relative">
         <div class="text-center mb-10">
@@ -171,7 +171,7 @@ const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'kpr_devel
     </section>
 
     <!-- Final CTA -->
-    <section class="relative bg-forest-700 text-cream-50 py-20 md:py-28 overflow-hidden" data-section="cta">
+    <section class="relative bg-forest-700 text-cream-50 py-20 md:py-28 overflow-hidden gsap-fade" data-section="cta">
       <Pattern variant="gold-sparkle" color="gold" opacity={0.08} />
       <div class="container-wide relative text-center">
         <Zap size={40} class="text-gold-500 mx-auto mb-4" />

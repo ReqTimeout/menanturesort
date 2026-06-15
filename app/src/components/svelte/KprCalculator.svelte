@@ -71,13 +71,13 @@
   );
 </script>
 
-<div class="kpr-calc-card">
+<div class="kpr-calc-card gsap-fade">
   <!-- Header -->
   <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
     <div>
       <div class="flex items-center gap-2 mb-1">
         <Calculator size={18} class="text-gold-700" />
-        <span class="font-mono text-xs uppercase tracking-widest text-gold-700">Simulasi Interaktif</span>
+        <span class="font-mono text-[13px] uppercase tracking-widest text-gold-700 font-semibold">Simulasi Interaktif</span>
       </div>
       <h3 class="font-display text-2xl md:text-3xl text-forest-700 font-bold">KPR & Passive Income</h3>
     </div>
@@ -85,7 +85,7 @@
       {#each VILLAS as v}
         <button
           type="button"
-          class="px-3 py-2 text-xs font-semibold uppercase tracking-wider transition-all"
+          class="px-4 py-2.5 text-[13px] font-bold uppercase tracking-wider transition-all"
           class:chip-active={selectedId === v.id}
           class:chip-inactive={selectedId !== v.id}
           onclick={() => (selectedId = v.id)}
@@ -99,10 +99,10 @@
     <div class="lg:col-span-2 space-y-6">
       <div>
         <div class="flex items-center justify-between mb-2">
-          <label class="text-sm font-semibold text-ink-700 flex items-center gap-1.5">
+          <label class="text-[15px] font-semibold text-ink-700 flex items-center gap-1.5">
             <Home size={14} class="text-gold-700" /> Harga Villa
           </label>
-          <div class="font-mono text-sm text-forest-700 font-bold">{villa.priceDisplay}</div>
+          <div class="font-mono text-[14px] md:text-[15px] text-forest-700 font-bold">{villa.priceDisplay}</div>
         </div>
         <div class="h-1 bg-cream-100 relative">
           <div class="absolute inset-y-0 left-0 bg-gold-700" style="width: {((villa.price - 1e9) / (2.5e9 - 1e9)) * 100}%"></div>
@@ -111,52 +111,52 @@
 
       <div>
         <div class="flex items-center justify-between mb-2">
-          <label class="text-sm font-semibold text-ink-700">Down Payment</label>
-          <div class="font-mono text-sm text-forest-700 font-bold">{dpPercent}% · {fmtShort(kpr().dp)}</div>
+          <label class="text-[15px] font-semibold text-ink-700">Down Payment</label>
+          <div class="font-mono text-[14px] md:text-[15px] text-forest-700 font-bold">{dpPercent}% · {fmtShort(kpr().dp)}</div>
         </div>
         <input type="range" min="20" max="60" step="5" bind:value={dpPercent} class="w-full kpr-slider" />
-        <div class="flex justify-between text-[10px] text-ink-mute font-mono mt-1">
+        <div class="flex justify-between text-[11px] text-ink-mute font-mono mt-1.5">
           <span>20%</span><span>40%</span><span>60%</span>
         </div>
       </div>
 
       <div>
         <div class="flex items-center justify-between mb-2">
-          <label class="text-sm font-semibold text-ink-700">Tenor</label>
-          <div class="font-mono text-sm text-forest-700 font-bold">{tenorYears} tahun</div>
+          <label class="text-[15px] font-semibold text-ink-700">Tenor</label>
+          <div class="font-mono text-[14px] md:text-[15px] text-forest-700 font-bold">{tenorYears} tahun</div>
         </div>
         <input type="range" min="5" max="20" step="5" bind:value={tenorYears} class="w-full kpr-slider" />
-        <div class="flex justify-between text-[10px] text-ink-mute font-mono mt-1">
+        <div class="flex justify-between text-[11px] text-ink-mute font-mono mt-1.5">
           <span>5</span><span>10</span><span>15</span><span>20</span>
         </div>
       </div>
 
       <div>
         <div class="flex items-center justify-between mb-2">
-          <label class="text-sm font-semibold text-ink-700">Bunga Flat</label>
-          <div class="font-mono text-sm text-forest-700 font-bold">{interestRate.toFixed(1)}% p.a.</div>
+          <label class="text-[15px] font-semibold text-ink-700">Bunga Flat</label>
+          <div class="font-mono text-[14px] md:text-[15px] text-forest-700 font-bold">{interestRate.toFixed(1)}% p.a.</div>
         </div>
         <input type="range" min="3" max="10" step="0.5" bind:value={interestRate} class="w-full kpr-slider" />
-        <div class="flex justify-between text-[10px] text-ink-mute font-mono mt-1">
+        <div class="flex justify-between text-[11px] text-ink-mute font-mono mt-1.5">
           <span>3%</span><span>5%</span><span>7%</span><span>10%</span>
         </div>
       </div>
 
       <div class="pt-4 border-t border-cream-100">
-        <div class="text-xs font-mono uppercase tracking-widest text-gold-700 mb-3">Asumsi Passive Income</div>
+        <div class="text-[12px] font-mono uppercase tracking-widest text-gold-700 mb-3 font-semibold">Asumsi Passive Income</div>
 
         <div>
           <div class="flex items-center justify-between mb-2">
-            <label class="text-sm font-semibold text-ink-700">Okupansi</label>
-            <div class="font-mono text-sm text-forest-700 font-bold">{occupancy}%</div>
+            <label class="text-[15px] font-semibold text-ink-700">Okupansi</label>
+            <div class="font-mono text-[14px] md:text-[15px] text-forest-700 font-bold">{occupancy}%</div>
           </div>
           <input type="range" min="30" max="80" step="5" bind:value={occupancy} class="w-full kpr-slider" />
         </div>
 
         <div class="mt-4">
           <div class="flex items-center justify-between mb-2">
-            <label class="text-sm font-semibold text-ink-700">Tarif / Malam</label>
-            <div class="font-mono text-sm text-forest-700 font-bold">{fmtRp(nightlyRate)}</div>
+            <label class="text-[15px] font-semibold text-ink-700">Tarif / Malam</label>
+            <div class="font-mono text-[14px] md:text-[15px] text-forest-700 font-bold">{fmtRp(nightlyRate)}</div>
           </div>
           <input type="range" min="1000000" max="4000000" step="100000" bind:value={nightlyRate} class="w-full kpr-slider" />
         </div>
@@ -176,7 +176,7 @@
           <div class="font-display text-4xl md:text-5xl font-bold text-cream-50 leading-none">
             {fmtRp(kpr().cicilan)}
           </div>
-          <div class="text-xs text-cream-50/60 font-mono mt-1">/ bulan · fixed flat</div>
+          <div class="text-[12px] text-cream-50/60 font-mono mt-1.5">/ bulan · fixed flat</div>
         </div>
       </div>
 

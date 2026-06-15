@@ -131,7 +131,7 @@ const unitsLeft = totalUnits - siteData.stats.unitsSold;
     <SectionDivider variant="ornate" />
 
     <!-- 3. Villa Card Grid -->
-    <section id="villa-grid" class="bg-white py-14 md:py-24" reveal data-section="villa-grid">
+    <section id="villa-grid" class="bg-white py-14 md:py-24 gsap-fade" reveal data-section="villa-grid">
       
     <Pattern variant="grid" color="forest" opacity={0.05} />
     <div class="container-wide">
@@ -166,7 +166,7 @@ const unitsLeft = totalUnits - siteData.stats.unitsSold;
     <VillaComparisonTable client:load />
 
     <!-- 5. ROI Simulator -->
-    <section class="relative section-cream py-14 md:py-24" reveal data-section="roi">
+    <section class="relative section-cream py-14 md:py-24 gsap-fade" reveal data-section="roi">
       
     <Pattern variant="gold-sparkle" color="gold" opacity={0.07} />
     <div class="container-wide">
