@@ -11,13 +11,17 @@
   import WhatsAppButton from './WhatsAppButton.svelte';
   import { ArrowRight, Sparkles } from 'lucide-svelte';
   import { cn } from '@lib/utils';
-
+  
   let { villas = [], class: className = '' } = $props();
 </script>
 
 <section id="villa-types" class={cn('gsap-fade section-tight section-white relative overflow-hidden reveal', className)}>
-  <!-- Dots pattern overlay -->
-  <div class="absolute inset-0 pointer-events-none opacity-[0.05]" style="background-image: radial-gradient(circle, #1B4332 1px, transparent 1px); background-size: 24px 24px;"></div>
+  <!-- Animated background: SVG dots pattern + 2 soft orbs -->
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <div class="absolute inset-0 opacity-[0.06]" style="background-image: radial-gradient(circle, #1B4332 1px, transparent 1px); background-size: 24px 24px;"></div>
+    <div class="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl animate-float-soft" style="background: radial-gradient(circle, rgba(212,165,116,0.20) 0%, transparent 70%); animation-delay: -1s;"></div>
+    <div class="absolute bottom-0 left-0 w-[28rem] h-[28rem] rounded-full blur-3xl animate-float-soft" style="background: radial-gradient(circle, rgba(27,67,50,0.15) 0%, transparent 70%); animation-delay: -3s;"></div>
+  </div>
   <div class="relative">
   <div class="container-wide">
     <!-- Header -->
@@ -32,7 +36,7 @@
       <h2 class="font-display text-forest-700 leading-[0.95] tracking-tight font-bold text-editorial-md mb-4">
         Tiga villa, <em class="text-gold-700 font-medium">satu standar.</em>
       </h2>
-      <p class="font-body text-ink-700 leading-relaxed text-base md:text-lg max-w-2xl">
+      <p class="font-body text-ink-700 leading-[1.7] text-base md:text-[17px] max-w-[640px] mx-auto">
         Setiap villa dirancang dengan presisi dan dedikasi yang sama — beda kapasitas, satu kualitas.
         Pilih yang sesuai dengan tahap hidup dan target investasi Anda.
       </p>

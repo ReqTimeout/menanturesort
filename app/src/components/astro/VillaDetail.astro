@@ -21,6 +21,7 @@
 import VillaHero from '../svelte/VillaHero.svelte';
 import GaleriInterior from '../svelte/GaleriInterior.svelte';
 import SectionDivider from './SectionDivider.astro';
+import SectionBackground from './SectionBackground.astro';
 import Pattern from './Pattern.astro';
 import CountdownTimer from '../svelte/CountdownTimer.svelte';
 import { waUrl, formatRupiah, formatShort } from '@lib/utils';
@@ -39,6 +40,28 @@ const { villa, interiorImages, accentColor } = Astro.props;
 // USPs dengan icon mapping
 const uspIcons = ['Home', 'Sparkles', 'Award', 'Shield'];
 const uspIconMap = { Home, Sparkles, Award, Shield };
+
+// Per-villa USP storytelling (replaces generic descriptions)
+const uspStories = {
+  bijak: [
+    { tag: 'Pintu Masuk', desc: 'Mulai dari Rp 1,2 Miliar — entry level paling rasional di kawasan resort Sahid. Cocok untuk first-time investor yang ingin belajar passive income tanpa over-commit.' },
+    { tag: 'Entry Cerdas', desc: 'Target pasar: pasangan muda & solo traveler Bandung-Jakarta. Bahkan di 40% occupancy, villa ini sudah menghasilkan yield positif.' },
+    { tag: 'Sahid Standard', desc: 'Sama seperti villa di atasnya — material, finishing, housekeeping, marketing semua kelas resort bintang 5. Tidak ada kelas B di Menantu.' },
+    { tag: 'Upgrade Path', desc: 'Bisa upgrade ke Idaman atau Mapan kapan saja dengan benefit priority queue + diskon 10%. Likuiditas terjamin.' },
+  ],
+  idaman: [
+    { tag: 'Sweet Spot', desc: '70% buyer kami pilih Idaman. Sweet spot antara price, size, dan yield. Cicilan Rp 7,4jt/bulan, passive income Rp 20jt/bulan. Positive cashflow hari pertama.' },
+    { tag: 'Keluarga', desc: '2 kamar tidur ideal untuk keluarga kecil atau 3-4 teman. Living room luas, dapur lengkap, double glass façade — Instagram-worthy.' },
+    { tag: 'Pool Premium', desc: 'Private pool 4×8m dengan deck view perbukitan. Tamu bayar premium 30-40% lebih tinggi untuk villa dengan private pool.' },
+    { tag: 'Fasilitas Lengkap', desc: 'Akses 12 fasilitas resort + daily housekeeping Sahid + 24/7 concierge. Tamu tidak perlu bawa apa-apa.' },
+  ],
+  mapan: [
+    { tag: 'Flagship', desc: 'Top-tier specification. 3 lantai, 4 kamar, infinity pool private, sky deck, dan interior designer signature. Ini bukan villa — ini private resort.' },
+    { tag: 'Premium Market', desc: 'Target: keluarga high-net-worth, corporate retreat, private event. Average daily rate 2-3x lebih tinggi dari villa entry level.' },
+    { tag: 'Capital Gain', desc: 'Luas 120m² di atas 200m² tanah — highest capital gain projection. Aset warisan yang nilainya naik setiap tahun.' },
+    { tag: 'Sahid Signature', desc: 'Khusus Mapan: gratis 1 tahun membership Sahid Hotels, akses priority booking ke 8 hotel signature Sahid di Indonesia.' },
+  ],
+};
 
 // CTA WhatsApp messages
 const waKonsultasi = waUrl(
@@ -78,21 +101,20 @@ const capitalGainFormatted = formatShort(villa.capitalGainBenchmark);
   ]}
 />
 
-<!-- 2. Kenapa Villa Ini -->
-<section class="relative section-cream py-20 md:py-32" data-section="kenapa">
-  
-    <Pattern variant="dots" color="forest" opacity={0.07} />
-    <div class="container-wide">
-    <div class="grid grid-cols-12 gap-8 mb-12">
+<!-- 2. Kenapa Villa Ini — unique storytelling per villa -->
+<section class="relative section-cream py-20 md:py-32 gsap-fade" data-section="kenapa">
+  <SectionBackground variant="forest" pattern={true} orbs={true} intensity="subtle" />
+  <div class="container-wide relative">
+    <div class="grid grid-cols-12 gap-8 mb-16">
       <div class="col-span-12 md:col-span-3">
-        <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— USPs</div>
+        <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3 font-semibold">— 4 USPs</div>
       </div>
       <div class="col-span-12 md:col-span-9">
-        <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight">
+        <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight mb-4">
           Kenapa <em class="text-gold-700">{villa.name.split(' ')[1]}</em>?
         </h2>
-        <p class="font-body text-lg text-ink-soft mt-4 max-w-2xl">
-          Empat kekuatan utama yang bikin villa ini jadi pilihan cerdas untuk Anda.
+        <p class="font-body text-lg text-ink-soft max-w-3xl leading-relaxed">
+          {villa.tagline} Empat kekuatan utama yang bikin villa ini jadi pilihan cerdas untuk Anda.
         </p>
       </div>
     </div>
@@ -101,18 +123,22 @@ const capitalGainFormatted = formatShort(villa.capitalGainBenchmark);
       {villa.usp.map((usp, i) => {
         const IconName = uspIcons[i] || 'Home';
         const Icon = uspIconMap[IconName];
+        const stories = uspStories[villa.id] || [];
+        const story = stories[i] || { tag: 'USP', desc: 'Kekuatan utama villa ini.' };
         return (
-          <div class="card-premium p-6">
-            <div class="w-12 h-12 bg-forest-700 text-gold-500 flex items-center justify-center mb-4">
-              <Icon class="w-6 h-6" />
+          <div class="card-premium p-7 hover:scale-[1.02] transition-all duration-300 group relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-gold-500/5 rounded-full blur-2xl group-hover:bg-gold-500/15 transition-colors"></div>
+            <div class="relative">
+              <div class="flex items-start justify-between mb-4">
+                <div class="w-12 h-12 bg-forest-700 text-gold-500 flex items-center justify-center group-hover:bg-gold-500 group-hover:text-forest-700 transition-colors">
+                  <Icon class="w-6 h-6" />
+                </div>
+                <div class="font-mono text-[10px] text-gold-700 uppercase tracking-wider font-bold">0{i + 1}</div>
+              </div>
+              <div class="font-mono text-[11px] text-gold-500 uppercase tracking-wider font-bold mb-2">{story.tag}</div>
+              <h3 class="font-display text-lg text-forest-700 mb-3 font-bold leading-tight">{usp}</h3>
+              <p class="text-sm text-ink-soft leading-relaxed">{story.desc}</p>
             </div>
-            <h3 class="font-display text-xl text-forest-700 mb-2">{usp}</h3>
-            <p class="text-sm text-ink-soft">
-              {i === 0 && 'Spesifikasi premium yang dirancang untuk kenyamanan maksimal.'}
-              {i === 1 && 'Detail arsitektur yang bikin setiap sudut punya cerita.'}
-              {i === 2 && 'Material dan finishing kelas resort bintang 5.'}
-              {i === 3 && 'Garansi dan layanan after-sales yang terukur.'}
-            </p>
           </div>
         );
       })}

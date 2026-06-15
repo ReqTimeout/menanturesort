@@ -20,6 +20,7 @@
  */
 
 import { ArrowRight } from 'lucide-svelte';
+import SectionBackground from './SectionBackground.astro';
 
 interface Props {
   eyebrow: string;
@@ -53,27 +54,7 @@ const bgClass = bgColor === 'forest' ? 'bg-forest-900 text-cream-50' : bgColor =
 ---
 
 <section class:list={['reveal relative overflow-hidden', bgClass]}>
-  {bgColor === 'cream' && (
-    <>
-      <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(27,67,50,0.05)_0%,transparent_70%)]"></div>
-      <div class="absolute inset-0 animate-hero-gradient pointer-events-none opacity-50" style="background: linear-gradient(135deg, rgba(27,67,50,0.10) 0%, rgba(212,165,116,0.05) 35%, rgba(13,27,20,0.08) 70%, rgba(27,67,50,0.06) 100%);"></div>
-      <div class="absolute top-0 right-0 w-72 h-72 bg-gold-500/5 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="absolute bottom-0 left-0 w-96 h-96 bg-forest-700/5 rounded-full blur-3xl pointer-events-none"></div>
-    </>
-  )}
-  {bgColor === 'forest' && (
-    <>
-      <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(212,165,116,0.10)_0%,transparent_70%)]"></div>
-      <div class="absolute inset-0 animate-hero-gradient pointer-events-none opacity-40" style="background: linear-gradient(135deg, rgba(212,165,116,0.08) 0%, rgba(13,27,20,0.20) 50%, rgba(212,165,116,0.06) 100%);"></div>
-      <div class="absolute top-0 right-0 w-72 h-72 bg-gold-500/10 rounded-full blur-3xl pointer-events-none"></div>
-    </>
-  )}
-  {bgColor === 'white' && (
-    <>
-      <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(27,67,50,0.04)_0%,transparent_70%)]"></div>
-      <div class="absolute top-0 right-0 w-72 h-72 bg-gold-500/5 rounded-full blur-3xl pointer-events-none"></div>
-    </>
-  )}
+  <SectionBackground variant={bgColor === 'forest' ? 'dark' : bgColor === 'white' ? 'cream' : 'forest'} pattern={true} orbs={true} noise={false} intensity="normal" />
   <div class="container-wide py-20 md:py-28 relative">
     <div class="grid grid-cols-12 gap-8 lg:gap-12 items-center">
       <div class:list={[image ? 'col-span-12 lg:col-span-7' : 'col-span-12 lg:col-span-10 lg:col-start-2 text-center']}>

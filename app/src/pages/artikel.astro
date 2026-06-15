@@ -1,30 +1,81 @@
 ---
 /**
- * /artikel — V5.2 rewrite (PageHero + Article Grid)
+ * /artikel — V5.3 rewrite (storytelling + 6 articles + subscribe)
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NavMenu from '../components/svelte/NavMenu.svelte';
 import Footer from '../components/astro/Footer.astro';
 import PageHero from '../components/astro/PageHero.astro';
 import SectionDivider from '../components/astro/SectionDivider.astro';
-import Pattern from '../components/astro/Pattern.astro';
+import SectionBackground from '../components/astro/SectionBackground.astro';
 import siteData from '../data/site.json';
 import { waUrl } from '../lib/utils';
-import { ArrowRight, Calendar, Tag, MessageCircle } from 'lucide-svelte';
+import { ArrowRight, Calendar, Tag, MessageCircle, TrendingUp, BookOpen, Sparkles, Award } from 'lucide-svelte';
 
 const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'artikel');
 
 const posts = [
-  { title: 'Mengapa Investasi Vila Lebih Stabil dari Saham di 2026', cat: 'Investasi', date: '14 Juni 2026', excerpt: 'Tangible asset vs paper asset: perbandingan yield, risiko, likuiditas.', image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&q=80' },
-  { title: 'ROI 10% Guarantee: Realita atau Marketing?', cat: 'Edukasi', date: '10 Juni 2026', excerpt: 'Bedah akad ROI guarantee — apa yang dijamin, apa yang tidak.', image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80' },
-  { title: 'KPR Bank vs KPR Developer: Pilih yang Mana?', cat: 'Pembiayaan', date: '5 Juni 2026', excerpt: 'Simulasi total bayar 15 tahun untuk kedua skema, dengan kasus DP 25-30%.', image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600&q=80' },
-  { title: 'Bandung Timur: Hidden Gem Properti 2026', cat: 'Lokasi', date: '1 Juni 2026', excerpt: 'Data kenaikan 28% YoY, akses tol baru, kenapa Cicalengka menarik.', image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&q=80' },
-  { title: '5 Pertanyaan Wajib Sebelum Beli Vila Investasi', cat: 'Edukasi', date: '28 Mei 2026', excerpt: 'Checklist due diligence: legalitas, operator, yield, exit strategy.', image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&q=80' },
-  { title: 'Sahid Hotel: 50 Tahun Standar Hospitality Indonesia', cat: 'Manajemen', date: '20 Mei 2026', excerpt: 'Track record Sahid dari 1970-an — apa yang membuat mereka berbeda.', image: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=600&q=80' },
+  {
+    title: 'Mengapa Investasi Vila Lebih Stabil dari Saham di 2026',
+    cat: 'Investasi',
+    date: '14 Juni 2026',
+    readTime: '6 min',
+    excerpt: 'Tangible asset vs paper asset — yield 10% per tahun, risiko lebih terkontrol, dan Anda tetap punya aset fisik yang bisa diwariskan. Ini bukan perbandingan emosional, ini data.',
+    image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&q=80',
+    highlight: 'Yield 10% / year'
+  },
+  {
+    title: 'ROI 10% Guarantee: Realita atau Marketing?',
+    cat: 'Edukasi',
+    date: '10 Juni 2026',
+    readTime: '5 min',
+    excerpt: 'Kami bedah akad ROI guarantee — apa yang dijamin, apa yang tidak, dan bagaimana mitigasi risikonya. Tanpa jargon, tanpa selling, murni transparansi.',
+    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80',
+    highlight: 'Bedah Akad'
+  },
+  {
+    title: 'KPR Bank vs KPR Developer: Pilih yang Mana?',
+    cat: 'Pembiayaan',
+    date: '5 Juni 2026',
+    readTime: '7 min',
+    excerpt: 'Simulasi total bayar 15 tahun untuk kedua skema, dengan kasus DP 25-30%. Mana yang lebih hemat di 2026? Jawaban: tergantung profil Anda.',
+    image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&q=80',
+    highlight: 'Simulasi 15 Tahun'
+  },
+  {
+    title: 'Bandung Timur: Hidden Gem Properti 2026',
+    cat: 'Lokasi',
+    date: '1 Juni 2026',
+    readTime: '4 min',
+    excerpt: 'Data kenaikan harga 28% YoY, akses Tol Cisumdawu yang baru dibuka, dan kenapa Cicalengka menjadi incaran investor savvy. Bukan opini — data BPS.',
+    image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80',
+    highlight: 'Data BPS 2026'
+  },
+  {
+    title: '5 Pertanyaan Wajib Sebelum Beli Vila Investasi',
+    cat: 'Edukasi',
+    date: '28 Mei 2026',
+    readTime: '8 min',
+    excerpt: 'Checklist due diligence: legalitas SHM, track record operator, yield projection, exit strategy, dan 1 pertanyaan yang 90% investor lupa.',
+    image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=80',
+    highlight: 'Checklist PDF'
+  },
+  {
+    title: 'Sahid Hotel: 50 Tahun Standar Hospitality Indonesia',
+    cat: 'Manajemen',
+    date: '20 Mei 2026',
+    readTime: '6 min',
+    excerpt: 'Track record Sahid dari 1970-an hingga sekarang — apa yang membuat mereka tetap relevan, dan kenapa Anda menitipkan villa pada mereka adalah keputusan rasional.',
+    image: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&q=80',
+    highlight: 'Heritage 1970'
+  },
 ];
 ---
 
-<BaseLayout title="Artikel & Insight Investasi Vila — Menantu Resort" description="Artikel edukatif: investasi vila, KPR, ROI, dan properti Bandung. Update mingguan dari tim Menantu Resort.">
+<BaseLayout
+  title="Insight & Edukasi Investasi Vila — Update Mingguan | Menantu Resort"
+  description="Artikel edukatif untuk calon investor properti: analisis yield, bedah skema KPR, ROI guarantee, dan data lokasi. Ditulis oleh tim internal + konsultan properti. Update mingguan via WhatsApp."
+>
   <NavMenu client:load />
 
   <main class="pt-20">
@@ -32,8 +83,8 @@ const posts = [
       eyebrow="Insight & Edukasi"
       title="Baca Sebelum Beli:"
       accent="Insight dari Tim & Pakar."
-      description="Artikel edukatif untuk calon investor — bebas jargon, fokus pada data."
-      primaryCta={{ text: 'Chat WhatsApp', href: waLink('Halo, saya mau diskusi artikel') }}
+      description="Artikel edukatif untuk calon investor properti — bebas jargon, fokus pada data. Kami tidak menjual, kami menjelaskan. Karena keputusan Rp 1-2 Miliar harus didasari pemahaman, bukan emosi."
+      primaryCta={{ text: 'Subscribe via WhatsApp', href: waLink('Halo, saya mau subscribe update artikel mingguan via WhatsApp.') }}
       stats={[
         { value: '6+', label: 'Artikel' },
         { value: 'Weekly', label: 'Update' },
@@ -44,38 +95,119 @@ const posts = [
 
     <SectionDivider variant="diamond" />
 
+    <!-- Stats Banner — kenapa baca di sini -->
+    <section class="relative bg-forest-700 text-cream-50 py-16 md:py-20 overflow-hidden gsap-fade" data-section="why-read">
+      <SectionBackground variant="dark" pattern={true} orbs={true} intensity="normal" />
+      <div class="container-wide relative">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="text-center">
+            <BookOpen size={32} class="text-gold-500 mx-auto mb-3" />
+            <div class="font-display text-3xl text-gold-500 font-bold mb-2">Bebas Jargon</div>
+            <p class="text-cream-50/80 text-sm">Tidak ada istilah teknis tanpa penjelasan. Cocok untuk first-time investor.</p>
+          </div>
+          <div class="text-center">
+            <TrendingUp size={32} class="text-gold-500 mx-auto mb-3" />
+            <div class="font-display text-3xl text-gold-500 font-bold mb-2">Data-Driven</div>
+            <p class="text-cream-50/80 text-sm">Setiap klaim didukung data BPS, riset pasar, atau benchmark industri.</p>
+          </div>
+          <div class="text-center">
+            <Award size={32} class="text-gold-500 mx-auto mb-3" />
+            <div class="font-display text-3xl text-gold-500 font-bold mb-2">No Selling</div>
+            <p class="text-cream-50/80 text-sm">Kami jelaskan pro & kontra. Keputusan ada di tangan Anda.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <SectionDivider variant="ornate" />
+
     <!-- Article Grid -->
     <section class="relative bg-white py-20 md:py-32 gsap-fade" data-section="articles">
-      <Pattern variant="dots" color="gold" opacity={0.05} />
+      <SectionBackground variant="cream" pattern={true} orbs={true} intensity="subtle" />
       <div class="container-wide relative">
+        <div class="grid grid-cols-12 gap-8 mb-12">
+          <div class="col-span-12 md:col-span-3">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3 font-semibold">— 6 Artikel Pilihan</div>
+          </div>
+          <div class="col-span-12 md:col-span-9">
+            <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight mb-4">
+              Mulai dari yang <em class="text-gold-700">paling relevan</em> untuk Anda
+            </h2>
+            <p class="font-body text-lg text-ink-soft max-w-2xl">Topik disusun berdasarkan pertanyaan yang paling sering masuk dari calon investor.</p>
+          </div>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {posts.map((p) => (
-            <article class="card-premium overflow-hidden hover:scale-[1.02] transition-transform group">
-              <div class="aspect-[16/10] overflow-hidden bg-forest-700">
-                <img src={p.image} alt={p.title} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" />
-              </div>
-              <div class="p-8">
-                <div class="flex items-center gap-3 mb-3 text-xs">
-                  <span class="badge badge-gold"><Tag size={10} class="mr-1" />{p.cat}</span>
-                  <span class="text-ink-mute flex items-center gap-1"><Calendar size={10} />{p.date}</span>
+          {posts.map((p, i) => (
+            <article class="card-premium overflow-hidden hover:scale-[1.02] transition-all duration-300 group flex flex-col">
+              <div class="relative aspect-[16/10] overflow-hidden bg-forest-700">
+                <img src={p.image} alt={p.title} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
+                <div class="absolute inset-0 bg-gradient-to-t from-forest-900/60 via-transparent to-transparent"></div>
+                <div class="absolute top-4 left-4">
+                  <span class="badge badge-gold text-[10px] uppercase tracking-wider font-bold">{p.cat}</span>
                 </div>
-                <h2 class="font-display text-xl text-forest-700 font-semibold mb-3 group-hover:text-gold-700 transition">{p.title}</h2>
-                <p class="text-sm text-ink-soft mb-4">{p.excerpt}</p>
-                <a href={waLink(`Halo, saya tertarik dengan artikel "${p.title}"`)} target="_blank" rel="noopener" class="text-gold-700 text-sm font-semibold inline-flex items-center gap-1 hover:gap-2 transition-all">
-                  Baca Selengkapnya <ArrowRight size={14} />
+                <div class="absolute top-4 right-4">
+                  <span class="px-2 py-1 bg-forest-900/80 backdrop-blur text-cream-50 text-[10px] font-mono uppercase tracking-wider">{p.readTime}</span>
+                </div>
+              </div>
+              <div class="p-7 flex-1 flex flex-col">
+                <div class="flex items-center gap-3 mb-3 text-xs text-ink-mute">
+                  <Calendar size={12} />
+                  <span class="font-mono">{p.date}</span>
+                  <span class="font-mono text-gold-700 font-bold uppercase tracking-wider">· {p.highlight}</span>
+                </div>
+                <h2 class="font-display text-xl text-forest-700 font-bold mb-3 group-hover:text-gold-700 transition-colors leading-tight">
+                  {p.title}
+                </h2>
+                <p class="text-sm text-ink-soft mb-5 leading-relaxed flex-1">{p.excerpt}</p>
+                <a href={waLink(`Halo, saya tertarik dengan artikel "${p.title}". Bisa dikirim versi lengkapnya?`)} target="_blank" rel="noopener" class="text-gold-700 text-sm font-bold inline-flex items-center gap-2 hover:gap-3 transition-all uppercase tracking-wider">
+                  Baca Versi Lengkap <ArrowRight size={14} />
                 </a>
               </div>
             </article>
           ))}
         </div>
+      </div>
+    </section>
 
-        <SectionDivider variant="diamond" />
+    <SectionDivider variant="diamond" />
 
-        <div class="text-center mt-16">
-          <a href={waLink('Halo, saya mau subscribe update artikel')} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">
-            <MessageCircle class="w-4 h-4" /> Subscribe Update via WhatsApp
-            <ArrowRight class="w-4 h-4" />
-          </a>
+    <!-- Subscribe CTA -->
+    <section class="relative section-cream py-20 md:py-32 gsap-fade" data-section="subscribe">
+      <SectionBackground variant="gold" pattern={true} orbs={true} intensity="subtle" />
+      <div class="container-wide relative">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div>
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-4 font-semibold">— Weekly Update</div>
+            <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight mb-6">
+              Update <em class="text-gold-700">mingguan</em> via WhatsApp
+            </h2>
+            <p class="font-body text-lg text-ink-soft leading-relaxed mb-6">
+              Dapatkan artikel baru + data properti Bandung + promo spesial langsung di WhatsApp Anda. <strong class="text-forest-700">100% gratis, unsubscribe kapan saja</strong>.
+            </p>
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-start gap-3"><Sparkles size={18} class="text-gold-700 flex-shrink-0 mt-0.5" /><span class="text-ink-700">1 artikel baru setiap Jumat</span></li>
+              <li class="flex items-start gap-3"><Sparkles size={18} class="text-gold-700 flex-shrink-0 mt-0.5" /><span class="text-ink-700">Data pasar properti bulanan</span></li>
+              <li class="flex items-start gap-3"><Sparkles size={18} class="text-gold-700 flex-shrink-0 mt-0.5" /><span class="text-ink-700">Promo eksklusif subscriber</span></li>
+            </ul>
+            <a href={waLink('Halo, saya mau subscribe update artikel mingguan via WhatsApp.')} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">
+              <MessageCircle size={18} /> Subscribe via WhatsApp <ArrowRight class="w-4 h-4" />
+            </a>
+          </div>
+          <div class="card-premium p-10 bg-forest-700 text-cream-50 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-gold-500/10 rounded-full blur-3xl"></div>
+            <div class="relative">
+              <div class="font-mono text-xs uppercase tracking-widest text-gold-500 mb-3 font-semibold">— Sample Article Preview</div>
+              <div class="font-display text-2xl text-cream-50 mb-4 leading-tight">"ROI 10% Guarantee: Realita atau Marketing?"</div>
+              <p class="text-cream-50/80 text-sm leading-relaxed mb-6">
+                <em>Bedah akad ROI guarantee — apa yang dijamin, apa yang tidak. Tanpa selling, murni transparansi...</em>
+              </p>
+              <div class="border-t border-gold-500/30 pt-4 flex items-center justify-between text-xs">
+                <span class="font-mono text-cream-50/60">5 Juni 2026 · 5 min read</span>
+                <span class="text-gold-500 font-bold uppercase tracking-wider">Most Read</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

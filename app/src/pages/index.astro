@@ -12,7 +12,6 @@ import villaData from '../data/villa.json';
 
 import NavMenu from '../components/svelte/NavMenu.svelte';
 import EditorialHero from '../components/svelte/EditorialHero.svelte';
-import Cursor from '../components/svelte/Cursor.svelte';
 import Marquee from '../components/svelte/Marquee.svelte';
 import ThePromise from '../components/svelte/ThePromise.svelte';
 import HowItWorks from '../components/svelte/HowItWorks.svelte';
@@ -65,7 +64,6 @@ const showcaseVillas = villaData.types.map((v) => ({
 ---
 
 <BaseLayout>
-  <Cursor client:load />
   <NavMenu client:load variant="dark" />
 
   <main>
@@ -80,7 +78,7 @@ const showcaseVillas = villaData.types.map((v) => ({
     />
 
     <!-- ═══ 2. MARQUEE (trust badges horizontal) ═══ -->
-    <Marquee client:visible items={marqueeItems} speed={35} />
+    <Marquee client:visible items={marqueeItems} speed={75} />
 
     <!-- ═══ 3. CONCERNS (V5.2 NEW: port dari existing PROVEN) ═══ -->
     <ConcernsSection client:visible concerns={siteData.concerns} />

@@ -1,0 +1,130 @@
+---
+/**
+ * SectionBackground.astro — Reusable animated background layer
+ *
+ * Combines:
+ * - SVG pattern overlay (subtle, GPU)
+ * - Animated gradient orbs (premium, soft glow)
+ * - Optional noise texture
+ *
+ * Variants:
+ *   - 'forest' — green+gold orbs, dot pattern
+ *   - 'gold' — gold+cream orbs, diagonal lines
+ *   - 'cream' — cream+forest, soft dots
+ *   - 'dark' — dark forest, gold stars
+ *
+ * Usage:
+ *   <section class="relative bg-white">
+ *     <SectionBackground variant="forest" />
+ *     <div class="relative">...</div>
+ *   </section>
+ *
+ * Props:
+ *   - variant: 'forest' | 'gold' | 'cream' | 'dark' | 'mesh'
+ *   - pattern: boolean (default true) — show subtle SVG pattern
+ *   - orbs: boolean (default true) — show 2-3 animated orbs
+ *   - noise: boolean (default false) — film grain
+ *   - intensity: 'subtle' | 'normal' | 'strong' (default 'subtle')
+ */
+
+interface Props {
+  variant?: 'forest' | 'gold' | 'cream' | 'dark' | 'mesh';
+  pattern?: boolean;
+  orbs?: boolean;
+  noise?: boolean;
+  intensity?: 'subtle' | 'normal' | 'strong';
+  class?: string;
+}
+
+const {
+  variant = 'forest',
+  pattern = true,
+  orbs = true,
+  noise = false,
+  intensity = 'subtle',
+  class: className = '',
+} = Astro.props;
+
+const orbOpacity = intensity === 'strong' ? 0.35 : intensity === 'normal' ? 0.20 : 0.10;
+---
+
+<div class:list={['absolute inset-0 pointer-events-none overflow-hidden', className]} aria-hidden="true">
+  {/* ── Base gradient mesh (subtle bg variation) ── */}
+  {variant === 'forest' && (
+    <div class="absolute inset-0" style="background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(27,67,50,0.06) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 100% 100%, rgba(212,165,116,0.05) 0%, transparent 60%);"></div>
+  )}
+  {variant === 'gold' && (
+    <div class="absolute inset-0" style="background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212,165,116,0.10) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 0% 100%, rgba(27,67,50,0.05) 0%, transparent 60%);"></div>
+  )}
+  {variant === 'cream' && (
+    <div class="absolute inset-0" style="background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(245,240,232,0.5) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 100% 50%, rgba(212,165,116,0.04) 0%, transparent 60%);"></div>
+  )}
+  {variant === 'dark' && (
+    <div class="absolute inset-0" style="background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212,165,116,0.10) 0%, transparent 60%), radial-gradient(ellipse 60% 40% at 0% 100%, rgba(27,67,50,0.30) 0%, transparent 60%);"></div>
+  )}
+  {variant === 'mesh' && (
+    <div class="absolute inset-0 animate-hero-gradient" style="background: linear-gradient(135deg, rgba(27,67,50,0.08) 0%, rgba(212,165,116,0.04) 35%, rgba(13,27,20,0.05) 70%, rgba(27,67,50,0.06) 100%);"></div>
+  )}
+
+  {/* ── SVG Pattern overlay ── */}
+  {pattern && variant === 'forest' && (
+    <svg class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg" style={`opacity: ${orbOpacity};`}>
+      <defs>
+        <pattern id={`dots-f-${Math.random().toString(36).slice(2,8)}`} x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1" fill="#1B4332" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill={`url(#dots-f-${Math.random().toString(36).slice(2,8)})`} />
+    </svg>
+  )}
+  {pattern && variant === 'gold' && (
+    <svg class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg" style={`opacity: ${orbOpacity * 1.5};`}>
+      <defs>
+        <pattern id={`lines-g-${Math.random().toString(36).slice(2,8)}`} x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <line x1="0" y1="0" x2="0" y2="40" stroke="#D4A574" stroke-width="0.6" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill={`url(#lines-g-${Math.random().toString(36).slice(2,8)})`} />
+    </svg>
+  )}
+  {pattern && variant === 'cream' && (
+    <svg class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg" style={`opacity: ${orbOpacity};`}>
+      <defs>
+        <pattern id={`grid-c-${Math.random().toString(36).slice(2,8)}`} x="0" y="0" width="48" height="48" patternUnits="userSpaceOnUse">
+          <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#D4A574" stroke-width="0.4" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill={`url(#grid-c-${Math.random().toString(36).slice(2,8)})`} />
+    </svg>
+  )}
+  {pattern && variant === 'dark' && (
+    <svg class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg" style={`opacity: ${orbOpacity * 1.2};`}>
+      <defs>
+        <pattern id={`stars-d-${Math.random().toString(36).slice(2,8)}`} x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+          <circle cx="10" cy="20" r="0.8" fill="#D4A574" />
+          <circle cx="40" cy="50" r="0.6" fill="#D4A574" />
+          <circle cx="60" cy="10" r="0.5" fill="#D4A574" />
+          <circle cx="70" cy="70" r="0.7" fill="#D4A574" />
+          <circle cx="25" cy="65" r="0.4" fill="#D4A574" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill={`url(#stars-d-${Math.random().toString(36).slice(2,8)})`} />
+    </svg>
+  )}
+
+  {/* ── Animated Orbs (premium soft glow) ── */}
+  {orbs && (
+    <>
+      <div class="absolute -top-20 -right-20 w-96 h-96 rounded-full blur-3xl animate-float-soft" style={`background: radial-gradient(circle, ${variant === 'dark' ? 'rgba(212,165,116,0.15)' : 'rgba(212,165,116,0.18)'} 0%, transparent 70%); opacity: 1;`}></div>
+      <div class="absolute -bottom-32 -left-20 w-[28rem] h-[28rem] rounded-full blur-3xl animate-float-soft" style={`background: radial-gradient(circle, ${variant === 'dark' ? 'rgba(27,67,50,0.40)' : 'rgba(27,67,50,0.15)'} 0%, transparent 70%); animation-delay: -2s;`}></div>
+      {intensity !== 'subtle' && (
+        <div class="absolute top-1/2 right-1/3 w-72 h-72 rounded-full blur-3xl animate-float-soft" style={`background: radial-gradient(circle, ${variant === 'dark' ? 'rgba(245,240,232,0.10)' : 'rgba(245,240,232,0.40)'} 0%, transparent 70%); animation-delay: -4s;`}></div>
+      )}
+    </>
+  )}
+
+  {/* ── Noise texture (subtle film grain) ── */}
+  {noise && (
+    <div class="absolute inset-0 opacity-[0.04] mix-blend-overlay" style="background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E&quot;);"></div>
+  )}
+</div>

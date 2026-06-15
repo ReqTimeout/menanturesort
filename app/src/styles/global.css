@@ -713,7 +713,7 @@ body.has-cookie-banner-desktop {
   will-change: transform;
 }
 .marquee-item {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
   font-weight: 600;
   font-size: clamp(0.75rem, 1.1vw, 0.95rem);
   color: #F5F0E8;
@@ -724,6 +724,10 @@ body.has-cookie-banner-desktop {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  white-space: nowrap;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
 }
 .marquee-item .highlight {
   color: #D4A574;
