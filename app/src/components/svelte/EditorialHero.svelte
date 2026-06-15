@@ -53,10 +53,14 @@
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('mousemove', onMove, { passive: true });
 
-    // Live viewers fluctuation
+    // Live viewers — natural random walk, slower cadence, no zero jumps
+    let last = siteData.stats.activeViewers || 12;
     const id = setInterval(() => {
-      viewers = Math.max(3, (siteData.stats.activeViewers || 8) + Math.floor(Math.random() * 9) - 4);
-    }, 4500);
+      // Random walk: small step (-3..+3), keep within believable range (5..27)
+      const step = Math.floor(Math.random() * 7) - 3; // -3..+3
+      last = Math.max(5, Math.min(27, last + step));
+      viewers = last;
+    }, 6000 + Math.floor(Math.random() * 4000)); // 6-10s cadence
 
     // Counter ease-out cubic
     const start = performance.now();

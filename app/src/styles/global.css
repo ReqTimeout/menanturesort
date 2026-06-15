@@ -320,6 +320,8 @@
   .text-editorial-xl { font-size: clamp(2.25rem, 4.5vw, 4rem); line-height: 0.98; letter-spacing: -0.025em; }
   .text-editorial-lg { font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.0; letter-spacing: -0.025em; }
   .text-editorial-md { font-size: clamp(1.5rem, 3vw, 2.5rem); line-height: 1.05; letter-spacing: -0.02em; }
+  .text-display-md   { font-size: clamp(1.75rem, 3.5vw, 3rem); line-height: 1.05; letter-spacing: -0.02em; }
+  .text-display-lg   { font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.0; letter-spacing: -0.025em; }
 
   /* Number block editorial */
   .numeral {
