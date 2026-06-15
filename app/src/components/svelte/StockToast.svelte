@@ -61,10 +61,10 @@
 
 {#if visible}
   <div
-    class="hidden md:block fixed bottom-6 left-6 z-40 max-w-sm transition-all duration-500"
+    class="fixed bottom-[6.5rem] left-3 right-3 md:left-6 md:right-auto md:bottom-6 md:max-w-sm z-40 transition-all duration-500"
     class:translate-y-0={visible}
     class:opacity-100={visible}
-    class:translate-y-4={!visible}
+    class:translate-y-3={!visible}
     class:opacity-0={!visible}
     role="status"
     aria-live="polite"
@@ -73,28 +73,30 @@
       href={waLink}
       target="_blank"
       rel="noopener"
-      class="block bg-white border-2 border-gold-500/40 shadow-xl p-4 hover:border-gold-500 transition-colors"
+      class="group flex items-center gap-3 bg-forest-900/95 backdrop-blur-md border border-gold-500/30 shadow-2xl shadow-forest-900/40 px-3.5 py-3 hover:border-gold-500/60 transition-colors rounded-xl"
     >
-      <div class="flex items-start gap-3">
-        <div class="w-10 h-10 bg-success-100 text-success-700 flex items-center justify-center flex-shrink-0">
-          <CheckCircle2 class="w-5 h-5" />
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="font-mono text-[10px] uppercase tracking-widest text-gold-700 mb-1">— Aktivitas Terkini</div>
-          <p class="text-sm text-ink-700 leading-snug">
-            <strong class="text-forest-700">{currentToast.customer}</strong> baru saja memesan villa <strong class="text-forest-700">{currentToast.villa}</strong>
-          </p>
-          <p class="text-xs text-ink-mute mt-1">{currentToast.time} · Hubungi kami untuk info ketersediaan →</p>
-        </div>
-        <button
-          type="button"
-          onclick={(e) => { e.preventDefault(); e.stopPropagation(); dismiss(); }}
-          class="text-ink-mute hover:text-ink-700 flex-shrink-0"
-          aria-label="Tutup notifikasi"
-        >
-          <X class="w-4 h-4" />
-        </button>
+      <div class="relative w-9 h-9 bg-whatsapp flex items-center justify-center flex-shrink-0 rounded-lg">
+        <CheckCircle2 class="w-4.5 h-4.5 text-white" strokeWidth="2.5" />
+        <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-gold-500 rounded-full ring-2 ring-forest-900 animate-pulse"></span>
       </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-1.5 mb-0.5">
+          <span class="font-mono text-[9px] uppercase tracking-widest text-gold-500 font-bold">Aktivitas Terkini</span>
+          <span class="text-cream-50/30 text-[9px]">·</span>
+          <span class="font-mono text-[9px] text-cream-50/50">{currentToast.time}</span>
+        </div>
+        <p class="text-[13px] text-cream-50 leading-snug truncate">
+          <strong class="text-gold-500 font-semibold">{currentToast.customer}</strong> memesan villa <strong class="text-gold-500 font-semibold">{currentToast.villa}</strong>
+        </p>
+      </div>
+      <button
+        type="button"
+        onclick={(e) => { e.preventDefault(); e.stopPropagation(); dismiss(); }}
+        class="text-cream-50/40 hover:text-cream-50 flex-shrink-0 p-1"
+        aria-label="Tutup notifikasi"
+      >
+        <X class="w-3.5 h-3.5" />
+      </button>
     </a>
   </div>
 {/if}

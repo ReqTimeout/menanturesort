@@ -40,14 +40,14 @@
   class:pointer-events-auto={visible}
   aria-hidden={!visible}
 >
-  <div class="max-w-md mx-auto bg-forest-900/95 backdrop-blur-xl shadow-2xl shadow-forest-900/30 rounded-full p-2 ring-1 ring-gold-500/20">
-    <div class="grid grid-cols-5 gap-1.5 items-stretch">
+  <div class="bg-forest-900/95 backdrop-blur-xl shadow-2xl shadow-forest-900/30 rounded-2xl p-1.5 ring-1 ring-gold-500/20">
+    <div class="flex gap-1.5 items-stretch">
       <!-- WhatsApp primary -->
       <a
         href={waMessage}
         target="_blank"
         rel="noopener"
-        class="col-span-3 group flex items-center justify-center gap-2 bg-gradient-to-r from-gold-500 to-gold-600 text-forest-900 rounded-full px-5 py-3.5 font-bold text-sm tracking-wide shadow-lg shadow-gold-500/30 hover:shadow-gold-500/50 transition-all active:scale-95"
+        class="group flex-1 min-w-0 flex items-center justify-center gap-1.5 bg-gradient-to-r from-gold-500 to-gold-600 text-forest-900 rounded-full px-3 py-3 font-bold text-[13px] tracking-wide shadow-lg shadow-gold-500/30 hover:shadow-gold-500/50 transition-all active:scale-95"
         aria-label="Chat WhatsApp Menantu Resort"
       >
         <span class="w-7 h-7 rounded-full bg-whatsapp flex items-center justify-center flex-shrink-0">
@@ -59,7 +59,7 @@
       <!-- Villa -->
       <a
         href="/villa"
-        class="col-span-1 group flex flex-col items-center justify-center gap-0.5 text-cream-50 rounded-full py-2 hover:bg-cream-50/10 transition-colors active:scale-95"
+        class="group flex flex-col items-center justify-center gap-0.5 text-cream-50 rounded-full py-2 hover:bg-cream-50/10 transition-colors active:scale-95"
         aria-label="Lihat 3 Tipe Villa"
       >
         <Home class="w-4 h-4 text-gold-500 group-hover:text-gold-400" />
@@ -69,7 +69,7 @@
       <!-- Simulasi -->
       <a
         href="/investasi"
-        class="col-span-1 group flex flex-col items-center justify-center gap-0.5 text-cream-50 rounded-full py-2 hover:bg-cream-50/10 transition-colors active:scale-95"
+        class="group flex flex-col items-center justify-center gap-0.5 text-cream-50 rounded-full py-2 hover:bg-cream-50/10 transition-colors active:scale-95"
         aria-label="Simulasi KPR"
       >
         <Calculator class="w-4 h-4 text-gold-500 group-hover:text-gold-400" />

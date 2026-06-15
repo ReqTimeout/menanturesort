@@ -30,9 +30,9 @@ const PHONE_DEFAULT = '6285925942277';
 export function buildWaUrl(
   phone: string = PHONE_DEFAULT,
   message: string,
-  _source: string = 'Menantu Resort'
+  source: string = 'menantu-resort.com'
 ): string {
-  const text = encodeURIComponent(message);
+  const text = encodeURIComponent(`${message}\n\n\u2014 via ${source}`);
   return `https://wa.me/${phone}?text=${text}`;
 }
 
