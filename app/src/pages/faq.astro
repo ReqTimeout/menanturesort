@@ -15,7 +15,20 @@ import { waUrl } from '../lib/utils';
 import { MessageCircle, ArrowRight } from 'lucide-svelte';
 
 const waLink = waUrl(siteData.contact.whatsapp, 'Halo, saya masih ada pertanyaan tentang investasi', 'faq');
+
+// Build FAQ schema for SEO (rich results)
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqData.flatMap(cat => cat.items.map(item => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a }
+  })))
+};
 ---
+
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>
 
 <BaseLayout title="FAQ — Pertanyaan Umum Investasi Vila" description="22 Q&A tentang investasi vila Menantu Resort: skema pembelian, passive income, legal, lokasi, manajemen, pembayaran.">
   <NavMenu client:load />

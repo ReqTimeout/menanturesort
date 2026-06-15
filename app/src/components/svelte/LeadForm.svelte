@@ -102,34 +102,53 @@
     if (!name || !phone) return;
     submitting = true;
 
-    // Track conversion
-    if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-      window.gtag('event', 'generate_lead', {
-        event_category: 'conversion',
-        event_label: source,
-        value: 1,
-      });
-      window.gtag('event', 'whatsapp_click', {
-        event_category: 'conversion',
-        event_label: source,
-      });
+    // Persist user data for cross-page attribution
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem('mr_user', JSON.stringify({ name, phone, email, villa }));
     }
-    if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
-      window.fbq('track', 'Lead', { content_name: source });
-      window.fbq('track', 'Contact', { content_name: source });
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('mr_user', JSON.stringify({ name, phone, email, villa }));
     }
 
-    // Open WhatsApp
-    const url = getFormattedWAUrl();
-    window.open(url, '_blank', 'noopener');
+    // Build user data for Enhanced Conversion
+    const [firstName, ...lastParts] = name.trim().split(' ');
+    const userData = {
+      firstName,
+      lastName: lastParts.join(' '),
+      phone: phone.replace(/[^0-9+]/g, ''),
+      email: email || undefined
+    };
 
-    // Show success state
-    setTimeout(() => {
-      step = 2;
-      submitting = false;
-      // Auto-close after 5s
-      setTimeout(() => dismiss(), 5000);
-    }, 800);
+    // Track GA4 + Google Ads + Enhanced Conversion
+    (async () => {
+      try {
+        if (typeof window.mrAnalytics !== 'undefined') {
+          await window.mrAnalytics.trackLead({
+            ...userData,
+            leadType: 'villa_inquiry',
+            estimatedValue: villa === 'mapan' ? 2000000000 : villa === 'idaman' ? 1600000000 : villa === 'bijak' ? 1200000000 : 1500000000
+          });
+        }
+      } catch (err) {
+        console.warn('[LeadForm] Enhanced conversion failed:', err);
+      }
+
+      // Open WhatsApp via conversion tracker (1.5s delay for conversion to register)
+      const url = getFormattedWAUrl();
+      if (typeof window.gtag_report_conversion === 'function') {
+        window.gtag_report_conversion(url);
+      } else {
+        // Fallback: open in new tab
+        window.open(url, '_blank', 'noopener');
+      }
+
+      // Show success state
+      setTimeout(() => {
+        step = 2;
+        submitting = false;
+        setTimeout(() => dismiss(), 5000);
+      }, 800);
+    })();
   }
 </script>
 

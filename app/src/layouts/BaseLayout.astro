@@ -98,42 +98,7 @@ const seo = buildSEO({
   <!-- Schema.org -->
   <OrganizationSchema data={siteData} />
   <ProductSchema />
-
-  <!-- Google Analytics 4 + Google Ads (gtag) -->
-  <script is:inline define:vars={{ ga4Id: import.meta.env.PUBLIC_GA4_ID, adsId: import.meta.env.PUBLIC_GOOGLE_ADS_ID, metaPixelId: import.meta.env.PUBLIC_META_PIXEL_ID }}>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    if (ga4Id) gtag('config', ga4Id);
-    if (adsId) gtag('config', adsId);
-
-    // Meta Pixel (Facebook)
-    if (metaPixelId) {
-      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', metaPixelId);
-      fbq('track', 'PageView');
-    }
-
-    // Auto-track WhatsApp clicks (for any [data-track=whatsapp_click] link)
-    document.addEventListener('click', function(e) {
-      const link = e.target.closest('a[data-track="whatsapp_click"]');
-      if (link) {
-        const source = link.getAttribute('data-source') || 'unknown';
-        if (typeof gtag === 'function') {
-          gtag('event', 'whatsapp_click', { 'event_category': 'conversion', 'event_label': source });
-        }
-        if (typeof fbq === 'function') {
-          fbq('track', 'Contact', { content_name: source });
-        }
-      }
-    });
-  </script>
-  {import.meta.env.PUBLIC_GA4_ID && (
-    <script async src={`https://www.googletagmanager.com/gtag/js?id=${import.meta.env.PUBLIC_GA4_ID}`} />
-  )}
-  {import.meta.env.PUBLIC_META_PIXEL_ID && (
-    <noscript><img height="1" width="1" style="display:none" src={`https://www.facebook.com/tr?id=${import.meta.env.PUBLIC_META_PIXEL_ID}&ev=PageView&noscript=1`} /></noscript>
-  )}
+  <!-- Analytics is now loaded via AnalyticsBoot.astro component (handles gtag_report_conversion, enhanced conversions, global WA click interceptor) -->
 </head>
 <body class={Astro.props.bodyClass}>
   <!-- V5.3 WOW factors -->

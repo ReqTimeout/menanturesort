@@ -105,7 +105,7 @@
   >
     <img
       src="/images/ref/villa-mapan-detail.jpg"
-      alt=""
+      alt="Menantu Resort — Villa Resort Premium Bandung Timur dengan arsitektur Limasan modern"
       class="w-full h-full object-cover"
       loading="eager"
       fetchpriority="high"
