@@ -704,7 +704,7 @@ body.has-cookie-banner-desktop {
   background: linear-gradient(90deg, #0D1B14 0%, #1B4332 50%, #0D1B14 100%);
   border-top: 1px solid rgba(212, 165, 116, 0.2);
   border-bottom: 1px solid rgba(212, 165, 116, 0.2);
-  padding: 0.75rem 0;
+  padding: 1rem 0;
 }
 .marquee-track {
   display: inline-flex;
@@ -715,10 +715,10 @@ body.has-cookie-banner-desktop {
 .marquee-item {
   font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
   font-weight: 600;
-  font-size: clamp(0.75rem, 1.1vw, 0.95rem);
+  font-size: clamp(0.8125rem, 1.4vw, 1.0625rem);
   color: #F5F0E8;
   padding: 0 1.5rem;
-  line-height: 1;
+  line-height: 1.4;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   display: inline-flex;
