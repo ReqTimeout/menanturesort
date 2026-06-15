@@ -38,8 +38,7 @@ const waUtama = waUrl(siteData.contact.whatsapp, 'Halo, saya ingin konsultasi in
     <SectionDivider variant="diamond" />
 
     <!-- Contact + Bank -->
-    <section class="relative bg-white py-20 md:py-32 gsap-fade">
-    data-section="info">
+    <section class="relative bg-white py-20 md:py-32 gsap-fade" data-section="info">
       <SectionBackground variant="cream" pattern={true} orbs={true} intensity="subtle" />
       <Pattern variant="dots" color="gold" opacity={0.05} />
       <div class="container-wide relative">
@@ -95,52 +94,86 @@ const waUtama = waUrl(siteData.contact.whatsapp, 'Halo, saya ingin konsultasi in
     <SectionDivider variant="ornate" />
 
     <!-- 4 Steps -->
-    <section class="relative section-cream py-20 md:py-32 gsap-fade">
-    data-section="steps">
+    <section class="relative section-cream py-20 md:py-32 gsap-fade" data-section="steps">
       <SectionBackground variant="gold" pattern={true} orbs={true} intensity="subtle" />
       <Pattern variant="grid" color="forest" opacity={0.04} />
       <div class="container-wide relative">
-        <div class="grid grid-cols-12 gap-8 mb-12">
-          <div class="col-span-12 md:col-span-3">
-            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— Proses</div>
+        <!-- Centered premium header -->
+        <div class="text-center max-w-3xl mx-auto mb-14 md:mb-20">
+          <div class="inline-flex items-center gap-3 mb-5">
+            <span class="h-px w-10 bg-gradient-to-r from-transparent to-gold-500"></span>
+            <span class="font-mono text-[10px] uppercase tracking-[0.3em] text-gold-700 font-semibold">— Proses</span>
+            <span class="h-px w-10 bg-gradient-to-l from-transparent to-gold-500"></span>
           </div>
-          <div class="col-span-12 md:col-span-9">
-            <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight">
-              4 langkah <em class="text-gold-700">simpel</em>
-            </h2>
-            <p class="font-body text-lg text-ink-soft mt-4 max-w-2xl">
-              Dari konsultasi pertama hingga SHM di tangan — mudah, transparan, tidak ada hidden cost.
+          <h2 class="font-display text-display-lg text-forest-700 leading-[1.0] tracking-tight mb-5">
+            4 langkah <em class="text-gold-700 italic">simpel</em>
+          </h2>
+          <p class="font-body text-base sm:text-lg text-ink-soft leading-relaxed max-w-2xl mx-auto">
+            Dari konsultasi pertama hingga SHM di tangan — mudah, transparan, <span class="text-forest-700 font-semibold">tidak ada hidden cost</span>.
+          </p>
+        </div>
+
+        <!-- Steps with connecting line + numbered cards -->
+        <div class="relative max-w-6xl mx-auto">
+          <!-- Connecting line (desktop only) -->
+          <div class="hidden md:block absolute top-12 left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-transparent via-gold-500/40 to-transparent pointer-events-none" aria-hidden="true"></div>
+
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-4">
+            {[
+              { n: '01', title: 'Chat WhatsApp', desc: 'Konsultasi awal gratis, pilih tipe villa sesuai budget', icon: MessageCircle, cta: 'Mulai Chat' },
+              { n: '02', title: 'Booking Fee', desc: 'Rp 10 juta refundable 30 hari — lock harga 90 hari', icon: Shield, cta: 'Lock Unit' },
+              { n: '03', title: 'Survei Lokasi', desc: 'Gratis shuttle dari Bandung, termasuk akomodasi', icon: MapPin, cta: 'Jadwalkan' },
+              { n: '04', title: 'Akad Notaris', desc: 'SHM atas nama pribadi, serah terima unit ready', icon: Building2, cta: 'Akad' },
+            ].map((s, i) => {
+              const Icon = s.icon;
+              return (
+                <div class="group relative">
+                  <!-- Big number watermark -->
+                  <div class="absolute -top-2 -left-1 font-display text-[5rem] sm:text-[6rem] font-bold text-forest-700/[0.04] leading-none pointer-events-none select-none" aria-hidden="true">
+                    {s.n}
+                  </div>
+
+                  <!-- Card -->
+                  <div class="relative card-premium p-6 sm:p-7 text-center h-full flex flex-col items-center hover:border-gold-500/60 hover:-translate-y-1 transition-all duration-300">
+                    <!-- Icon with gold ring -->
+                    <div class="relative mb-4">
+                      <div class="absolute inset-0 bg-gold-500/20 blur-xl rounded-full scale-110 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                      <div class="relative w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-forest-700 to-forest-800 text-gold-500 flex items-center justify-center ring-2 ring-gold-500/30 group-hover:ring-gold-500 group-hover:scale-105 transition-all duration-300">
+                        <Icon size={26} strokeWidth="1.75" />
+                      </div>
+                    </div>
+
+                    <div class="font-mono text-[10px] uppercase tracking-[0.25em] text-gold-700 font-bold mb-2">
+                      Step {s.n}
+                    </div>
+                    <h3 class="font-display text-lg sm:text-xl text-forest-700 font-bold leading-tight mb-2">
+                      {s.title}
+                    </h3>
+                    <p class="text-[13px] sm:text-sm text-ink-soft leading-relaxed flex-grow">
+                      {s.desc}
+                    </p>
+
+                    <!-- Step connector dot (desktop only) -->
+                    <div class="hidden md:block absolute -right-2 top-1/2 -translate-y-1/2 w-3 h-3 bg-gold-500 rotate-45 ring-4 ring-cream-50" aria-hidden="true"></div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <!-- Bottom CTA -->
+        <div class="text-center mt-12 md:mt-16">
+          <div class="inline-flex flex-col items-center gap-4">
+            <a href={waUtama} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg shadow-xl shadow-whatsapp/20 hover:shadow-whatsapp/40 transition-shadow">
+              <MessageCircle class="w-4 h-4" />
+              Mulai Step 01 — Chat Sekarang
+              <ArrowRight class="w-4 h-4" />
+            </a>
+            <p class="text-[11px] font-mono uppercase tracking-widest text-ink-mute">
+              Rata-rata waktu total · <span class="text-forest-700 font-semibold">30–45 hari</span> · Tanpa hidden cost
             </p>
           </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-5xl">
-          {[
-            { n: '1', title: 'Chat WhatsApp', desc: 'Konsultasi awal, pilih tipe vila', icon: MessageCircle },
-            { n: '2', title: 'Booking Fee', desc: 'Rp 10 juta (refundable 30 hari)', icon: Shield },
-            { n: '3', title: 'Survei Lokasi', desc: 'Gratis, termasuk transport', icon: MapPin },
-            { n: '4', title: 'Akad Notaris', desc: 'SHM atas nama pribadi', icon: Building2 },
-          ].map((s) => {
-            const Icon = s.icon;
-            return (
-              <div class="card-premium p-8 text-center">
-                <div class="w-16 h-16 mx-auto mb-4 bg-forest-700 text-gold-500 flex items-center justify-center">
-                  <Icon size={24} />
-                </div>
-                <div class="font-mono text-xs text-gold-700 mb-1">— Step {s.n}</div>
-                <h3 class="font-display text-lg text-forest-700 font-semibold mb-2">{s.title}</h3>
-                <p class="text-sm text-ink-soft">{s.desc}</p>
-              </div>
-            );
-          })}
-        </div>
-
-        <div class="text-center mt-12">
-          <a href={waUtama} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">
-            <MessageCircle class="w-4 h-4" />
-            Mulai Step 1 — Chat Sekarang
-            <ArrowRight class="w-4 h-4" />
-          </a>
         </div>
       </div>
     </section>
