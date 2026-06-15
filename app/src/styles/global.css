@@ -732,9 +732,7 @@ body.has-cookie-banner-desktop {
 }
 
 /* WhatsApp floating pulse — soft green ping halo (GPU only) */
-.animate-pulse-wa {
-  position: relative;
-}
+/* .animate-pulse-wa — requires parent to be position: relative/fixed (we set it on the WA element itself) */
 .animate-pulse-wa::after {
   content: '';
   position: absolute;

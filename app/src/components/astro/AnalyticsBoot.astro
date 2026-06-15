@@ -1,19 +1,22 @@
+---
 /**
  * AnalyticsBoot.astro — GA4 + pageview tracking
  * Loads gtag.js script and configures with PUBLIC_GA4_ID
  */
 const GA4_ID = import.meta.env.PUBLIC_GA4_ID;
+const ADS_ID = import.meta.env.PUBLIC_GOOGLE_ADS_ID;
 ---
 
 {GA4_ID && (
   <>
     <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`} />
-    <script is:inline define:vars={{ GA4_ID }}>
+    <script is:inline define:vars={{ GA4_ID, ADS_ID }}>
       window.dataLayer = window.dataLayer || [];
       function gtag(){ window.dataLayer.push(arguments); }
       window.gtag = gtag;
       gtag('js', new Date());
       gtag('config', GA4_ID, { anonymize_ip: true, send_page_view: true });
+      if (ADS_ID) gtag('config', ADS_ID);
 
       window.mrAnalytics = {
         trackEvent: function (name, params) {
