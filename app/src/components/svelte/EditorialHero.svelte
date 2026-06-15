@@ -203,6 +203,34 @@
         </span>
       </h1>
 
+      <!-- Trust badges — above-the-fold (AG1 Google Ads) -->
+      <motion.div
+        class="flex flex-wrap items-center gap-x-3 sm:gap-x-4 gap-y-2 mb-5 sm:mb-6 lg:mb-7 text-[10px] sm:text-[11px] font-mono uppercase tracking-widest text-cream-50/85"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <span class="inline-flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 bg-gold-500 rounded-full"></span>
+          SHM Bersih
+        </span>
+        <span class="text-gold-500/40">·</span>
+        <span class="inline-flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 bg-gold-500 rounded-full"></span>
+          Sahid 50+ Tahun
+        </span>
+        <span class="text-gold-500/40">·</span>
+        <span class="inline-flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 bg-gold-500 rounded-full"></span>
+          ROI 10% Guarantee
+        </span>
+        <span class="text-gold-500/40 hidden sm:inline">·</span>
+        <span class="hidden sm:inline-flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 bg-gold-500 rounded-full"></span>
+          16 dari 74 Unit Tersisa
+        </span>
+      </motion.div>
+
       <!-- 12-col grid: copy + stats (left) | form + CTAs (right) -->
       <div class="grid grid-cols-12 gap-6 sm:gap-8 items-end">
         <div class="col-span-12 md:col-span-6 lg:col-span-5">
@@ -225,8 +253,8 @@
               <p class="text-[9px] sm:text-[10px] uppercase tracking-widest text-cream-50/60 mt-1">Cicilan/bln</p>
             </div>
             <div class="text-center p-2.5 sm:p-3 bg-cream-50/5 border border-cream-50/10 backdrop-blur-sm">
-              <span class="font-display text-lg sm:text-xl md:text-2xl text-gold-500 font-bold leading-none block">{statRoi}%</span>
-              <p class="text-[9px] sm:text-[10px] uppercase tracking-widest text-cream-50/60 mt-1">ROI 2 thn</p>
+              <span class="font-display text-lg sm:text-xl md:text-2xl text-gold-500 font-bold leading-none block">9%</span>
+              <p class="text-[9px] sm:text-[10px] uppercase tracking-widest text-cream-50/60 mt-1">Yield/bln</p>
             </div>
             <div class="text-center p-2.5 sm:p-3 bg-cream-50/5 border border-cream-50/10 backdrop-blur-sm">
               <span class="font-display text-lg sm:text-xl md:text-2xl text-gold-500 font-bold leading-none block">{statSold}/74</span>

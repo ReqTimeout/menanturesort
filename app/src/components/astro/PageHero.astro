@@ -34,6 +34,7 @@ interface Props {
   imageAlt?: string;
   imageBadge?: string;
   bgColor?: 'cream' | 'white' | 'forest';
+  trustCopy?: string[];
 }
 
 const {
@@ -48,6 +49,7 @@ const {
   imageAlt = '',
   imageBadge,
   bgColor = 'cream',
+  trustCopy = [],
 } = Astro.props;
 
 const bgClass = bgColor === 'forest' ? 'bg-forest-900 text-cream-50' : bgColor === 'white' ? 'bg-white' : 'bg-cream-50';
@@ -79,6 +81,23 @@ const bgClass = bgColor === 'forest' ? 'bg-forest-900 text-cream-50' : bgColor =
             </a>
           )}
         </div>
+
+        <!-- Trust micro-copy (AG2 Google Ads) -->
+        {trustCopy.length > 0 && (
+          <div class:list={['flex flex-wrap items-center gap-x-4 gap-y-1 mt-4 text-[11px] sm:text-xs font-mono uppercase tracking-widest', image ? '' : 'justify-center', bgColor === 'forest' ? 'text-cream-50/70' : 'text-forest-700/70']}>
+            {trustCopy.map((item, i) => (
+              <>
+                <span class="inline-flex items-center gap-1.5">
+                  <span class="w-1 h-1 bg-gold-500 rounded-full"></span>
+                  {item}
+                </span>
+                {i < trustCopy.length - 1 && (
+                  <span class="text-gold-500/40">·</span>
+                )}
+              </>
+            ))}
+          </div>
+        )}
 
         {stats.length > 0 && (
           <div class:list={['grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-forest-700/10', image ? 'max-w-2xl' : 'max-w-2xl mx-auto']}>

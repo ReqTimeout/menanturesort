@@ -126,7 +126,7 @@
           await window.mrAnalytics.trackLead({
             ...userData,
             leadType: 'villa_inquiry',
-            estimatedValue: villa === 'mapan' ? 2000000000 : villa === 'idaman' ? 1600000000 : villa === 'bijak' ? 1200000000 : 1500000000
+            estimatedValue: 10000000 // Booking fee Rp 10 jt (Smart Bidding signal)
           });
         }
       } catch (err) {
