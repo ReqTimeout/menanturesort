@@ -27,12 +27,22 @@
       "dpDeveloper": 500000000,
       "target": "First-time investor, pasangan muda",
       "bestFor": "Entry-level, cashflow ringan",
-      "architecture": "Modern tropis dengan atap Limasan etnik Jawa yang ikonik",
+      "architecture": "Modern tropis dengan atap Limasan etnik Jawa yang ikonik. Konsep villa modern tropis dengan atap Limasan etnik Jawa.",
       "features": [
         "Ruang tengah luas",
         "Ventilasi silang alami",
         "Atap Limasan ikonik",
         "Cocok pasangan / honeymoon"
+      ],
+      "image": "/images/villa/bijak/hero-row.jpeg",
+      "label": "Attic",
+      "labelDesc": "atap loteng khas Jawa",
+      "imageAlt": "Villa Menantu Bijak — deretan villa attic modern dengan pagar kayu vertikal",
+      "usp": [
+        "Ruang tengah luas",
+        "Ventilasi silang alami",
+        "Atap Limasan ikonik",
+        "Cocok pasangan / first-time investor"
       ]
     },
     {
@@ -63,8 +73,18 @@
       "target": "Keluarga, investor menengah",
       "bestFor": "Best value, sweet spot",
       "bestValue": true,
-      "architecture": "Modern tropis dengan double glass façade",
+      "architecture": "Kombinasi villa keluarga berkelas dengan private landscaping garden terawat. Double glass façade dengan area makan kaca terbuka, dapur bersih, dan balkon view taman resort utama.",
       "features": [
+        "Double glass façade",
+        "2 kamar tidur ideal family",
+        "Living room luas",
+        "Private pool view"
+      ],
+      "image": "/images/villa/idaman/hero-row.jpeg",
+      "label": "Double Glass",
+      "labelDesc": "facade kaca ganda estetik",
+      "imageAlt": "Villa Menantu Idaman — facade tower Limasan dengan pagar kayu vertikal dan balkon kaca",
+      "usp": [
         "Double glass façade",
         "2 kamar tidur ideal family",
         "Living room luas",
@@ -98,8 +118,19 @@
       "dpDeveloper": 700000000,
       "target": "Premium investor, multi-property",
       "bestFor": "Income tertinggi, capital gain maksimal",
-      "architecture": "Flagship premier dengan atap lengkung melingkar (Modern Gothic Arch / Sasak) yang mengalir megah ke bawah",
+      "architecture": "Tipe Luxury Private Pool Villa Resort. Flagship premier dengan atap lengkung melingkar (Modern Gothic Arch / Sasak) yang mengalir megah ke bawah. Standar resort tertinggi.",
       "features": [
+        "Sky deck panoramic",
+        "Infinity balcony",
+        "Ruang tamu katedral mewah",
+        "Atap lengkung melingkar"
+      ],
+      "image": "/images/villa/mapan/hero-detail.jpeg",
+      "imageAlt2": "/images/villa/mapan/street-view.jpeg",
+      "label": "Luxury Private",
+      "labelDesc": "atap lengkung etnik resort",
+      "imageAlt": "Villa Menantu Mapan — flagship villa dengan atap lengkung organik dan balkon kayu premium",
+      "usp": [
         "Sky deck panoramic",
         "Infinity balcony",
         "Ruang tamu katedral mewah",

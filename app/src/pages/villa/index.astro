@@ -1,127 +1,201 @@
 ---
+/**
+ * /villa — Landing page villa overview (V5.2)
+ *
+ * 7 sections:
+ *   1. EditorialHero    — "Anda tidak sedang membeli villa..."
+ *   2. UrgencyBanner    — 16 dari 74 unit tersisa
+ *   3. VillaCardGrid    — 3 VillaCard dengan label unik (Attic / Double Glass / Luxury Private)
+ *   4. VillaComparisonTable — side-by-side comparison
+ *   5. ROISimulator     — interactive KPR + passive income
+ *   6. TestimoniStories — 3 cerita investor
+ *   7. FinalCTASection  — urgency + dual CTA
+ */
+
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Footer from '../../components/astro/Footer.astro';
-import siteData from '../../data/site.json';
-import villaData from '../../data/villa.json';
-import { formatShort, waUrl } from '@lib/utils';
-import { ArrowRight, MessageCircle, Bed, Bath, Maximize, Check } from 'lucide-svelte';
 import NavMenu from '../../components/svelte/NavMenu.svelte';
-import FloatingActionButton from '../../components/svelte/FloatingActionButton.svelte';
+import UrgencyBanner from '../../components/svelte/UrgencyBanner.svelte';
+import VillaCard from '../../components/svelte/VillaCard.svelte';
+import VillaComparisonTable from '../../components/svelte/VillaComparisonTable.svelte';
+import ROISimulator from '../../components/svelte/ROISimulator.svelte';
+import TestimoniStories from '../../components/svelte/TestimoniStories.svelte';
+import FinalCTASection from '../../components/svelte/FinalCTASection.svelte';
+import Footer from '../../components/astro/Footer.astro';
+import SectionDivider from '../../components/astro/SectionDivider.astro';
+import Pattern from '../../components/astro/Pattern.astro';
+import { waUrl, formatRupiah, formatShort } from '@lib/utils';
+import { ArrowRight, Sparkles, MapPin, Shield, TrendingUp, Home, Award, Building2 } from 'lucide-svelte';
+import villaData from '../../data/villa.json';
+import siteData from '../../data/site.json';
 
-const waLink = (id, msg) => waUrl(siteData.contact.whatsapp, msg, `villa_${id}`);
-
-const villaImages = {
-  bijak: '/images/ref/villa-bijak-row.jpg',
-  idaman: '/images/ref/villa-idaman-row.jpg',
-  mapan: '/images/ref/villa-mapan-street.jpg',
+const types = villaData.types || [];
+const villaColorMap = {
+  bijak: { bg: '#F5F0E8', text: '#0D1B14', border: '#D4A574' },
+  idaman: { bg: '#D4A574', text: '#0D1B14', border: '#A8845C' },
+  mapan: { bg: '#0D1B14', text: '#D4A574', border: '#D4A574' },
 };
+const totalUnits = siteData.stats.totalUnits;
+const unitsLeft = totalUnits - siteData.stats.unitsSold;
 ---
 
-<BaseLayout title="Tipe Villa Menantu Resort" description="Pilih villa impian Anda: Bijak (Rp 1,2 M), Idaman (Rp 1,6 M), Mapan (Rp 2 M). Semua SHM, dikelola Sahid, cicilan ringan.">
+<BaseLayout
+  title="Pilih Vila Impian — 3 Tipe Premium | Menantu Resort Bandung"
+  description="Bandingkan 3 tipe villa premium di Cicalengka, Bandung Timur: Bijak (1,2 M / Attic), Idaman (1,6 M / Double Glass), Mapan (2 M / Luxury Private). Semua SHM, dikelola Sahid 50+ tahun, ROI 10% p.a. guarantee."
+>
   <NavMenu client:load />
-  <main>
-    <section class="section section-cream relative pt-32">
-      <div class="container-tight text-center">
-        <span class="eyebrow">3 Tipe Villa · SHM Bersih</span>
-        <h1 class="font-display text-display text-forest-700 leading-[1.05] mt-4 mb-6">
-          Pilih Vila yang Sesuai <br/><em>Anggaran Anda.</em>
-        </h1>
-        <p class="font-body text-lg text-ink-500 max-w-2xl mx-auto">
-          Entry-level untuk investor muda, standar keluarga, hingga flagship premium dengan sky deck.
-          Semua dengan sertifikat Hak Milik atas nama pribadi.
-        </p>
-      </div>
-    </section>
 
-    <section class="section-tight section-white">
-      <div class="container-wide space-y-24">
-        {villaData.types.map((villa, idx) => {
-          const link = waLink(villa.id, `Halo, saya tertarik dengan ${villa.name}`);
-          const surplus = villa.passiveIncome - villa.cicilanBank;
-          const isReversed = idx % 2 === 1;
-          return (
-            <article class={`grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center`}>
-              <div class={isReversed ? 'lg:order-2' : ''}>
-                <div class="relative aspect-[4/3] overflow-hidden border border-cream-100 group">
-                  <img src={villaImages[villa.id]} alt={villa.name} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
-                  <span class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-gold-500 to-transparent"></span>
-                  <div class="absolute top-4 left-4">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-forest-700/85 text-cream-50 text-xs font-body font-semibold tracking-wide backdrop-blur-sm">
-                      <span class="h-1.5 w-1.5 rounded-full bg-gold-500"></span>
-                      {villa.taglineShort}
-                    </span>
-                  </div>
-                  <div class="absolute bottom-4 right-4">
-                    <span class="inline-flex items-center px-3 py-1.5 bg-gold-500 text-forest-700 text-xs font-body font-bold tracking-wide">
-                      {villa.priceDisplay}
-                    </span>
-                  </div>
-                </div>
+  <main class="pt-20">
+    <!-- 1. Editorial Hero -->
+    <section class="reveal relative bg-cream-50 overflow-hidden" data-section="hero">
+      <div class="absolute inset-0 bg-gradient-to-b from-cream-50 via-cream-100/30 to-cream-50"></div>
+
+      
+    <Pattern variant="dots" color="forest" opacity={0.05} />
+    <div class="container-wide relative py-12 md:py-20">
+        <div class="grid grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div class="col-span-12 lg:col-span-7">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-4">— Villa · Edition 2026</div>
+            <h1 class="font-display text-forest-700 leading-[1.1] sm:leading-[0.95] tracking-tight text-[1.5rem] sm:text-editorial-xl font-bold mb-4 sm:mb-8">
+              Anda tidak sedang<br/>
+              <em class="text-gold-700">membeli villa.</em><br/>
+              Anda sedang memilih<br/>
+              <em class="text-gold-700">gaya hidup 30 tahun ke depan.</em>
+            </h1>
+            <p class="font-body text-sm sm:text-base md:text-lg text-ink-500 leading-relaxed mb-6 sm:mb-10 max-w-xl">
+              Setiap villa di sini dirancang untuk satu hal: <strong class="text-forest-700">passive income yang konsisten, aset yang terus naik, dan warisan yang bisa diwariskan.</strong> Bukan spekulasi. Bukan wangsit. Ini real estat dengan brand yang sudah 50+ tahun terbukti.
+            </p>
+
+            <div class="flex flex-wrap gap-3">
+              <a href="#villa-grid" class="btn btn-primary btn-lg">
+                Bandingkan 3 Villa
+                <ArrowRight size={16} />
+              </a>
+              <a href={waUrl(siteData.contact.whatsapp, 'Halo, saya mau diskusi pilihan villa yang tepat untuk budget saya.', 'villa_index_konsultasi')} class="btn btn-outline btn-lg">
+                Konsultasi Gratis
+              </a>
+            </div>
+
+            <!-- Trust bar -->
+            <div class="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-forest-700/10">
+              <div>
+                <div class="font-display text-3xl text-forest-700">{siteData.stats.unitsSold}/{totalUnits}</div>
+                <div class="text-xs text-ink-mute uppercase tracking-wider mt-1">Unit Terjual</div>
               </div>
-              <div class={isReversed ? 'lg:order-1' : ''}>
-                <div class="font-body text-xs text-gold-700 uppercase tracking-widest font-semibold mb-3">{villa.architecture}</div>
-                <h2 class="font-display text-5xl text-forest-700 font-bold leading-[1.0] mb-4">{villa.name}</h2>
-                <p class="font-quote italic text-2xl text-ink-500 mb-6">"{villa.tagline}"</p>
-
-                <div class="grid grid-cols-3 gap-4 pb-6 mb-6 border-b border-cream-100">
-                  <div>
-                    <Bed size={16} class="text-gold-500 mb-1" />
-                    <div class="font-display text-xl text-forest-700 font-bold">{villa.bedrooms} KT</div>
-                    <div class="font-body text-[10px] text-ink-500 uppercase tracking-wider">{villa.bathrooms} KM</div>
-                  </div>
-                  <div>
-                    <Maximize size={16} class="text-gold-500 mb-1" />
-                    <div class="font-display text-xl text-forest-700 font-bold">{villa.lb}m²</div>
-                    <div class="font-body text-[10px] text-ink-500 uppercase tracking-wider">{villa.lt}m² tanah</div>
-                  </div>
-                  <div>
-                    <Check size={16} class="text-gold-500 mb-1" />
-                    <div class="font-display text-xl text-forest-700 font-bold">Cash+</div>
-                    <div class="font-body text-[10px] text-ink-500 uppercase tracking-wider">flow</div>
-                  </div>
-                </div>
-
-                <ul class="space-y-2 mb-8">
-                  {villa.features.slice(0, 3).map((f) => (
-                    <li class="flex items-start gap-2 font-body text-sm text-forest-700">
-                      <Check size={14} class="text-gold-500 mt-0.5 flex-shrink-0" strokeWidth={2.5} />
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <div class="flex flex-wrap gap-3">
-                  <a href={`/villa/${villa.id}`} class="btn btn-primary">
-                    Detail Villa
-                    <ArrowRight size={16} />
-                  </a>
-                  <a href={link} target="_blank" rel="noopener" class="btn btn-whatsapp">
-                    <MessageCircle size={16} />
-                    Tanya
-                  </a>
-                </div>
+              <div>
+                <div class="font-display text-3xl text-forest-700">Rp 1,2 M</div>
+                <div class="text-xs text-ink-mute uppercase tracking-wider mt-1">Mulai dari</div>
               </div>
-            </article>
-          );
-        })}
+              <div>
+                <div class="font-display text-3xl text-forest-700">10% p.a.</div>
+                <div class="text-xs text-ink-mute uppercase tracking-wider mt-1">ROI Guarantee</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: 3 mini cards stack -->
+          <div class="col-span-12 lg:col-span-5">
+            <div class="space-y-4">
+              {types.map((v, i) => (
+                <a
+                  href={`/villa/${v.id}`}
+                  class="card-premium block p-5 hover:scale-[1.02] transition-transform"
+                >
+                  <div class="flex items-start gap-4">
+                    <div class="w-16 h-16 bg-forest-700 text-gold-500 flex items-center justify-center flex-shrink-0">
+                      <span class="font-display text-2xl">{String(i + 1).padStart(2, '0')}</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-1">
+                        <span class="inline-block px-2.5 py-1 text-xs font-mono uppercase tracking-wider font-semibold" style={`background-color: ${villaColorMap[v.id].bg}; color: ${villaColorMap[v.id].text}; border: 1px solid ${villaColorMap[v.id].border};`}>{v.label}</span>
+                        <span class="text-xs text-ink-mute">{v.lb}m² · {v.bedrooms}BR</span>
+                      </div>
+                      <h3 class="font-display text-xl text-forest-700 mb-1">{v.name}</h3>
+                      <p class="text-sm text-ink-soft line-clamp-1">{v.tagline}</p>
+                      <div class="flex items-center justify-between mt-3">
+                        <span class="font-display text-lg text-forest-700">{v.priceDisplay}</span>
+                        <ArrowRight class="w-4 h-4 text-gold-700" />
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="section section-cream">
-      <div class="container-tight text-center">
-        <h2 class="font-display text-display text-forest-700 leading-[1.05] mb-6">
-          Bingung memilih? <em>Kami bantu.</em>
-        </h2>
-        <p class="font-body text-lg text-ink-500 max-w-xl mx-auto mb-8">
-          Setiap profil investor memiliki villa yang berbeda. Tim konsultan kami akan memandu Anda memilih tipe paling pas untuk target passive income dan toleransi risiko.
-        </p>
-        <a href={waLink('general', 'Halo, saya ingin konsultasi pemilihan tipe villa.')} target="_blank" rel="noopener" class="btn btn-secondary btn-lg">
-          <MessageCircle size={18} />
-          Konsultasi Gratis via WhatsApp
-        </a>
+    <!-- 2. Urgency Banner -->
+    <UrgencyBanner client:visible unitsLeft={unitsLeft} totalUnits={totalUnits} />
+
+    <SectionDivider variant="ornate" />
+
+    <!-- 3. Villa Card Grid -->
+    <section id="villa-grid" class="bg-white py-14 md:py-24" reveal data-section="villa-grid">
+      
+    <Pattern variant="grid" color="forest" opacity={0.05} />
+    <div class="container-wide">
+        <div class="grid grid-cols-12 gap-8 mb-12">
+          <div class="col-span-12 md:col-span-3">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— Pilihan Villa</div>
+          </div>
+          <div class="col-span-12 md:col-span-9">
+            <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight">
+              Tiga karakter, satu <em class="text-gold-700">standar Sahid</em>
+            </h2>
+            <p class="font-body text-lg text-ink-soft mt-4 max-w-2xl">
+              Pilih yang sesuai dengan budget, gaya hidup, dan target passive income Anda.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {types.map((villa) => (
+            <VillaCard
+              client:load
+              villa={villa}
+            />
+          ))}
+        </div>
       </div>
     </section>
+
+    <SectionDivider variant="diamond" />
+
+    <!-- 4. Comparison Table -->
+    <VillaComparisonTable client:load />
+
+    <!-- 5. ROI Simulator -->
+    <section class="relative section-cream py-14 md:py-24" reveal data-section="roi">
+      
+    <Pattern variant="gold-sparkle" color="gold" opacity={0.07} />
+    <div class="container-wide">
+        <div class="grid grid-cols-12 gap-8 mb-12">
+          <div class="col-span-12 md:col-span-3">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— Simulasi</div>
+          </div>
+          <div class="col-span-12 md:col-span-9">
+            <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight">
+              Hitung sendiri <em class="text-gold-700">passive income</em> Anda
+            </h2>
+            <p class="font-body text-lg text-ink-soft mt-4 max-w-2xl">
+              Geser slider untuk menyesuaikan okupansi dan harga. Lihat cashflow real-time.
+            </p>
+          </div>
+        </div>
+
+        <ROISimulator client:load />
+      </div>
+    </section>
+
+    <SectionDivider variant="ornate" />
+
+    <!-- 6. Testimoni Stories -->
+    <TestimoniStories client:load />
+
+    <!-- 7. Final CTA -->
+    <FinalCTASection client:load />
   </main>
+
   <Footer />
-  <FloatingActionButton client:load />
 </BaseLayout>

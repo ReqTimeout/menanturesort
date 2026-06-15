@@ -1,6 +1,6 @@
 <script>
-  import { onMount } from 'svelte';
-  import Counter from './Counter.svelte';
+  import { motion } from '@humanspeak/svelte-motion';
+  import CountUp from './CountUp.svelte';
   import { Building2, Users, TrendingUp, Award } from 'lucide-svelte';
 
   const stats = [
@@ -15,14 +15,20 @@
   <div class="container-wide py-12 md:py-16">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
       {#each stats as s, i}
-        <div class="group relative flex flex-col items-center text-center px-4 md:border-r md:border-cream-100 md:last:border-0" style="animation-delay: {i * 0.1}s">
+        <motion.div
+          class="group relative flex flex-col items-center text-center px-4 md:border-r md:border-cream-100 md:last:border-0"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+        >
           <svelte:component this={s.icon} size={28} class="text-gold-500 mb-3 group-hover:scale-110 transition-transform duration-500" strokeWidth={1.5} />
           <div class="font-display text-4xl md:text-5xl text-forest-700 font-bold leading-none mb-2">
-            <Counter target={s.value} suffix={s.suffix} duration={2000} />
+            <CountUp end={s.value} suffix={s.suffix} duration={2}  />
           </div>
           <div class="font-body text-sm font-semibold text-forest-700 uppercase tracking-wider mb-1">{s.label}</div>
           <div class="font-body text-xs text-ink-500">{s.sub}</div>
-        </div>
+        </motion.div>
       {/each}
     </div>
   </div>

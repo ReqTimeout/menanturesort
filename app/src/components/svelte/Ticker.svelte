@@ -16,27 +16,3 @@
     {/each}
   </div>
 </div>
-
-<style>
-  .ticker {
-    overflow: hidden;
-    background: #fff;
-    border-top: 1px solid #E8DCC8;
-    border-bottom: 1px solid #E8DCC8;
-  }
-  .ticker-track {
-    display: inline-flex;
-    gap: 0;
-    animation: tickerScroll linear infinite;
-    will-change: transform;
-  }
-  .ticker-card {
-    flex: 0 0 360px;
-    padding: 2.5rem 2rem;
-    border-right: 1px solid #E8DCC8;
-  }
-  @keyframes tickerScroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-33.33%); }
-  }
-</style>

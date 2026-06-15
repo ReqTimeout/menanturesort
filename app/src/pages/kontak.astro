@@ -1,75 +1,86 @@
 ---
+/**
+ * /kontak — V5.2 rewrite (PageHero + Contact + Bank + 4 Steps)
+ */
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Navbar from '../components/astro/Navbar.astro';
+import NavMenu from '../components/svelte/NavMenu.svelte';
 import Footer from '../components/astro/Footer.astro';
-import WhatsAppFloating from '../components/astro/WhatsAppFloating.astro';
+import PageHero from '../components/astro/PageHero.astro';
+import SectionDivider from '../components/astro/SectionDivider.astro';
+import Pattern from '../components/astro/Pattern.astro';
 import siteData from '../data/site.json';
 import { waUrl } from '../lib/utils';
-import { MessageCircle, Phone, Mail, MapPin, Instagram, Shield, ArrowRight } from 'lucide-svelte';
+import { MessageCircle, Phone, Mail, MapPin, Instagram, Shield, Building2, ArrowRight, MessageSquare } from 'lucide-svelte';
 
 const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'kontak');
 const waUtama = waUrl(siteData.contact.whatsapp, 'Halo, saya ingin konsultasi investasi vila', 'kontak_main');
 ---
-<BaseLayout title="Kontak & Konsultasi Gratis" description="Hubungi tim sales Menantu Resort. WhatsApp responsif, konsultasi gratis tanpa komitmen. Rekening resmi BNI/BCA/BSI.">
-  <Navbar />
-  <main class="pt-20">
-    <section class="section section-cream">
-      <div class="container-tight text-center">
-        <span class="eyebrow">Hubungi Kami</span>
-        <h1 class="heading-title mt-4 mb-6">Konsultasi Gratis, <br/><em>Tanpa Komitmen.</em></h1>
-        <p class="text-body-lg text-ink-500 max-w-2xl mx-auto">Tim sales kami siap memandu dari pertanyaan pertama hingga akad. WhatsApp responsif di jam kerja.</p>
-        <div class="mt-8">
-          <a href={waUtama} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">
-            <MessageCircle size="18" /> Chat WhatsApp Sekarang
-          </a>
-        </div>
-      </div>
-    </section>
 
-    <section class="section section-white">
-      <div class="container-tight">
+<BaseLayout title="Kontak & Konsultasi Gratis — Menantu Resort" description="Hubungi tim sales Menantu Resort. WhatsApp responsif, konsultasi gratis tanpa komitmen. Rekening resmi BNI/BCA/BSI a.n. PT Cipta Multikarya Propertindo.">
+  <NavMenu client:load />
+
+  <main class="pt-20">
+    <PageHero
+      eyebrow="Hubungi Kami"
+      title="Konsultasi Gratis,"
+      accent="Tanpa Komitmen."
+      description="Tim sales kami siap memandu dari pertanyaan pertama hingga akad. WhatsApp responsif di jam kerja."
+      primaryCta={{ text: 'Chat WhatsApp Sekarang', href: waUtama }}
+      stats={[
+        { value: '< 1 jam', label: 'Respon WA' },
+        { value: '24/7', label: 'Online' },
+        { value: '100%', label: 'Gratis' },
+      ]}
+      bgColor="cream"
+    />
+
+    <SectionDivider variant="diamond" />
+
+    <!-- Contact + Bank -->
+    <section class="relative bg-white py-20 md:py-32" data-section="info">
+      <Pattern variant="dots" color="gold" opacity={0.05} />
+      <div class="container-wide relative">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <article class="card p-10">
-            <h2 class="heading text-2xl mb-6">Informasi Kontak</h2>
+          <article class="card-premium p-10">
+            <h2 class="font-display text-2xl text-forest-700 mb-6">Informasi Kontak</h2>
             <div class="space-y-6">
               <div>
-                <div class="text-xs text-ink-700 uppercase tracking-wider mb-2">WhatsApp</div>
+                <div class="text-xs text-ink-mute uppercase tracking-wider mb-2 font-mono">WhatsApp</div>
                 <a href={waUtama} target="_blank" rel="noopener" class="font-display text-2xl text-forest-700 font-bold hover:text-gold-700 transition">{siteData.contact.whatsappDisplay}</a>
-                <p class="text-sm text-ink-700 mt-1">Responsif 09:00 - 21:00 WIB setiap hari</p>
+                <p class="text-sm text-ink-soft mt-1">Responsif 09:00 - 21:00 WIB setiap hari</p>
               </div>
               <div>
-                <div class="text-xs text-ink-700 uppercase tracking-wider mb-2">Email</div>
+                <div class="text-xs text-ink-mute uppercase tracking-wider mb-2 font-mono">Email</div>
                 <a href={`mailto:${siteData.contact.email}`} class="text-lg text-forest-700 hover:text-gold-700 transition">{siteData.contact.email}</a>
               </div>
               <div>
-                <div class="text-xs text-ink-700 uppercase tracking-wider mb-2">Alamat</div>
-                <p class="text-body text-ink-500">{siteData.contact.address}</p>
+                <div class="text-xs text-ink-mute uppercase tracking-wider mb-2 font-mono">Alamat</div>
+                <p class="text-base text-ink-700">{siteData.contact.address}</p>
               </div>
               <div>
-                <div class="text-xs text-ink-700 uppercase tracking-wider mb-2">Instagram</div>
+                <div class="text-xs text-ink-mute uppercase tracking-wider mb-2 font-mono">Instagram</div>
                 <a href={`https://instagram.com/${siteData.social.instagram.replace('@','')}`} target="_blank" rel="noopener" class="text-forest-700 hover:text-gold-700 transition">{siteData.social.instagram}</a>
               </div>
             </div>
           </article>
 
-          <article class="card p-10 bg-forest-50">
+          <article class="card-premium p-10 bg-forest-50">
             <div class="flex items-center gap-2 mb-4">
-              <Shield size="20" class="text-gold-700" />
-              <h2 class="heading text-2xl">Rekening Resmi</h2>
+              <Building2 size={20} class="text-gold-700" />
+              <h2 class="font-display text-2xl text-forest-700">Rekening Resmi</h2>
             </div>
-            <p class="text-sm text-ink-500 mb-6">
-              <strong class="text-forest-700">Anti-fraud:</strong> Pembayaran SAH hanya melalui rekening di bawah ini.
-              Jangan transfer ke rekening pribadi siapapun.
+            <p class="text-sm text-ink-soft mb-6">
+              Salin nomor rekening di bawah ini untuk transfer. Konfirmasi via WhatsApp setelah pembayaran.
             </p>
             <div class="space-y-3">
               {siteData.bankAccounts.map((bank) => (
-                <div class="bg-white p-4">
+                <div class="bg-white p-4 border border-cream-100">
                   <div class="flex items-center justify-between mb-1">
                     <div class="font-bold text-forest-700 text-lg">{bank.bank}</div>
                     <button type="button" class="text-xs text-gold-700 hover:underline" onclick={`navigator.clipboard.writeText('${bank.number.replace(/\s/g, '')}')`}>Copy</button>
                   </div>
                   <div class="font-mono text-base">{bank.number}</div>
-                  <div class="text-xs text-ink-700 mt-1">a.n. {bank.name}</div>
+                  <div class="text-xs text-ink-soft mt-1">a.n. {bank.name}</div>
                 </div>
               ))}
             </div>
@@ -78,29 +89,57 @@ const waUtama = waUrl(siteData.contact.whatsapp, 'Halo, saya ingin konsultasi in
       </div>
     </section>
 
-    <section class="section section-cream">
-      <div class="container-tight">
-        <div class="text-center mb-12">
-          <span class="eyebrow">Proses Cepat</span>
-          <h2 class="heading-title mt-4">4 Langkah <em>Simpel.</em></h2>
+    <SectionDivider variant="ornate" />
+
+    <!-- 4 Steps -->
+    <section class="relative section-cream py-20 md:py-32" data-section="steps">
+      <Pattern variant="grid" color="forest" opacity={0.04} />
+      <div class="container-wide relative">
+        <div class="grid grid-cols-12 gap-8 mb-12">
+          <div class="col-span-12 md:col-span-3">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— Proses</div>
+          </div>
+          <div class="col-span-12 md:col-span-9">
+            <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight">
+              4 langkah <em class="text-gold-700">simpel</em>
+            </h2>
+            <p class="font-body text-lg text-ink-soft mt-4 max-w-2xl">
+              Dari konsultasi pertama hingga SHM di tangan — mudah, transparan, tidak ada hidden cost.
+            </p>
+          </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-5xl">
           {[
-            { n: '1', title: 'Chat WhatsApp', desc: 'Konsultasi awal, pilih tipe vila' },
-            { n: '2', title: 'Booking Fee', desc: 'Rp 10 juta (refundable 30 hari)' },
-            { n: '3', title: 'Survei Lokasi', desc: 'Gratis, termasuk transport' },
-            { n: '4', title: 'Akad Notaris', desc: 'SHM atas nama pribadi' },
-          ].map((s) => (
-            <div class="text-center">
-              <div class="w-16 h-16 mx-auto mb-4 bg-forest-500 text-gold-500 flex items-center justify-center font-display text-2xl font-bold">{s.n}</div>
-              <h3 class="font-display text-lg text-forest-700 font-semibold mb-2">{s.title}</h3>
-              <p class="text-sm text-ink-500">{s.desc}</p>
-            </div>
-          ))}
+            { n: '1', title: 'Chat WhatsApp', desc: 'Konsultasi awal, pilih tipe vila', icon: MessageCircle },
+            { n: '2', title: 'Booking Fee', desc: 'Rp 10 juta (refundable 30 hari)', icon: Shield },
+            { n: '3', title: 'Survei Lokasi', desc: 'Gratis, termasuk transport', icon: MapPin },
+            { n: '4', title: 'Akad Notaris', desc: 'SHM atas nama pribadi', icon: Building2 },
+          ].map((s) => {
+            const Icon = s.icon;
+            return (
+              <div class="card-premium p-8 text-center">
+                <div class="w-16 h-16 mx-auto mb-4 bg-forest-700 text-gold-500 flex items-center justify-center">
+                  <Icon size={24} />
+                </div>
+                <div class="font-mono text-xs text-gold-700 mb-1">— Step {s.n}</div>
+                <h3 class="font-display text-lg text-forest-700 font-semibold mb-2">{s.title}</h3>
+                <p class="text-sm text-ink-soft">{s.desc}</p>
+              </div>
+            );
+          })}
+        </div>
+
+        <div class="text-center mt-12">
+          <a href={waUtama} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">
+            <MessageCircle class="w-4 h-4" />
+            Mulai Step 1 — Chat Sekarang
+            <ArrowRight class="w-4 h-4" />
+          </a>
         </div>
       </div>
     </section>
   </main>
+
   <Footer />
-  <WhatsAppFloating />
 </BaseLayout>

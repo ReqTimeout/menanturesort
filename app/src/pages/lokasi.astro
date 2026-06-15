@@ -1,11 +1,16 @@
 ---
+/**
+ * /lokasi — V5.2 rewrite (PageHero + Map + Akses + Nearby)
+ */
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Navbar from '../components/astro/Navbar.astro';
+import NavMenu from '../components/svelte/NavMenu.svelte';
 import Footer from '../components/astro/Footer.astro';
-import WhatsAppFloating from '../components/astro/WhatsAppFloating.astro';
+import PageHero from '../components/astro/PageHero.astro';
+import SectionDivider from '../components/astro/SectionDivider.astro';
+import Pattern from '../components/astro/Pattern.astro';
 import siteData from '../data/site.json';
 import { waUrl } from '../lib/utils';
-import { MessageCircle, MapPin, Mountain, TreePine, Waves, Building, Train, Car, Hospital, Camera } from 'lucide-svelte';
+import { MessageCircle, MapPin, Mountain, TreePine, Waves, Train, Car, Hospital, Camera, ArrowRight } from 'lucide-svelte';
 
 const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'lokasi');
 
@@ -29,68 +34,116 @@ const nearby = [
   { name: 'Taman Renang Nagreg', desc: 'Wisata air, 25 menit', icon: Waves },
 ];
 ---
-<BaseLayout title="Lokasi Menantu Resort — Bandung Timur" description="Jl. Curug Cinulang, Tenjolaya, Cicalengka. 45 menit dari Tol Cileunyi. View 360°, udara sejuk pegunungan.">
-  <Navbar />
-  <main class="pt-20">
-    <section class="section section-cream">
-      <div class="container-tight text-center">
-        <span class="eyebrow">Lokasi Strategis</span>
-        <h1 class="heading-title mt-4 mb-6">
-          Hidden Gem Bandung Timur, <br/><em>45 Menit dari Tol Cileunyi.</em>
-        </h1>
-        <p class="text-body-lg text-ink-500 max-w-2xl mx-auto">
-          Udara sejuk pegunungan, view 360° perbukitan, akses mudah dari kota besar —
-          tanpa keramaian overtourism.
-        </p>
-      </div>
-    </section>
 
-    <section class="section-tight section-white">
-      <div class="container-tight">
-        <div class="card overflow-hidden aspect-[16/9] md:aspect-[21/9]">
+<BaseLayout
+  title="Lokasi Strategis — Hidden Gem Bandung Timur | Menantu Resort"
+  description="Menantu Resort di Cicalengka, Bandung Timur. 45 menit dari Tol Cileunyi. Udara sejuk pegunungan, view 360° perbukitan hijau, akses mudah dari kota besar."
+>
+  <NavMenu client:load />
+
+  <main class="pt-20">
+    <PageHero
+      eyebrow="Lokasi Strategis"
+      title="Hidden Gem Bandung Timur,"
+      accent="45 Menit dari Tol Cileunyi."
+      description="Udara sejuk pegunungan, view 360° perbukitan hijau, akses mudah dari kota besar — tanpa keramaian overtourism."
+      primaryCta={{ text: 'Chat Survey Lokasi', href: waLink('Halo, saya ingin survey lokasi Menantu Resort.') }}
+      secondaryCta={{ text: 'Lihat Villa', href: '/villa' }}
+      stats={[
+        { value: '45 min', label: 'Tol Cileunyi' },
+        { value: '8 min', label: 'Stasiun KA' },
+        { value: '1.5 jam', label: 'Bandara Kertajati' },
+      ]}
+      image="/images/hero/hero-aerial-1280.jpg"
+      imageAlt="Curug Cinulang — air terjun signature dekat Menantu Resort"
+      imageBadge="5 Menit dari Resort"
+    />
+
+    <SectionDivider variant="diamond" />
+
+    <!-- Map -->
+    <section class="relative bg-white py-20 md:py-32" data-section="map">
+      <Pattern variant="dots" color="forest" opacity={0.03} />
+      <div class="container-wide relative">
+        <div class="grid grid-cols-12 gap-8 mb-12">
+          <div class="col-span-12 md:col-span-3">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— Peta</div>
+          </div>
+          <div class="col-span-12 md:col-span-9">
+            <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight">
+              Temukan <em class="text-gold-700">kami</em>
+            </h2>
+          </div>
+        </div>
+
+        <div class="card-premium overflow-hidden aspect-[16/9] md:aspect-[21/9]">
           <iframe src={siteData.contact.mapsEmbed} width="100%" height="100%" style="border:0;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Lokasi Menantu Resort"></iframe>
         </div>
         <div class="flex items-center justify-center gap-2 mt-4 text-sm text-ink-500">
-          <MapPin size="16" class="text-gold-700" />
+          <MapPin size={16} class="text-gold-700" />
           {siteData.contact.address}
         </div>
       </div>
     </section>
 
-    <section class="section section-cream">
-      <div class="container-tight">
-        <div class="text-center mb-12">
-          <span class="eyebrow">Akses Mudah</span>
-          <h2 class="heading-title mt-4">Dari Mana Saja, <em>Dekat & Strategis.</em></h2>
+    <SectionDivider variant="ornate" />
+
+    <!-- Akses -->
+    <section class="relative section-cream py-20 md:py-32" data-section="akses">
+      <Pattern variant="grid" color="forest" opacity={0.04} />
+      <div class="container-wide relative">
+        <div class="grid grid-cols-12 gap-8 mb-12">
+          <div class="col-span-12 md:col-span-3">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— Akses</div>
+          </div>
+          <div class="col-span-12 md:col-span-9">
+            <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight">
+              Dari mana saja, <em class="text-gold-700">dekat & strategis</em>
+            </h2>
+          </div>
         </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {akses.map((a) => (
-            <div class="card p-6">
+            <div class="card-premium p-6">
               <div class="flex items-start justify-between mb-2">
                 <div class="font-display text-lg text-forest-700 font-semibold">{a.from}</div>
                 <span class="badge badge-gold">{a.time}</span>
               </div>
-              <p class="text-sm text-ink-500">{a.route}</p>
+              <p class="text-sm text-ink-soft">{a.route}</p>
             </div>
           ))}
         </div>
       </div>
     </section>
 
-    <section class="section section-white">
-      <div class="container-tight">
-        <div class="text-center mb-12">
-          <span class="eyebrow">Wisata & Fasilitas Sekitar</span>
-          <h2 class="heading-title mt-4">Bandung Timur <em>Punya Segalanya.</em></h2>
+    <SectionDivider variant="diamond" />
+
+    <!-- Nearby -->
+    <section class="relative bg-white py-20 md:py-32" data-section="nearby">
+      <Pattern variant="dots-dense" color="gold" opacity={0.05} />
+      <div class="container-wide relative">
+        <div class="grid grid-cols-12 gap-8 mb-12">
+          <div class="col-span-12 md:col-span-3">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— Sekitar</div>
+          </div>
+          <div class="col-span-12 md:col-span-9">
+            <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight">
+              Bandung Timur <em class="text-gold-700">punya segalanya</em>
+            </h2>
+          </div>
         </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {nearby.map((n) => {
             const Icon = n.icon;
             return (
-              <div class="card p-6 hover:border-gold-500 transition">
-                <Icon size="32" class="text-gold-700 mb-3" strokeWidth="1.5" />
-                <h3 class="font-display text-lg text-forest-700 font-semibold mb-1">{n.name}</h3>
-                <p class="text-sm text-ink-500">{n.desc}</p>
+              <div class="card-premium p-6 hover:scale-[1.02] transition-transform">
+                <div class="w-12 h-12 bg-forest-700 text-gold-500 flex items-center justify-center mb-3">
+                  <Icon size={20} />
+                </div>
+                <h3 class="font-display text-lg text-forest-700 mb-1">{n.name}</h3>
+                <p class="text-sm text-ink-soft">{n.desc}</p>
               </div>
             );
           })}
@@ -98,42 +151,27 @@ const nearby = [
       </div>
     </section>
 
-    <section class="section section-cream">
-      <div class="container-tight">
-        <div class="text-center mb-12">
-          <span class="eyebrow">3 Alasan</span>
-          <h2 class="heading-title mt-4">Mengapa <em>Bandung Timur?</em></h2>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="card p-10 text-center">
-            <div class="text-5xl mb-4">🌡️</div>
-            <h3 class="heading text-xl mb-3">Sejuk 18-24°C</h3>
-            <p class="text-body text-ink-500">Udara pegunungan bersih, bebas polusi, ideal untuk retreat.</p>
-          </div>
-          <div class="card p-10 text-center">
-            <div class="text-5xl mb-4">📈</div>
-            <h3 class="heading text-xl mb-3">Naik 28% YoY</h3>
-            <p class="text-body text-ink-500">Capital gain property Bandung Timur tertinggi di area Bandung.</p>
-          </div>
-          <div class="card p-10 text-center">
-            <div class="text-5xl mb-4">🏢</div>
-            <h3 class="heading text-xl mb-3">Korporat Nearby</h3>
-            <p class="text-body text-ink-500">PT KAHATEX, Mayora, Tirta Fresindo = pasar corporate tenant.</p>
-          </div>
-        </div>
-      </div>
-    </section>
+    <SectionDivider variant="ornate" />
 
-    <section class="section section-cream-dark text-center">
-      <div class="container-tight">
-        <h2 class="heading-title mb-6">Lihat Langsung <em class="text-gold-700">Lokasinya.</em></h2>
-        <p class="text-body-lg text-ink-500 max-w-2xl mx-auto mb-8">Survei lokasi gratis, termasuk transport dari pool meeting point Bandung.</p>
-        <a href={waLink('Halo, saya mau survei lokasi')} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">
-          <MessageCircle size="18" /> Jadwalkan Survei Gratis
-        </a>
+    <!-- Final CTA -->
+    <section class="relative bg-forest-900 text-cream-50 py-20 md:py-32 overflow-hidden" data-section="cta">
+      <Pattern variant="gold-sparkle" color="gold" opacity={0.06} />
+      <div class="container-wide relative text-center">
+        <h2 class="font-display text-display-md text-cream-50 leading-[0.95] tracking-tight mb-6">
+          Lihat langsung <em class="text-gold-500">lokasinya</em>
+        </h2>
+        <p class="font-body text-lg text-cream-50/80 max-w-2xl mx-auto mb-8">
+          Tim kami siap antar survey — gratis, tidak ada komitmen.
+        </p>
+        <div class="flex flex-wrap gap-3 justify-center">
+          <a href={waLink('Halo, saya mau jadwalkan survey lokasi')} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">
+            <MessageCircle size={18} /> Jadwalkan Survey
+          </a>
+          <a href="/villa" class="btn btn-outline btn-lg">Lihat Tipe Villa <ArrowRight class="w-4 h-4" /></a>
+        </div>
       </div>
     </section>
   </main>
+
   <Footer />
-  <WhatsAppFloating />
 </BaseLayout>

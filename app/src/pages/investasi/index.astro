@@ -1,172 +1,273 @@
 ---
+/**
+ * /investasi — V5.2 rewrite
+ * Sections: PageHero + KprCalc + ROISim + VillaCompare + 3 Pilar + BookingFlow + Final CTA
+ */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Navbar from '../../components/astro/Navbar.astro';
+import NavMenu from '../../components/svelte/NavMenu.svelte';
 import Footer from '../../components/astro/Footer.astro';
-import WhatsAppFloating from '../../components/astro/WhatsAppFloating.astro';
+import PageHero from '../../components/astro/PageHero.astro';
+import SectionDivider from '../../components/astro/SectionDivider.astro';
+import Pattern from '../../components/astro/Pattern.astro';
 import KprCalculator from '../../components/svelte/KprCalculator.svelte';
+import ROISimulator from '../../components/svelte/ROISimulator.svelte';
+import VillaCompare from '../../components/svelte/VillaCompare.svelte';
+import BookingFlow from '../../components/svelte/BookingFlow.svelte';
 import siteData from '../../data/site.json';
 import villaData from '../../data/villa.json';
 import { formatShort, waUrl } from '../../lib/utils';
-import { ArrowRight, MessageCircle, Building2, TrendingUp, Users, Shield, Check } from 'lucide-svelte';
+import { MessageCircle, Building2, TrendingUp, Users, Shield, Check, ArrowRight } from 'lucide-svelte';
 
 const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'investasi_overview');
-const scenarios = villaData.types.map((v) => ({
-  ...v,
-  surplus: v.passiveIncome - v.cicilanBank,
-}));
 ---
-<BaseLayout
-  title="Skema Investasi & Passive Income"
-  description="Cicilan villa Anda, ditutup income villa. Dua skema KPR: Bank (5% tenor 20thn) atau Developer (7% tanpa BI Checking). ROI 10% guarantee."
->
-  <Navbar />
-  <main class="pt-20">
-    <section class="section section-cream">
-      <div class="container-tight text-center">
-        <span class="eyebrow">Investment Hub</span>
-        <h1 class="heading-title mt-4 mb-6">
-          Cicilan Anda, <br/><em>Ditutup Income Anda.</em>
-        </h1>
-        <p class="text-body-lg text-ink-500 max-w-2xl mx-auto">
-          Dua skema pembayaran — pilih yang sesuai profil Anda.
-          Semua tipe villa dirancang agar passive income menutup cicilan, dengan surplus.
-        </p>
-      </div>
-    </section>
 
-    <section class="section-tight section-white">
-      <div class="container-tight">
+<BaseLayout
+  title="Skema Investasi & Passive Income — Menantu Resort"
+  description="Cicilan villa Anda, ditutup income villa. Dua skema KPR: Bank (5% tenor 20thn) atau Developer (7% tanpa BI Checking). ROI 10% guarantee 2 tahun."
+>
+  <NavMenu client:load />
+
+  <main class="pt-20">
+    <PageHero
+      eyebrow="Investment Hub"
+      title="Cicilan Anda,"
+      accent="Ditutup Income Anda."
+      description="Dua skema pembayaran — pilih yang sesuai profil Anda. Semua tipe villa dirancang agar passive income menutup cicilan, dengan surplus cashflow positif dari bulan pertama."
+      primaryCta={{ text: 'Simulasi KPR', href: '#kalkulator' }}
+      secondaryCta={{ text: 'Lihat Villa', href: '/villa' }}
+      stats={[
+        { value: '10%', label: 'ROI Guarantee' },
+        { value: '70/30', label: 'Bagi Hasil' },
+        { value: '2 Thn', label: 'Jaminan' },
+      ]}
+      bgColor="cream"
+    />
+
+    <SectionDivider variant="diamond" />
+
+    <!-- KPR Calculator -->
+    <section id="kalkulator" class="relative bg-white py-14 md:py-24" data-section="kpr-calculator">
+      <Pattern variant="dots" color="gold" opacity={0.05} />
+      <div class="container-wide relative">
+        <div class="grid grid-cols-12 gap-8 mb-12">
+          <div class="col-span-12 md:col-span-3">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— Simulasi</div>
+          </div>
+          <div class="col-span-12 md:col-span-9">
+            <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight">
+              Hitung <em class="text-gold-700">cashflow</em> Anda sendiri
+            </h2>
+            <p class="font-body text-lg text-ink-soft mt-4 max-w-2xl">
+              Geser slider — lihat cicilan vs passive income real-time.
+            </p>
+          </div>
+        </div>
+
         <KprCalculator client:visible />
       </div>
     </section>
 
-    <section class="section section-cream">
-      <div class="container-tight">
-        <div class="text-center mb-12">
-          <span class="eyebrow">2 Skema Pembiayaan</span>
-          <h2 class="heading-title mt-4">Pilih Jalur <em>Anda.</em></h2>
+    <SectionDivider variant="ornate" />
+
+    <!-- 2 Skema Pembiayaan -->
+    <section class="relative section-cream py-14 md:py-24" data-section="skema">
+      <Pattern variant="diagonal" color="forest" opacity={0.04} />
+      <div class="container-wide relative">
+        <div class="grid grid-cols-12 gap-8 mb-12">
+          <div class="col-span-12 md:col-span-3">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— 2 Skema</div>
+          </div>
+          <div class="col-span-12 md:col-span-9">
+            <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight">
+              Pilih jalur <em class="text-gold-700">Anda</em>
+            </h2>
+            <p class="font-body text-lg text-ink-soft mt-4 max-w-2xl">
+              Sesuaikan dengan profil keuangan dan timeline Anda.
+            </p>
+          </div>
         </div>
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <article class="card accent-line p-10">
+          <article class="card-premium p-10">
             <div class="flex items-center gap-3 mb-4">
-              <div class="w-12 h-12 bg-forest-500 text-gold-500 flex items-center justify-center">
-                <Building2 size="20" />
+              <div class="w-12 h-12 bg-forest-700 text-gold-500 flex items-center justify-center">
+                <Building2 size={20} />
               </div>
               <span class="badge badge-gold">Tenor Panjang</span>
             </div>
-            <h3 class="heading text-2xl mb-2">KPR Bank</h3>
-            <p class="text-sm text-ink-700 mb-6">Bunga flat 5% · Tenor 15-20 tahun · Wajib BI Checking</p>
+            <h3 class="font-display text-2xl text-forest-700 mb-2">KPR Bank</h3>
+            <p class="text-sm text-ink-soft mb-6">Bunga flat 5% · Tenor 15-20 tahun · Wajib BI Checking</p>
             <ul class="space-y-2 text-sm text-ink-500 mb-8">
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> Bunga lebih rendah</li>
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> Tenor hingga 20 tahun</li>
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> DP mulai 30%</li>
+              <li class="flex gap-2"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> Bunga lebih rendah (5%)</li>
+              <li class="flex gap-2"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> Tenor hingga 20 tahun</li>
+              <li class="flex gap-2"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> DP mulai 30%</li>
             </ul>
-            <a href="/investasi/skema-bank" class="btn btn-primary w-full">Detail Skema KPR Bank</a>
+            <a href="/investasi/skema-bank" class="btn btn-primary w-full justify-center">
+              Detail Skema KPR Bank <ArrowRight class="w-4 h-4" />
+            </a>
           </article>
 
-          <article class="card accent-line p-10 border-2 border-gold-500">
-            <div class="flex items-center gap-3 mb-4">
+          <article class="card-premium p-10 border-2 border-gold-500 relative">
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold-500 text-forest-700 px-4 py-1 text-xs font-bold tracking-widest uppercase">
+              ★ Paling Populer
+            </div>
+            <div class="flex items-center gap-3 mb-4 mt-2">
               <div class="w-12 h-12 bg-gold-500 text-forest-700 flex items-center justify-center">
-                <Users size="20" />
+                <Users size={20} />
               </div>
               <span class="badge badge-gold">Tanpa BI Checking</span>
             </div>
-            <h3 class="heading text-2xl mb-2">KPR Developer</h3>
-            <p class="text-sm text-ink-700 mb-6">Bunga flat 7% · Tenor 15 tahun · Approval 7 hari</p>
+            <h3 class="font-display text-2xl text-forest-700 mb-2">KPR Developer</h3>
+            <p class="text-sm text-ink-soft mb-6">Bunga flat 7% · Tenor 15 tahun · Approval 7 hari</p>
             <ul class="space-y-2 text-sm text-ink-500 mb-8">
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> Tanpa BI Checking</li>
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> Approval lebih cepat</li>
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> DP lebih ringan (25%)</li>
+              <li class="flex gap-2"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> Tanpa BI Checking</li>
+              <li class="flex gap-2"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> Approval lebih cepat</li>
+              <li class="flex gap-2"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> DP lebih ringan (25%)</li>
             </ul>
-            <a href="/investasi/skema-developer" class="btn btn-primary w-full">Detail Skema KPR Developer</a>
+            <a href="/investasi/skema-developer" class="btn btn-primary w-full justify-center">
+              Detail Skema KPR Developer <ArrowRight class="w-4 h-4" />
+            </a>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="section section-white">
-      <div class="container-tight">
-        <div class="text-center mb-12">
-          <span class="eyebrow">Perbandingan Semua Vila</span>
-          <h2 class="heading-title mt-4">Cicilan vs <em>Passive Income.</em></h2>
+    
+    <!-- ROI Simulator -->
+    <section class="relative bg-cream-50 py-14 md:py-24" data-section="roi-simulator">
+      <Pattern variant="grid" color="gold" opacity={0.05} />
+      <div class="container-wide relative">
+        <div class="grid grid-cols-12 gap-8 mb-12">
+          <div class="col-span-12 md:col-span-3">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— Proyeksi 15 Tahun</div>
+          </div>
+          <div class="col-span-12 md:col-span-9">
+            <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight">
+              Lihat <em class="text-gold-700">wealth building</em> Anda
+            </h2>
+            <p class="font-body text-lg text-ink-soft mt-4 max-w-2xl">
+              Sesuaikan asumsi okupansi, tarif, dan growth. Lihat kapan modal Anda kembali.
+            </p>
+          </div>
         </div>
-        <div class="overflow-x-auto card p-6 md:p-10">
-          <table class="w-full text-left min-w-[640px]">
-            <thead>
-              <tr class="border-b-2 border-forest-500 text-xs uppercase tracking-wider text-ink-700">
-                <th class="py-4 pr-4 font-semibold">Tipe Vila</th>
-                <th class="py-4 pr-4 font-semibold">Harga</th>
-                <th class="py-4 pr-4 font-semibold">DP 30%</th>
-                <th class="py-4 pr-4 font-semibold">Cicilan</th>
-                <th class="py-4 pr-4 font-semibold">Income</th>
-                <th class="py-4 font-semibold">Surplus</th>
-              </tr>
-            </thead>
-            <tbody>
-              {scenarios.map((s) => (
-                <tr class="border-b border-cream-100 last:border-0 hover:bg-cream-50 transition">
-                  <td class="py-4 pr-4 font-semibold text-forest-700">
-                    {s.name} {s.bestValue && <span class="badge badge-gold text-xs ml-2">Best</span>}
-                  </td>
-                  <td class="py-4 pr-4 font-mono text-sm">{s.priceDisplay}</td>
-                  <td class="py-4 pr-4 text-sm text-ink-500">{formatShort(s.dpBank)}</td>
-                  <td class="py-4 pr-4 font-mono text-sm">{formatShort(s.cicilanBank)}</td>
-                  <td class="py-4 pr-4 font-mono text-sm text-forest-500 font-semibold">{formatShort(s.passiveIncome)}</td>
-                  <td class="py-4 font-mono text-sm text-success font-semibold">+{formatShort(s.surplus)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+
+        <ROISimulator client:visible />
       </div>
     </section>
 
-    <section class="section section-cream">
-      <div class="container-tight">
-        <div class="text-center mb-12">
-          <span class="eyebrow">3 Pilar</span>
-          <h2 class="heading-title mt-4">Kenapa <em>Passive Income Konsisten?</em></h2>
+    <SectionDivider variant="ornate" />
+
+    <!-- Villa Compare -->
+    <section class="relative bg-white py-14 md:py-24" data-section="compare">
+      <Pattern variant="dots-dense" color="forest" opacity={0.04} />
+      <div class="container-wide relative">
+        <div class="grid grid-cols-12 gap-8 mb-12">
+          <div class="col-span-12 md:col-span-3">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— Bandingkan 3 Villa</div>
+          </div>
+          <div class="col-span-12 md:col-span-9">
+            <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight">
+              Tipe villa mana yang <em class="text-gold-700">cocok untuk Anda</em>?
+            </h2>
+            <p class="font-body text-lg text-ink-soft mt-4 max-w-2xl">
+              Geser slider DP, tenor, okupansi. Lihat cicilan vs income side-by-side real-time.
+            </p>
+          </div>
         </div>
+
+        <VillaCompare client:visible />
+      </div>
+    </section>
+
+    <SectionDivider variant="diamond" />
+
+
+    <!-- 3 Pilar -->
+    <section class="relative section-cream py-14 md:py-24" data-section="pilar">
+      <Pattern variant="dots-dense" color="gold" opacity={0.05} />
+      <div class="container-wide relative">
+        <div class="grid grid-cols-12 gap-8 mb-12">
+          <div class="col-span-12 md:col-span-3">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— 3 Pilar</div>
+          </div>
+          <div class="col-span-12 md:col-span-9">
+            <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight">
+              Kenapa passive income <em class="text-gold-700">konsisten</em>?
+            </h2>
+            <p class="font-body text-lg text-ink-soft mt-4 max-w-2xl">
+              Tiga kekuatan yang menjaga cashflow Anda tetap positif.
+            </p>
+          </div>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <article class="card p-10 text-center">
-            <Shield size="32" class="text-gold-700 mx-auto mb-4" />
-            <h3 class="heading text-xl mb-3">Sahid Operasional</h3>
-            <p class="text-body text-ink-500">Dikelola harian oleh tim Sahid Hotel & Resort — standar hospitality bintang 5, okupansi terjaga.</p>
+          <article class="card-premium p-10 text-center">
+            <Shield size={32} class="text-gold-700 mx-auto mb-4" />
+            <h3 class="font-display text-xl text-forest-700 mb-3">Sahid Operasional</h3>
+            <p class="text-sm text-ink-soft">Dikelola harian oleh tim Sahid Hotel & Resort — standar hospitality bintang 5, okupansi terjaga.</p>
           </article>
-          <article class="card p-10 text-center">
-            <TrendingUp size="32" class="text-gold-700 mx-auto mb-4" />
-            <h3 class="heading text-xl mb-3">ROI Guarantee 10%</h3>
-            <p class="text-body text-ink-500">Jaminan minimal 10% per tahun untuk 2 tahun pertama — melindungi cashflow awal.</p>
+          <article class="card-premium p-10 text-center">
+            <TrendingUp size={32} class="text-gold-700 mx-auto mb-4" />
+            <h3 class="font-display text-xl text-forest-700 mb-3">ROI Guarantee 10%</h3>
+            <p class="text-sm text-ink-soft">Jaminan minimal 10% per tahun untuk 2 tahun pertama — melindungi cashflow awal.</p>
           </article>
-          <article class="card p-10 text-center">
-            <Users size="32" class="text-gold-700 mx-auto mb-4" />
-            <h3 class="heading text-xl mb-3">Bagi Hasil 70-30</h3>
-            <p class="text-body text-ink-500">70% untuk pemilik, 30% untuk operasional. Transparan, dikirim bulanan ke rekening Anda.</p>
+          <article class="card-premium p-10 text-center">
+            <Users size={32} class="text-gold-700 mx-auto mb-4" />
+            <h3 class="font-display text-xl text-forest-700 mb-3">Bagi Hasil 70-30</h3>
+            <p class="text-sm text-ink-soft">70% untuk pemilik, 30% untuk operasional. Transparan, dikirim bulanan ke rekening Anda.</p>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="section section-cream-dark relative overflow-hidden">
-      <div class="absolute inset-0 pattern-dots opacity-30"></div>
-      <div class="container-tight relative text-center">
-        <div class="inline-flex items-center gap-2 bg-gold-500/15 text-gold-700 px-4 py-2 mb-6">
-          <span class="w-2 h-2 bg-gold-500 rounded-full animate-pulse-gold"></span>
+    <!-- Booking Flow -->
+    <section class="relative bg-cream-50 py-14 md:py-24" data-section="booking-flow">
+      <Pattern variant="dots" color="gold" opacity={0.05} />
+      <div class="container-wide relative">
+        <div class="grid grid-cols-12 gap-8 mb-12">
+          <div class="col-span-12 md:col-span-3">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— Booking Sekarang</div>
+          </div>
+          <div class="col-span-12 md:col-span-9">
+            <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight">
+              Lock unit Anda <em class="text-gold-700">hari ini</em>
+            </h2>
+            <p class="font-body text-lg text-ink-soft mt-4 max-w-2xl">
+              3 langkah mudah. Booking fee <strong class="text-forest-700">Rp 10 juta</strong>, refundable 30 hari.
+            </p>
+          </div>
+        </div>
+
+        <BookingFlow client:visible />
+      </div>
+    </section>
+
+    <SectionDivider variant="ornate" />
+
+    <!-- Final CTA -->
+    <section class="relative bg-forest-900 text-cream-50 py-14 md:py-24 overflow-hidden" data-section="cta">
+      <div class="absolute inset-0 bg-gradient-to-br from-forest-900 via-forest-800 to-forest-900 opacity-60"></div>
+      <Pattern variant="gold-sparkle" color="gold" opacity={0.06} />
+      <div class="container-wide relative text-center">
+        <div class="inline-flex items-center gap-2 bg-gold-500/20 text-gold-500 px-4 py-2 mb-6">
+          <span class="w-2 h-2 bg-gold-500 rounded-full animate-pulse"></span>
           <span class="text-xs font-semibold uppercase tracking-widest">Hanya 16 Unit Tersisa</span>
         </div>
-        <h2 class="heading-title mb-6">Booking Fee <em class="text-gold-700">Rp 10 Juta.</em></h2>
-        <p class="text-body-lg text-ink-500 max-w-2xl mx-auto mb-8">
-          Lock harga, refundable 30 hari. Amankan unit favorit sebelum fase berikutnya.
+        <h2 class="font-display text-display-md text-cream-50 leading-[0.95] tracking-tight mb-6">
+          Atau konsultasi <em class="text-gold-500">personal</em>
+        </h2>
+        <p class="font-body text-lg text-cream-50/80 max-w-2xl mx-auto mb-8">
+          Tim sales kami akan memandu dari pertanyaan pertama hingga akad. Tanpa komitmen.
         </p>
         <div class="flex flex-wrap gap-3 justify-center">
-          <a href={waLink('Halo, saya ingin booking')} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">
-            <MessageCircle size="18" /> Booking via WhatsApp
+          <a href={waLink('Halo, saya ingin konsultasi personal')} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">
+            <MessageCircle size={18} /> Konsultasi Personal
           </a>
-          <a href="/villa" class="btn btn-outline btn-lg">Lihat Tipe Villa</a>
+          <a href="/villa" class="btn btn-outline-light btn-lg">Lihat Tipe Villa</a>
         </div>
       </div>
     </section>
   </main>
+
   <Footer />
-  <WhatsAppFloating />
 </BaseLayout>

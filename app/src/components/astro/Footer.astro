@@ -1,6 +1,13 @@
 ---
 import siteData from '../../data/site.json';
-import { Instagram, Phone, Mail, MapPin, Shield } from 'lucide-svelte';
+import { Instagram, Phone, Mail, MapPin, Building2 } from 'lucide-svelte';
+
+// Bank logos (inline SVG path untuk hemat bundle — no external image)
+const banks = [
+  { name: 'BNI', color: '#F26522' },
+  { name: 'BCA', color: '#003D7A' },
+  { name: 'BSI', color: '#00A39A' },
+];
 ---
 <footer class="section-tight section-cream border-t border-cream-100">
   <div class="container-wide">
@@ -10,13 +17,13 @@ import { Instagram, Phone, Mail, MapPin, Shield } from 'lucide-svelte';
         <p class="text-sm text-ink-700 mb-6 max-w-sm">{siteData.tagline}</p>
         <div class="flex items-center gap-3 text-forest-700">
           <a href={`https://instagram.com/${siteData.social.instagram.replace('@','')}`} target="_blank" rel="noopener" class="w-9 h-9 border border-cream-100 flex items-center justify-center hover:border-gold-500 hover:text-gold-700 transition-colors">
-            <Instagram size="16" />
+            <Instagram size={16} />
           </a>
           <a href={`tel:${siteData.contact.whatsapp}`} class="w-9 h-9 border border-cream-100 flex items-center justify-center hover:border-gold-500 hover:text-gold-700 transition-colors">
-            <Phone size="16" />
+            <Phone size={16} />
           </a>
           <a href={`mailto:${siteData.contact.email}`} class="w-9 h-9 border border-cream-100 flex items-center justify-center hover:border-gold-500 hover:text-gold-700 transition-colors">
-            <Mail size="16" />
+            <Mail size={16} />
           </a>
         </div>
       </div>
@@ -36,15 +43,15 @@ import { Instagram, Phone, Mail, MapPin, Shield } from 'lucide-svelte';
         <span class="eyebrow text-forest-700 mb-4 block">Kontak</span>
         <ul class="space-y-2 text-sm text-ink-500">
           <li class="flex items-start gap-2">
-            <MapPin size="14" class="text-gold-700 mt-1 flex-shrink-0" />
+            <MapPin size={14} class="text-gold-700 mt-1 flex-shrink-0" />
             <span class="leading-relaxed">{siteData.contact.address}</span>
           </li>
           <li class="flex items-center gap-2">
-            <Phone size="14" class="text-gold-700 flex-shrink-0" />
+            <Phone size={14} class="text-gold-700 flex-shrink-0" />
             <span class="font-mono">{siteData.contact.whatsappDisplay}</span>
           </li>
           <li class="flex items-center gap-2">
-            <Mail size="14" class="text-gold-700 flex-shrink-0" />
+            <Mail size={14} class="text-gold-700 flex-shrink-0" />
             <span>{siteData.contact.email}</span>
           </li>
         </ul>
@@ -61,21 +68,28 @@ import { Instagram, Phone, Mail, MapPin, Shield } from 'lucide-svelte';
     </div>
 
     <div class="pt-8 border-t border-cream-100">
-      <div class="bg-gold-500/10 border-l-2 border-gold-500 p-4 mb-6">
-        <div class="flex items-start gap-3 text-sm text-ink-700">
-          <Shield size="16" class="text-gold-700 flex-shrink-0 mt-0.5" />
-          <div>
-            <strong class="text-forest-700">Anti-fraud:</strong> Pembayaran SAH hanya melalui rekening resmi:
-            {siteData.bankAccounts.map((b, i) => (
-              <span class="font-mono">{b.bank} {b.number}{i < siteData.bankAccounts.length - 1 ? ' · ' : ''}</span>
-            ))} a.n. PT Cipta Multikarya Propertindo.
-          </div>
+      <!-- Bank partner logos — trust signal (replace anti-fraud) -->
+      <div class="flex flex-wrap items-center gap-6 mb-6">
+        <span class="text-xs uppercase tracking-widest text-ink-mute">Rekening Resmi</span>
+        <div class="flex items-center gap-4">
+          {banks.map((b) => (
+            <div class="flex items-center gap-2 px-3 py-1.5 bg-white border border-cream-100">
+              <Building2 size={14} style={`color: ${b.color}`} />
+              <span class="font-mono text-sm font-semibold" style={`color: ${b.color}`}>{b.name}</span>
+            </div>
+          ))}
         </div>
       </div>
 
       <div class="flex flex-wrap items-center justify-between gap-4 text-xs text-ink-700">
         <p>© {new Date().getFullYear()} Menantu Resort managed by Sahid. All rights reserved.</p>
-        <p>Developed by <span class="text-forest-700 font-semibold">{siteData.developer.shortName}</span> ({siteData.developer.brand})</p>
+        <p>
+          Developed by
+          <a href="https://beriklan.co.id" target="_blank" rel="noopener noreferrer" class="text-forest-700 font-semibold hover:text-gold-700 transition-colors underline-offset-4 hover:underline">
+            beriklan.co.id
+          </a>
+          <span class="text-ink-mute">· {siteData.developer.brand}</span>
+        </p>
       </div>
     </div>
   </div>

@@ -1,95 +1,177 @@
 ---
+/**
+ * /investasi/skema-bank — V5.2 rewrite
+ * PageHero + 3 stat cards + Simulasi table + Syarat/Dokumen + CTA
+ */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Navbar from '../../components/astro/Navbar.astro';
+import NavMenu from '../../components/svelte/NavMenu.svelte';
 import Footer from '../../components/astro/Footer.astro';
+import PageHero from '../../components/astro/PageHero.astro';
+import SectionDivider from '../../components/astro/SectionDivider.astro';
+import Pattern from '../../components/astro/Pattern.astro';
 import WhatsAppFloating from '../../components/astro/WhatsAppFloating.astro';
 import siteData from '../../data/site.json';
 import { waUrl } from '../../lib/utils';
-import { MessageCircle, Check, ArrowLeft } from 'lucide-svelte';
+import { MessageCircle, Check, ArrowLeft, FileText, Calculator, Shield } from 'lucide-svelte';
+
 const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'kpr_bank');
 ---
-<BaseLayout title="KPR Bank — Bunga 5% Tenor 20 Tahun" description="KPR Bank villa Menantu Resort: bunga flat 5%, tenor 15-20 tahun, DP mulai 30%. Syarat, dokumen, simulasi cicilan.">
-  <Navbar />
+<BaseLayout title="KPR Bank — Bunga 5% Tenor 20 Tahun | Menantu Resort" description="KPR Bank villa Menantu Resort: bunga flat 5%, tenor 15-20 tahun, DP mulai 30%. Syarat, dokumen, simulasi cicilan.">
+  <NavMenu client:load />
   <main class="pt-20">
-    <section class="section section-cream">
-      <div class="container-tight">
-        <a href="/investasi" class="text-forest-500 text-sm hover:text-gold-700 inline-flex items-center gap-1 mb-4">
-          <ArrowLeft size="14" /> Kembali
-        </a>
-        <span class="eyebrow text-forest-500 block mb-3">Skema Pembiayaan</span>
-        <h1 class="heading-title mb-6">KPR Bank — <em>Bunga Ringan, Tenor Panjang.</em></h1>
-        <p class="text-body-lg text-ink-500 max-w-2xl">Bunga flat 5% per tahun, tenor fleksibel 15-20 tahun. Cocok untuk Anda yang punya cashflow rutin dan ingin cicilan paling ringan.</p>
+    <PageHero
+      eyebrow="Skema Pembiayaan"
+      title="KPR Bank —"
+      accent="Bunga Ringan, Tenor Panjang."
+      description="Bunga flat 5% per tahun, tenor fleksibel 15-20 tahun. Cocok untuk Anda yang punya cashflow rutin dan ingin cicilan paling ringan."
+      primaryCta={{ text: 'Konsultasi KPR', href: waLink('Halo, saya tertarik KPR Bank villa Menantu Resort') }}
+      secondaryCta={{ text: 'Lihat Villa', href: '/villa' }}
+      stats={[
+        { value: '5%', label: 'Bunga Flat' },
+        { value: '20 Thn', label: 'Tenor Maks' },
+        { value: '30%', label: 'DP Minimum' },
+      ]}
+      bgColor="cream"
+    />
+
+    <SectionDivider variant="diamond" />
+
+    <!-- 3 Stat Cards -->
+    <section class="relative bg-white py-20 md:py-28" data-section="stat-cards">
+      <Pattern variant="dots" color="forest" opacity={0.04} />
+      <div class="container-wide relative">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="card-premium p-8 text-center">
+            <div class="text-xs text-ink-mute uppercase tracking-widest mb-2 font-mono">Bunga</div>
+            <div class="font-display text-5xl text-forest-700 font-bold leading-none mb-1">5%</div>
+            <div class="text-sm text-ink-soft">flat per tahun</div>
+          </div>
+          <div class="card-premium p-8 text-center">
+            <div class="text-xs text-ink-mute uppercase tracking-widest mb-2 font-mono">Tenor</div>
+            <div class="font-display text-5xl text-forest-700 font-bold leading-none mb-1">15-20</div>
+            <div class="text-sm text-ink-soft">tahun</div>
+          </div>
+          <div class="card-premium p-8 text-center">
+            <div class="text-xs text-ink-mute uppercase tracking-widest mb-2 font-mono">DP Minimum</div>
+            <div class="font-display text-5xl text-forest-700 font-bold leading-none mb-1">30%</div>
+            <div class="text-sm text-ink-soft">dari harga jual</div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="section-tight section-white">
-      <div class="container-tight">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div class="card accent-line p-8 text-center">
-            <div class="text-xs text-ink-700 uppercase tracking-wider mb-2">Bunga</div>
-            <div class="font-display text-5xl text-forest-500 font-bold mb-1">5%</div>
-            <div class="text-sm text-ink-700">flat per tahun</div>
-          </div>
-          <div class="card accent-line p-8 text-center">
-            <div class="text-xs text-ink-700 uppercase tracking-wider mb-2">Tenor</div>
-            <div class="font-display text-5xl text-forest-500 font-bold mb-1">15-20</div>
-            <div class="text-sm text-ink-700">tahun</div>
-          </div>
-          <div class="card accent-line p-8 text-center">
-            <div class="text-xs text-ink-700 uppercase tracking-wider mb-2">DP Minimum</div>
-            <div class="font-display text-5xl text-forest-500 font-bold mb-1">30%</div>
-            <div class="text-sm text-ink-700">dari harga jual</div>
-          </div>
+    <!-- Simulasi Cicilan Table -->
+    <section class="relative bg-cream-50 py-20 md:py-28" data-section="simulasi">
+      <Pattern variant="grid" color="gold" opacity={0.05} />
+      <div class="container-wide relative">
+        <div class="text-center mb-10">
+          <span class="eyebrow">Simulasi Cicilan</span>
+          <h2 class="font-display text-3xl md:text-4xl text-forest-700 font-bold mt-3">Perhitungan <em class="text-gold-700">3 Tipe Villa</em></h2>
+          <p class="text-base text-ink-soft mt-3 max-w-xl mx-auto">Asumsi DP 30%, bunga flat 5% p.a., cicilan tetap setiap bulan hingga lunas.</p>
         </div>
 
-        <div class="card p-8 md:p-12 mb-12">
-          <h2 class="heading text-2xl mb-6">Simulasi Cicilan</h2>
+        <div class="card-premium p-6 md:p-10">
           <div class="overflow-x-auto">
             <table class="w-full text-left min-w-[640px]">
               <thead>
-                <tr class="border-b-2 border-forest-500 text-xs uppercase tracking-wider text-ink-700">
-                  <th class="py-3 pr-4">Tipe Vila</th>
+                <tr class="border-b-2 border-forest-700 text-xs uppercase tracking-widest text-ink-mute font-mono">
+                  <th class="py-3 pr-4">Tipe Villa</th>
                   <th class="py-3 pr-4">DP 30%</th>
-                  <th class="py-3 pr-4">Pokok</th>
-                  <th class="py-3 pr-4">Cicilan 15thn</th>
-                  <th class="py-3">Cicilan 20thn</th>
+                  <th class="py-3 pr-4">Pokok KPR</th>
+                  <th class="py-3 pr-4">Cicilan 15 Thn</th>
+                  <th class="py-3">Cicilan 20 Thn</th>
                 </tr>
               </thead>
               <tbody>
-                <tr class="border-b border-cream-100"><td class="py-4 pr-4 font-semibold">Bijak</td><td class="py-4 pr-4">Rp 360jt</td><td class="py-4 pr-4">Rp 840jt</td><td class="py-4 pr-4">Rp 9,7jt</td><td class="py-4">Rp 8,2jt</td></tr>
-                <tr class="border-b border-cream-100"><td class="py-4 pr-4 font-semibold">Idaman</td><td class="py-4 pr-4">Rp 480jt</td><td class="py-4 pr-4">Rp 1,12M</td><td class="py-4 pr-4">Rp 11,7jt</td><td class="py-4">Rp 9,9jt</td></tr>
-                <tr class="border-b border-cream-100"><td class="py-4 pr-4 font-semibold">Mapan</td><td class="py-4 pr-4">Rp 600jt</td><td class="py-4 pr-4">Rp 1,4M</td><td class="py-4 pr-4">Rp 14,6jt</td><td class="py-4">Rp 12,3jt</td></tr>
+                <tr class="border-b border-cream-100 hover:bg-forest-50/50 transition">
+                  <td class="py-4 pr-4 font-display font-semibold text-forest-700">Bijak</td>
+                  <td class="py-4 pr-4 font-mono">Rp 360 jt</td>
+                  <td class="py-4 pr-4 font-mono">Rp 840 jt</td>
+                  <td class="py-4 pr-4 font-mono font-bold">Rp 9,7 jt</td>
+                  <td class="py-4 font-mono font-bold">Rp 8,2 jt</td>
+                </tr>
+                <tr class="border-b border-cream-100 hover:bg-forest-50/50 transition">
+                  <td class="py-4 pr-4 font-display font-semibold text-forest-700">Idaman</td>
+                  <td class="py-4 pr-4 font-mono">Rp 480 jt</td>
+                  <td class="py-4 pr-4 font-mono">Rp 1,12 M</td>
+                  <td class="py-4 pr-4 font-mono font-bold">Rp 11,7 jt</td>
+                  <td class="py-4 font-mono font-bold">Rp 9,9 jt</td>
+                </tr>
+                <tr class="hover:bg-forest-50/50 transition">
+                  <td class="py-4 pr-4 font-display font-semibold text-forest-700">Mapan</td>
+                  <td class="py-4 pr-4 font-mono">Rp 600 jt</td>
+                  <td class="py-4 pr-4 font-mono">Rp 1,4 M</td>
+                  <td class="py-4 pr-4 font-mono font-bold">Rp 14,6 jt</td>
+                  <td class="py-4 font-mono font-bold">Rp 12,3 jt</td>
+                </tr>
               </tbody>
             </table>
           </div>
+          <p class="text-xs text-ink-mute mt-6 italic">* Ilustrasi edukatif. Suku bunga final ditentukan bank setelah appraisal & BI Checking.</p>
         </div>
+      </div>
+    </section>
 
+    <!-- Syarat & Dokumen -->
+    <section class="relative bg-white py-20 md:py-28" data-section="syarat">
+      <Pattern variant="diagonal" color="forest" opacity={0.03} />
+      <div class="container-wide relative">
+        <div class="text-center mb-10">
+          <span class="eyebrow">Syarat & Dokumen</span>
+          <h2 class="font-display text-3xl md:text-4xl text-forest-700 font-bold mt-3">Yang Perlu <em class="text-gold-700">Disiapkan</em></h2>
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="card p-8">
-            <h3 class="heading text-xl mb-4">Syarat Pengajuan</h3>
-            <ul class="space-y-2 text-sm text-ink-500">
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> WNI, usia 21-55 tahun</li>
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> Penghasilan min Rp 15jt/bulan</li>
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> BI Checking kolektibilitas 1</li>
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> Masa kerja min 2 tahun</li>
+          <div class="card-premium p-8 md:p-10">
+            <div class="flex items-center gap-3 mb-6">
+              <FileText size={20} class="text-gold-700" />
+              <h3 class="font-display text-xl text-forest-700 font-bold">Syarat Pengajuan</h3>
+            </div>
+            <ul class="space-y-3 text-sm text-ink-700">
+              <li class="flex gap-3 items-start"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> <span>WNI, usia 21-55 tahun saat kredit lunas</span></li>
+              <li class="flex gap-3 items-start"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> <span>Penghasilan tetap minimum Rp 15 juta/bulan</span></li>
+              <li class="flex gap-3 items-start"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> <span>BI Checking kolektibilitas 1 (lancar)</span></li>
+              <li class="flex gap-3 items-start"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> <span>Masa kerja minimum 2 tahun</span></li>
+              <li class="flex gap-3 items-start"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> <span>Tidak sedang dalam blacklist bank</span></li>
             </ul>
           </div>
-          <div class="card p-8">
-            <h3 class="heading text-xl mb-4">Dokumen</h3>
-            <ul class="space-y-2 text-sm text-ink-500">
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> KTP, KK, Akta Nikah</li>
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> Slip gaji 3 bulan / SPT</li>
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> Rekening koran 3-6 bulan</li>
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> NPWP pribadi</li>
+          <div class="card-premium p-8 md:p-10">
+            <div class="flex items-center gap-3 mb-6">
+              <Shield size={20} class="text-gold-700" />
+              <h3 class="font-display text-xl text-forest-700 font-bold">Dokumen</h3>
+            </div>
+            <ul class="space-y-3 text-sm text-ink-700">
+              <li class="flex gap-3 items-start"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> <span>KTP, KK, Akta Nikah / Cerai</span></li>
+              <li class="flex gap-3 items-start"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> <span>Slip gaji 3 bulan terakhir atau SPT</span></li>
+              <li class="flex gap-3 items-start"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> <span>Rekening koran 3-6 bulan</span></li>
+              <li class="flex gap-3 items-start"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> <span>NPWP pribadi</span></li>
+              <li class="flex gap-3 items-start"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> <span>Surat keterangan kerja</span></li>
             </ul>
           </div>
         </div>
+      </div>
+    </section>
 
-        <div class="text-center mt-12">
-          <a href={waLink('Halo, saya tertarik KPR Bank')} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">
-            <MessageCircle size="18" /> Mulai Konsultasi
+    <!-- Final CTA -->
+    <section class="relative bg-forest-700 text-cream-50 py-20 md:py-28 overflow-hidden" data-section="cta">
+      <Pattern variant="gold-sparkle" color="gold" opacity={0.08} />
+      <div class="container-wide relative text-center">
+        <Calculator size={40} class="text-gold-500 mx-auto mb-4" />
+        <span class="eyebrow text-gold-500 block mb-3">Siap Lanjut?</span>
+        <h2 class="font-display text-3xl md:text-5xl text-cream-50 font-bold leading-[0.95] tracking-[-0.02em] mb-6">
+          Simulasi Personal, <em class="text-gold-500">Tanpa Komitmen.</em>
+        </h2>
+        <p class="text-base md:text-lg text-cream-50/80 max-w-2xl mx-auto mb-10">
+          Tim kami akan hitungkan cicilan KPR sesuai profil keuangan Anda. Gratis, tanpa biaya, tanpa komitmen apa pun.
+        </p>
+        <div class="flex flex-wrap gap-3 justify-center">
+          <a href={waLink('Halo, saya mau simulasi KPR Bank villa Menantu Resort')} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">
+            <MessageCircle size={18} /> Mulai Konsultasi
           </a>
+          <a href="/villa" class="btn btn-outline-light btn-lg">Lihat Tipe Villa</a>
         </div>
+        <a href="/investasi" class="inline-flex items-center gap-1 text-sm text-cream-50/60 hover:text-gold-500 mt-8 transition">
+          <ArrowLeft size={14} /> Kembali ke Investment Hub
+        </a>
       </div>
     </section>
   </main>

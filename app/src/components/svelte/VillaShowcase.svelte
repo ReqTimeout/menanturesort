@@ -1,35 +1,50 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { motion } from '@humanspeak/svelte-motion';
   import { ArrowUpRight } from 'lucide-svelte';
+
+  gsap.registerPlugin(ScrollTrigger);
 
   let { villas = [] } = $props();
 
   let sectionEl;
-  let scrollY = $state(0);
+  let stickyEl;
   let activeIdx = $state(0);
+  let ctx;
 
   onMount(() => {
-    const onScroll = () => {
-      scrollY = window.scrollY;
-      if (!sectionEl) return;
-      const rect = sectionEl.getBoundingClientRect();
-      const vh = window.innerHeight;
-      const offset = -rect.top;
-      const total = rect.height - vh;
-      const progress = Math.max(0, Math.min(1, offset / total));
-      activeIdx = Math.min(villas.length - 1, Math.floor(progress * villas.length));
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener('scroll', onScroll);
+    ctx = gsap.context(() => {
+      ScrollTrigger.create({
+        trigger: sectionEl,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1,
+        onUpdate: (self) => {
+          const progress = self.progress;
+          activeIdx = Math.min(villas.length - 1, Math.floor(progress * villas.length));
+        },
+      });
+    }, sectionEl);
+
+    return () => ctx.revert();
+  });
+
+  onDestroy(() => {
+    if (ctx) ctx.revert();
   });
 </script>
 
 <section bind:this={sectionEl} class="showcase">
-  <div class="showcase-sticky">
-    <!-- Background image based on active -->
+  <div bind:this={stickyEl} class="showcase-sticky">
+    <!-- Background images with crossfade -->
     {#each villas as v, i}
-      <div class="showcase-bg" class:active={i === activeIdx} style="background-image: url({v.image});"></div>
+      <div
+        class="showcase-bg"
+        class:active={i === activeIdx}
+        style="background-image: url({v.image});"
+      ></div>
     {/each}
     <div class="showcase-overlay"></div>
 
@@ -37,10 +52,22 @@
     <div class="container-wide relative z-10 h-full flex flex-col justify-between py-20">
       <div class="flex items-start justify-between">
         <div>
-          <div class="font-mono text-xs uppercase tracking-widest text-gold-500 mb-3">The Residences</div>
-          <h2 class="font-display text-cream-50 text-6xl md:text-8xl leading-[0.95] tracking-tight">
+          <motion.div
+            class="font-mono text-xs uppercase tracking-widest text-gold-500 mb-3"
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >The Residences</motion.div>
+          <motion.h2
+            class="font-display text-cream-50 text-6xl md:text-8xl leading-[0.95] tracking-tight"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+          >
             Tiga villa,<br/><em class="text-gold-500">satu standar.</em>
-          </h2>
+          </motion.h2>
         </div>
         <div class="text-right hidden md:block">
           <div class="font-mono text-xs uppercase tracking-widest text-cream-50/60 mb-3">Index</div>
@@ -60,7 +87,7 @@
             <div class="flex items-baseline gap-6">
               <span class="font-mono text-sm text-cream-50/50">0{i + 1}</span>
               <div class="flex-1">
-                <div class="font-display text-3xl md:text-5xl text-cream-50 font-bold leading-none transition-all" class:!text-gold-500={i === activeIdx}>{v.name}</div>
+                <div class="font-display text-3xl md:text-5xl text-cream-50 font-bold leading-none transition-all duration-500 {i === activeIdx ? 'text-gold-500' : ''}">{v.name}</div>
                 <div class="font-body text-sm text-cream-50/60 mt-2 italic">{v.tagline}</div>
               </div>
               <div class="text-right hidden md:block">

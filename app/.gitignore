@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+.astro/
+
+# Staging assets (camera originals, WIP)
+.staging-assets/
+*.unused
+*.bak
+*.orig
+*.swp
+.DS_Store
+
+# Env files (commit .env.example only)
+.env
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.log
+
+# Generated files
+package-lock.json.bak

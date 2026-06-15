@@ -20,7 +20,7 @@
 </script>
 
 {#if visible}
-  <div class="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
+  <div class="hidden md:flex fixed bottom-6 right-6 z-40 flex-col items-end gap-3">
     {#if open}
       <div class="flex flex-col gap-2 animate-fade-up">
         <button onclick={() => dialogOpen = true} class="group flex items-center gap-3 bg-white border border-cream-100 shadow-lg pl-4 pr-5 py-3 hover:border-gold-300 transition-all">
@@ -64,11 +64,3 @@
 {/if}
 
 <BookingDialog bind:open={dialogOpen} source="floating_fab" />
-
-<style>
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .animate-fade-up { animation: fadeUp 0.3s ease-out; }
-</style>

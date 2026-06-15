@@ -1,95 +1,196 @@
 ---
+/**
+ * /investasi/skema-developer — V5.2 rewrite
+ * PageHero + 3 stat cards + Simulasi table + Syarat/Dokumen + Comparison CTA
+ */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Navbar from '../../components/astro/Navbar.astro';
+import NavMenu from '../../components/svelte/NavMenu.svelte';
 import Footer from '../../components/astro/Footer.astro';
+import PageHero from '../../components/astro/PageHero.astro';
+import SectionDivider from '../../components/astro/SectionDivider.astro';
+import Pattern from '../../components/astro/Pattern.astro';
 import WhatsAppFloating from '../../components/astro/WhatsAppFloating.astro';
 import siteData from '../../data/site.json';
 import { waUrl } from '../../lib/utils';
-import { MessageCircle, Check, ArrowLeft } from 'lucide-svelte';
-const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'kpr_bank');
+import { MessageCircle, Check, ArrowLeft, FileText, Zap, Shield, Clock } from 'lucide-svelte';
+
+const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'kpr_developer');
 ---
-<BaseLayout title="KPR Developer — Bunga 7% Tenor 20 Tahun" description="KPR Developer villa Menantu Resort: bunga flat 7%, tenor 15 tahun, DP mulai 30%. Syarat, dokumen, simulasi cicilan.">
-  <Navbar />
+<BaseLayout title="KPR Developer — Bunga 7% Tenor 15 Tahun | Menantu Resort" description="KPR Developer villa Menantu Resort: bunga flat 7%, tenor 15 tahun, tanpa BI Checking. Approval 7 hari kerja.">
+  <NavMenu client:load />
   <main class="pt-20">
-    <section class="section section-cream">
-      <div class="container-tight">
-        <a href="/investasi" class="text-forest-500 text-sm hover:text-gold-700 inline-flex items-center gap-1 mb-4">
-          <ArrowLeft size="14" /> Kembali
-        </a>
-        <span class="eyebrow text-forest-500 block mb-3">Skema Pembiayaan</span>
-        <h1 class="heading-title mb-6">KPR Developer — <em>Tanpa BI Checking, Approval 7 Hari.</em></h1>
-        <p class="text-body-lg text-ink-500 max-w-2xl">Bunga flat 7% per tahun, tenor 15 tahun, tanpa BI Checking. Solusi untuk Anda yang butuh approval cepat.</p>
+    <PageHero
+      eyebrow="Skema Pembiayaan"
+      title="KPR Developer —"
+      accent="Tanpa BI Checking, Approval 7 Hari."
+      description="Bunga flat 7% per tahun, tenor 15 tahun, tanpa BI Checking. Solusi untuk Anda yang butuh approval cepat atau punya histori kredit non-konvensional."
+      primaryCta={{ text: 'Konsultasi KPR Developer', href: waLink('Halo, saya tertarik KPR Developer villa Menantu Resort') }}
+      secondaryCta={{ text: 'Banding KPR Bank', href: '/investasi/skema-bank' }}
+      stats={[
+        { value: '7%', label: 'Bunga Flat' },
+        { value: '15 Thn', label: 'Tenor' },
+        { value: '7 Hari', label: 'Approval' },
+      ]}
+      bgColor="forest"
+    />
+
+    <SectionDivider variant="diamond" />
+
+    <!-- 3 Stat Cards -->
+    <section class="relative bg-white py-16 md:py-20" data-section="stat-cards">
+      <Pattern variant="dots-dense" color="gold" opacity={0.06} />
+      <div class="container-wide relative">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="card-premium p-8 text-center">
+            <div class="text-xs text-ink-mute uppercase tracking-widest mb-2 font-mono">Bunga</div>
+            <div class="font-display text-5xl text-forest-700 font-bold leading-none mb-1">7%</div>
+            <div class="text-sm text-ink-soft">flat per tahun</div>
+          </div>
+          <div class="card-premium p-8 text-center">
+            <div class="text-xs text-ink-mute uppercase tracking-widest mb-2 font-mono">Tenor</div>
+            <div class="font-display text-5xl text-forest-700 font-bold leading-none mb-1">15</div>
+            <div class="text-sm text-ink-soft">tahun</div>
+          </div>
+          <div class="card-premium p-8 text-center">
+            <div class="text-xs text-ink-mute uppercase tracking-widest mb-2 font-mono">Approval</div>
+            <div class="font-display text-5xl text-forest-700 font-bold leading-none mb-1">7</div>
+            <div class="text-sm text-ink-soft">hari kerja</div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="section-tight section-white">
-      <div class="container-tight">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div class="card accent-line p-8 text-center">
-            <div class="text-xs text-ink-700 uppercase tracking-wider mb-2">Bunga</div>
-            <div class="font-display text-5xl text-forest-500 font-bold mb-1">7%</div>
-            <div class="text-sm text-ink-700">flat per tahun</div>
+    <!-- USP: 3 Benefits -->
+    <section class="relative bg-cream-50 py-16 md:py-20" data-section="usp">
+      <div class="container-wide relative">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="text-center">
+            <Zap size={32} class="text-gold-700 mx-auto mb-3" />
+            <h3 class="font-display text-lg text-forest-700 font-bold mb-2">Tanpa BI Checking</h3>
+            <p class="text-sm text-ink-soft leading-relaxed">Self-employed, freelancer, atau punya histori kredit macet? Tetap bisa daftar.</p>
           </div>
-          <div class="card accent-line p-8 text-center">
-            <div class="text-xs text-ink-700 uppercase tracking-wider mb-2">Tenor</div>
-            <div class="font-display text-5xl text-forest-500 font-bold mb-1">15</div>
-            <div class="text-sm text-ink-700">tahun</div>
+          <div class="text-center">
+            <Clock size={32} class="text-gold-700 mx-auto mb-3" />
+            <h3 class="font-display text-lg text-forest-700 font-bold mb-2">Approval 7 Hari</h3>
+            <p class="text-sm text-ink-soft leading-relaxed">Proses internal developer, tidak lewat bank. Cepat & transparan.</p>
           </div>
-          <div class="card accent-line p-8 text-center">
-            <div class="text-xs text-ink-700 uppercase tracking-wider mb-2">DP Minimum</div>
-            <div class="font-display text-5xl text-forest-500 font-bold mb-1">30%</div>
-            <div class="text-sm text-ink-700">dari harga jual</div>
+          <div class="text-center">
+            <Shield size={32} class="text-gold-700 mx-auto mb-3" />
+            <h3 class="font-display text-lg text-forest-700 font-bold mb-2">DP Lebih Ringan</h3>
+            <p class="text-sm text-ink-soft leading-relaxed">Mulai 25% dengan cicilan tetap. Cashflow Anda lebih fleksibel.</p>
           </div>
         </div>
+      </div>
+    </section>
 
-        <div class="card p-8 md:p-12 mb-12">
-          <h2 class="heading text-2xl mb-6">Simulasi Cicilan (DP 25%)</h2>
+    <!-- Simulasi Cicilan Table -->
+    <section class="relative bg-white py-20 md:py-28" data-section="simulasi">
+      <Pattern variant="grid" color="forest" opacity={0.04} />
+      <div class="container-wide relative">
+        <div class="text-center mb-10">
+          <span class="eyebrow">Simulasi Cicilan</span>
+          <h2 class="font-display text-3xl md:text-4xl text-forest-700 font-bold mt-3">Perhitungan <em class="text-gold-700">DP 25%</em></h2>
+          <p class="text-base text-ink-soft mt-3 max-w-xl mx-auto">Bunga flat 7% p.a., tenor 15 tahun. Cicilan tetap hingga lunas.</p>
+        </div>
+
+        <div class="card-premium p-6 md:p-10">
           <div class="overflow-x-auto">
             <table class="w-full text-left min-w-[640px]">
               <thead>
-                <tr class="border-b-2 border-forest-500 text-xs uppercase tracking-wider text-ink-700">
-                  <th class="py-3 pr-4">Tipe Vila</th>
-                  <th class="py-3 pr-4">DP 30%</th>
-                  <th class="py-3 pr-4">Pokok</th>
-                  <th class="py-3 pr-4">Cicilan 15thn</th>
-                  <th class="py-3">Cicilan 20thn</th>
+                <tr class="border-b-2 border-forest-700 text-xs uppercase tracking-widest text-ink-mute font-mono">
+                  <th class="py-3 pr-4">Tipe Villa</th>
+                  <th class="py-3 pr-4">DP 25%</th>
+                  <th class="py-3 pr-4">Pokok Kredit</th>
+                  <th class="py-3">Cicilan 15 Thn</th>
                 </tr>
               </thead>
               <tbody>
-                <tr class="border-b border-cream-100"><td class="py-4 pr-4 font-semibold">Bijak</td><td class="py-4 pr-4">Rp 300jt</td><td class="py-4 pr-4">Rp 900jt</td><td class="py-4 pr-4" colspan="2">Rp 9,1jt / bulan</td></tr>
-                <tr class="border-b border-cream-100"><td class="py-4 pr-4 font-semibold">Idaman</td><td class="py-4 pr-4">Rp 400jt</td><td class="py-4 pr-4">Rp 1,2M</td><td class="py-4 pr-4" colspan="2">Rp 11,4jt / bulan</td></tr>
-                <tr class="border-b border-cream-100"><td class="py-4 pr-4 font-semibold">Mapan</td><td class="py-4 pr-4">Rp 500jt</td><td class="py-4 pr-4">Rp 1,5M</td><td class="py-4 pr-4" colspan="2">Rp 14,8jt / bulan</td></tr>
+                <tr class="border-b border-cream-100 hover:bg-forest-50/50 transition">
+                  <td class="py-4 pr-4 font-display font-semibold text-forest-700">Bijak</td>
+                  <td class="py-4 pr-4 font-mono">Rp 300 jt</td>
+                  <td class="py-4 pr-4 font-mono">Rp 900 jt</td>
+                  <td class="py-4 font-mono font-bold">Rp 9,1 jt / bln</td>
+                </tr>
+                <tr class="border-b border-cream-100 hover:bg-forest-50/50 transition">
+                  <td class="py-4 pr-4 font-display font-semibold text-forest-700">Idaman</td>
+                  <td class="py-4 pr-4 font-mono">Rp 400 jt</td>
+                  <td class="py-4 pr-4 font-mono">Rp 1,2 M</td>
+                  <td class="py-4 font-mono font-bold">Rp 11,4 jt / bln</td>
+                </tr>
+                <tr class="hover:bg-forest-50/50 transition">
+                  <td class="py-4 pr-4 font-display font-semibold text-forest-700">Mapan</td>
+                  <td class="py-4 pr-4 font-mono">Rp 500 jt</td>
+                  <td class="py-4 pr-4 font-mono">Rp 1,5 M</td>
+                  <td class="py-4 font-mono font-bold">Rp 14,8 jt / bln</td>
+                </tr>
               </tbody>
             </table>
           </div>
+          <p class="text-xs text-ink-mute mt-6 italic">* Ilustrasi edukatif. Suku bunga & tenor final disesuaikan dengan profil & kemampuan calon pembeli.</p>
         </div>
+      </div>
+    </section>
 
+    <!-- Syarat & Dokumen -->
+    <section class="relative bg-cream-50 py-20 md:py-28" data-section="syarat">
+      <Pattern variant="diagonal" color="forest" opacity={0.03} />
+      <div class="container-wide relative">
+        <div class="text-center mb-10">
+          <span class="eyebrow">Syarat & Dokumen</span>
+          <h2 class="font-display text-3xl md:text-4xl text-forest-700 font-bold mt-3">Yang Perlu <em class="text-gold-700">Disiapkan</em></h2>
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="card p-8">
-            <h3 class="heading text-xl mb-4">Syarat Pengajuan</h3>
-            <ul class="space-y-2 text-sm text-ink-500">
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> WNI, usia 21-55 tahun</li>
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> Penghasilan min Rp 15jt/bulan</li>
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> Tanpa BI Checking</li>
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> Approval 7 hari kerja</li>
+          <div class="card-premium p-8 md:p-10">
+            <div class="flex items-center gap-3 mb-6">
+              <FileText size={20} class="text-gold-700" />
+              <h3 class="font-display text-xl text-forest-700 font-bold">Syarat Pengajuan</h3>
+            </div>
+            <ul class="space-y-3 text-sm text-ink-700">
+              <li class="flex gap-3 items-start"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> <span>WNI, usia 21-55 tahun saat kredit lunas</span></li>
+              <li class="flex gap-3 items-start"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> <span>Penghasilan minimum Rp 15 juta/bulan (bisa dari berbagai sumber)</span></li>
+              <li class="flex gap-3 items-start"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> <span>Tanpa BI Checking (tidak berlaku untuk blacklist)</span></li>
+              <li class="flex gap-3 items-start"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> <span>Down payment minimum 25%</span></li>
+              <li class="flex gap-3 items-start"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> <span>Wawancara singkat dengan tim finance</span></li>
             </ul>
           </div>
-          <div class="card p-8">
-            <h3 class="heading text-xl mb-4">Dokumen</h3>
-            <ul class="space-y-2 text-sm text-ink-500">
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> KTP, KK, Akta Nikah</li>
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> Slip gaji 3 bulan / SPT</li>
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> Rekening koran 3-6 bulan</li>
-              <li class="flex gap-2"><Check size="16" class="text-gold-700 flex-shrink-0 mt-0.5" /> NPWP pribadi</li>
+          <div class="card-premium p-8 md:p-10">
+            <div class="flex items-center gap-3 mb-6">
+              <Shield size={20} class="text-gold-700" />
+              <h3 class="font-display text-xl text-forest-700 font-bold">Dokumen</h3>
+            </div>
+            <ul class="space-y-3 text-sm text-ink-700">
+              <li class="flex gap-3 items-start"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> <span>KTP, KK, Akta Nikah / Cerai</span></li>
+              <li class="flex gap-3 items-start"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> <span>Bukti penghasilan 3 bulan terakhir (slip/SPT/invoice)</span></li>
+              <li class="flex gap-3 items-start"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> <span>Rekening koran 3-6 bulan</span></li>
+              <li class="flex gap-3 items-start"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> <span>NPWP pribadi</span></li>
+              <li class="flex gap-3 items-start"><Check size={16} class="text-gold-700 flex-shrink-0 mt-0.5" /> <span>Surat keterangan usaha (jika wiraswasta)</span></li>
             </ul>
           </div>
         </div>
+      </div>
+    </section>
 
-        <div class="text-center mt-12">
-          <a href={waLink('Halo, saya tertarik KPR Developer')} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">
-            <MessageCircle size="18" /> Mulai Konsultasi
+    <!-- Final CTA -->
+    <section class="relative bg-forest-700 text-cream-50 py-20 md:py-28 overflow-hidden" data-section="cta">
+      <Pattern variant="gold-sparkle" color="gold" opacity={0.08} />
+      <div class="container-wide relative text-center">
+        <Zap size={40} class="text-gold-500 mx-auto mb-4" />
+        <span class="eyebrow text-gold-500 block mb-3">Approval Cepat</span>
+        <h2 class="font-display text-3xl md:text-5xl text-cream-50 font-bold leading-[0.95] tracking-[-0.02em] mb-6">
+          Booking Hari Ini, <em class="text-gold-500">Akad Bulan Ini.</em>
+        </h2>
+        <p class="text-base md:text-lg text-cream-50/80 max-w-2xl mx-auto mb-10">
+          Tim finance kami akan verifikasi dokumen dalam 3 hari kerja. Approval keluar max 7 hari. Booking fee hanya Rp 10 juta, refundable 100% dalam 30 hari.
+        </p>
+        <div class="flex flex-wrap gap-3 justify-center">
+          <a href={waLink('Halo, saya mau apply KPR Developer villa Menantu Resort')} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">
+            <MessageCircle size={18} /> Ajukan Sekarang
           </a>
+          <a href="/investasi/skema-bank" class="btn btn-outline-light btn-lg">Banding KPR Bank</a>
         </div>
+        <a href="/investasi" class="inline-flex items-center gap-1 text-sm text-cream-50/60 hover:text-gold-500 mt-8 transition">
+          <ArrowLeft size={14} /> Kembali ke Investment Hub
+        </a>
       </div>
     </section>
   </main>

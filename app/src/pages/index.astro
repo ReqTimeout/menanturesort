@@ -1,6 +1,12 @@
 ---
+/**
+ * Homepage V5.2 — 11 sections, 7-ribuan px scroll
+ * Setiap section punya narrative role (hook / value / proof / cta).
+ * Pattern: Concerns → Solution (proven dari existing), bukan template per-section.
+ */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Footer from '../components/astro/Footer.astro';
+import SectionDivider from '../components/astro/SectionDivider.astro';
 import siteData from '../data/site.json';
 import villaData from '../data/villa.json';
 
@@ -8,38 +14,28 @@ import NavMenu from '../components/svelte/NavMenu.svelte';
 import EditorialHero from '../components/svelte/EditorialHero.svelte';
 import Cursor from '../components/svelte/Cursor.svelte';
 import Marquee from '../components/svelte/Marquee.svelte';
-import Ticker from '../components/svelte/Ticker.svelte';
-import Manifesto from '../components/svelte/Manifesto.svelte';
-import VillaShowcase from '../components/svelte/VillaShowcase.svelte';
-import Masterplan from '../components/svelte/Masterplan.svelte';
+import ThePromise from '../components/svelte/ThePromise.svelte';
+import HowItWorks from '../components/svelte/HowItWorks.svelte';
 import TestimoniCarousel from '../components/svelte/TestimoniCarousel.svelte';
-import FloatingActionButton from '../components/svelte/FloatingActionButton.svelte';
-import LiveActivity from '../components/svelte/LiveActivity.svelte';
 
-import { ArrowRight, ArrowUpRight, Shield, Award, Sparkles, TrendingUp, Home, Key, MapPin, CheckCircle2, Building2, LineChart, Wallet, Calendar, Quote } from 'lucide-svelte';
+// V5.2 NEW sections
+import ConcernsSection from '../components/svelte/ConcernsSection.svelte';
+import SolutionSection from '../components/svelte/SolutionSection.svelte';
+import PilihanResortSection from '../components/svelte/PilihanResortSection.svelte';
+import PopularitasTipeSection from '../components/svelte/PopularitasTipeSection.svelte';
+import VirtualTourSection from '../components/svelte/VirtualTourSection.svelte';
+import PromoSpesialSection from '../components/svelte/PromoSpesialSection.svelte';
+import FinalCTASection from '../components/svelte/FinalCTASection.svelte';
+import MidCTA from '../components/svelte/MidCTA.svelte';
 
-const villaImages = {
-  bijak: '/images/ref/villa-bijak-row.jpg',
-  idaman: '/images/ref/villa-idaman-row.jpg',
-  mapan: '/images/ref/villa-mapan-street.jpg',
-};
-
-const showcaseVillas = villaData.types.map((v) => ({
-  id: v.id,
-  name: v.name,
-  tagline: v.tagline,
-  priceLabel: v.priceDisplay,
-  image: villaImages[v.id],
-}));
-
-
-
-
+// ── Hero data ──
 const heroTitle = 'Masa Depan';
 const heroAccent = 'Lebih Mapan.';
 const heroEyebrow = '01 / Edition · 2026';
 const heroBadge = 'Limited Release · 16 dari 74 unit tersisa';
-const heroBody = 'Aset warisan produktif berlegalitas SHM Bersih di Cicalengka, Bandung Timur. Dikelola harian oleh manajemen Sahid Hotels & Resorts (50+ tahun). Cicilan mulai Rp 9 juta/bulan, passive income Rp 9-15 juta/bulan.';
+const heroBody = 'Aset warisan produktif berlegalitas SHM Bersih di Cicalengka, Bandung Timur. Dikelola harian oleh Sahid Hotels & Resorts (50+ tahun). Passive income setiap bulan dari villa resort mewah.';
+
+// ── Marquee ──
 const marqueeItems = [
   'SHM Bersih',
   'Dikelola Sahid 50+ Tahun',
@@ -48,32 +44,28 @@ const marqueeItems = [
   'Cicilan Mulai 9 Juta',
   'Bandung Timur',
   'Cicalengka',
+  '16 dari 74 Unit Tersisa',
 ];
-const tickerItems = [
-  { title: '74 Unit', subtitle: 'Total villa SHM' },
-  { title: '3 Tipe', subtitle: 'Bijak · Idaman · Mapan' },
-  { title: '3.5 Ha', subtitle: 'Luas kawasan' },
-  { title: '50+ Th', subtitle: 'Track record Sahid' },
-  { title: '70/30', subtitle: 'Profit share' },
-  { title: '10% p.a.', subtitle: 'ROI guarantee' },
-  { title: '45 min', subtitle: 'Dari Tol Cileunyi' },
-];
-const masterplanHotspots = [
-  { x: 18, y: 28, tag: 'Cluster A', label: 'Villa Bijak', desc: '36 unit entry-level dengan atap Limasan etnik Jawa. Ideal untuk first-time investor.' },
-  { x: 40, y: 28, tag: 'Cluster B', label: 'Villa Idaman', desc: '36 unit keluarga dengan double glass facade dan balkon lantai dua.' },
-  { x: 70, y: 28, tag: 'Cluster C', label: 'Villa Mapan', desc: '2 unit flagship dengan atap Gothic Arch dan private sky deck.' },
-  { x: 50, y: 55, tag: 'Central Plaza', label: 'Plaza & F&B', desc: 'Pusat komersial dengan cafe, restaurant, dan retail space untuk tenant.' },
-  { x: 25, y: 75, tag: 'Facility', label: 'Eco Resort Pool', desc: 'Infinity pool 15x6m dengan view perbukitan Bandung Timur.' },
-  { x: 75, y: 75, tag: 'Wellness', label: 'Sahid Wellness Center', desc: 'Spa, fitness, dan yoga pavilion dengan standar Sahid Hospitality.' },
-];
+
+// ── Villa data (pakai real images dari V5.1) ──
+const villaImages = {
+  bijak: siteData.assets?.villa?.bijak || '/images/villa/bijak/hero-row.jpeg',
+  idaman: siteData.assets?.villa?.idaman || '/images/villa/idaman/hero-row.jpeg',
+  mapan: siteData.assets?.villa?.mapan || '/images/villa/mapan/hero-detail.jpeg',
+};
+
+const showcaseVillas = villaData.types.map((v) => ({
+  ...v,
+  image: villaImages[v.id],
+}));
 ---
 
 <BaseLayout>
   <Cursor client:load />
-  <NavMenu client:load />
+  <NavMenu client:load variant="dark" />
 
   <main>
-    <!-- ═══ 1. EDITORIAL HERO (full-bleed, cinematic) ═══ -->
+    <!-- ═══ 1. EDITORIAL HERO (V5.2: +heroFacts +micro-form) ═══ -->
     <EditorialHero
       client:load
       title={heroTitle}
@@ -83,81 +75,63 @@ const masterplanHotspots = [
       body={heroBody}
     />
 
-    <!-- ═══ 2. MARQUEE (horizontal infinite scroll tagline) ═══ -->
+    <!-- ═══ 2. MARQUEE (trust badges horizontal) ═══ -->
     <Marquee client:visible items={marqueeItems} speed={35} />
 
-    <!-- ═══ 3. MANIFESTO (oversized italic display, word reveal on scroll) ═══ -->
-    <Manifesto client:visible />
+    <!-- ═══ 3. CONCERNS (V5.2 NEW: port dari existing PROVEN) ═══ -->
+    <ConcernsSection client:visible concerns={siteData.concerns} />
 
-    <!-- ═══ 4. VILLA SHOWCASE (sticky scrollspy full-bleed dark) ═══ -->
-    <VillaShowcase client:visible villas={showcaseVillas} />
+    <SectionDivider variant="ornate" pattern="dots" />
 
-    <!-- ═══ 5. TICKER (horizontal facts) ═══ -->
-    <Ticker client:visible items={tickerItems} />
+    <!-- ═══ 4. SOLUTION (V5.2 NEW: port dari existing PROVEN) ═══ -->
+    <SolutionSection client:visible solutions={siteData.solutions} />
 
-    <!-- ═══ 6. MASTERPLAN (interactive SVG dengan hotspot) ═══ -->
-    <Masterplan client:visible hotspots={masterplanHotspots} />
+    <!-- ═══ 5. THE PROMISE (4 stat counters + 3 benefit cards) ═══ -->
+    <ThePromise client:visible />
 
-    <!-- ═══ 7. TESTIMONI CAROUSEL (embla) ═══ -->
+    <SectionDivider variant="diamond" pattern="grid" />
+
+    <!-- ═══ 6. PILIHAN RESORT (V5.2 NEW: 3 VillaCard dengan label unik) ═══ -->
+    <PilihanResortSection client:visible villas={showcaseVillas} />
+
+    <!-- ═══ 7. POPULARITAS TIPE (V5.2 NEW: real-time count) ═══ -->
+    <PopularitasTipeSection client:visible popularitas={siteData.popularitas} />
+
+    <!-- ═══ 7.5 MID-PAGE CTA (re-engagement) ═══ -->
+    <MidCTA
+      client:visible
+      eyebrow="Diskusi Personal"
+      heading="Bingung pilih tipe villa?"
+      subheading="Tim konsultan kami bantu rekomendasikan villa yang paling pas untuk budget & timeline Anda — gratis, tanpa komitmen."
+      ctaLabel="Chat WhatsApp Sekarang"
+      secondaryCtaLabel="Lihat 3 Tipe Villa"
+      secondaryCtaHref="/villa"
+    />
+
+    <!-- ═══ 8. VIRTUAL TOUR 360° (V5.2 NEW: Panorama360) ═══ -->
+    <VirtualTourSection
+      client:visible
+      src={siteData.assets?.hero360 || '/360/panorama-main.jpg'}
+      poster={siteData.assets?.hero360Poster || '/360/panorama-poster.jpg'}
+    />
+
+    <SectionDivider variant="ornate" pattern="dots" />
+
+    <!-- ═══ 9. PROMO SPESIAL (V5.2 NEW: CountdownTimer + benefit cards) ═══ -->
+    <PromoSpesialSection client:visible promo={siteData.promo} />
+
+    <!-- ═══ 10. TESTIMONI CAROUSEL (6 quotes real) ═══ -->
     <TestimoniCarousel client:visible />
 
-    <!-- ═══ 8. FINAL CTA (asymmetric, editorial) ═══ -->
-    <section class="relative bg-forest-700 text-cream-50 grain overflow-hidden">
-      <div class="container-wide py-32 md:py-48 relative z-10">
-        <div class="grid grid-cols-12 gap-8">
-          <div class="col-span-12 md:col-span-2">
-            <div class="font-mono text-xs uppercase tracking-widest text-gold-500">— Closing</div>
-            <div class="font-display text-6xl text-gold-500/20 numeral leading-none mt-2">08</div>
-          </div>
-          <div class="col-span-12 md:col-span-10">
-            <h2 class="font-display text-cream-50 leading-[0.92] tracking-tight mb-12 text-editorial-lg font-bold">
-              Masa depan Anda<br/>
-              <em class="text-gold-500 font-medium">dimulai dari keputusan</em><br/>
-              hari ini.
-            </h2>
+    <SectionDivider variant="diamond" pattern="grid" />
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
-              <p class="font-body text-cream-50/80 leading-relaxed text-lg">
-                74 unit, 58 sudah terjual. Survei gratis, termasuk transport dari Bandung.
-                Promo khusus minggu ini: <span class="text-gold-500 font-semibold">diskon Rp 200 juta + bonus mobil listrik</span> untuk unit terpilih.
-              </p>
-              <div class="space-y-4">
-                <div class="flex items-center gap-3 font-body text-sm text-cream-50/80">
-                  <Calendar size={16} class="text-gold-500 flex-shrink-0" />
-                  <span>Survei include transport dari Bandung</span>
-                </div>
-                <div class="flex items-center gap-3 font-body text-sm text-cream-50/80">
-                  <Wallet size={16} class="text-gold-500 flex-shrink-0" />
-                  <span>Booking fee Rp 10 juta (refundable)</span>
-                </div>
-                <div class="flex items-center gap-3 font-body text-sm text-cream-50/80">
-                  <LineChart size={16} class="text-gold-500 flex-shrink-0" />
-                  <span>Konsultan wealth management available</span>
-                </div>
-                <div class="flex items-center gap-3 font-body text-sm text-cream-50/80">
-                  <Shield size={16} class="text-gold-500 flex-shrink-0" />
-                  <span>SHM clean & clear, atas nama pribadi</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex flex-wrap gap-4">
-              <a href="/villa" data-cursor="Explore" class="group inline-flex items-center gap-3 px-8 py-4 bg-gold-500 text-forest-700 font-body font-semibold tracking-wide transition-all hover:bg-gold-300">
-                Lihat 3 Villa
-                <ArrowRight size={16} class="transition-transform group-hover:translate-x-1" />
-              </a>
-              <a href={`https://wa.me/${siteData.contact.whatsapp}?text=Halo%2C%20saya%20ingin%20booking%20survei%20Menantu%20Resort`} target="_blank" rel="noopener" data-cursor="WhatsApp" class="inline-flex items-center gap-3 px-8 py-4 border border-cream-50/30 text-cream-50 font-body font-semibold tracking-wide transition-all hover:border-cream-50 hover:bg-cream-50/5">
-                Booking Survei
-                <ArrowUpRight size={16} />
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <!-- ═══ 11. FINAL CTA (V5.2 NEW: LiveActivity + Countdown + dual CTA) ═══ -->
+    <FinalCTASection
+      client:visible
+      liveEvents={siteData.liveEvents}
+      promoDeadline={siteData.promo?.deadline}
+    />
   </main>
 
   <Footer />
-  <FloatingActionButton client:load />
-  <LiveActivity client:load />
 </BaseLayout>

@@ -4,6 +4,15 @@ import siteData from '../data/site.json';
 import { buildSEO } from '../lib/seo';
 import OrganizationSchema from '../components/seo/OrganizationSchema.astro';
 import ProductSchema from '../components/seo/ProductSchema.astro';
+import ScrollProgress from '../components/svelte/ScrollProgress.svelte';
+import SmoothScroll from '../components/svelte/SmoothScroll.svelte';
+import ScrollEffects from '../components/svelte/ScrollEffects.svelte';
+import StickyMobileCTA from '../components/svelte/StickyMobileCTA.svelte';
+import StockToast from '../components/svelte/StockToast.svelte';
+import AnalyticsBoot from '../components/astro/AnalyticsBoot.astro';
+import MonitorBoot from '../components/svelte/MonitorBoot.svelte';
+import WhatsAppFloating from '../components/astro/WhatsAppFloating.astro';
+import LeadForm from '../components/svelte/LeadForm.svelte';
 
 interface Props {
   title?: string;
@@ -72,30 +81,73 @@ const seo = buildSEO({
   <meta name="twitter:description" content={seo.twitter.description} />
   {seo.twitter.images.map(img => <meta name="twitter:image" content={img} />)}
 
-  <!-- Preconnect -->
+  <!-- Preconnect (V5.2) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Preload critical fonts for faster LCP -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500;600;700&display=swap" /></noscript>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+  <link rel="preconnect" href="https://wa.me" />
 
   <!-- Schema.org -->
   <OrganizationSchema data={siteData} />
   <ProductSchema />
 
-  <!-- Google Analytics 4 (placeholder, real ID via env) -->
-  <script is:inline define:vars={{ ga4Id: import.meta.env.PUBLIC_GA4_ID }}>
-    if (ga4Id) {
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', ga4Id);
+  <!-- Google Analytics 4 + Google Ads (gtag) -->
+  <script is:inline define:vars={{ ga4Id: import.meta.env.PUBLIC_GA4_ID, adsId: import.meta.env.PUBLIC_GOOGLE_ADS_ID, metaPixelId: import.meta.env.PUBLIC_META_PIXEL_ID }}>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    if (ga4Id) gtag('config', ga4Id);
+    if (adsId) gtag('config', adsId);
+
+    // Meta Pixel (Facebook)
+    if (metaPixelId) {
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', metaPixelId);
+      fbq('track', 'PageView');
     }
+
+    // Auto-track WhatsApp clicks (for any [data-track=whatsapp_click] link)
+    document.addEventListener('click', function(e) {
+      const link = e.target.closest('a[data-track="whatsapp_click"]');
+      if (link) {
+        const source = link.getAttribute('data-source') || 'unknown';
+        if (typeof gtag === 'function') {
+          gtag('event', 'whatsapp_click', { 'event_category': 'conversion', 'event_label': source });
+        }
+        if (typeof fbq === 'function') {
+          fbq('track', 'Contact', { content_name: source });
+        }
+      }
+    });
   </script>
   {import.meta.env.PUBLIC_GA4_ID && (
     <script async src={`https://www.googletagmanager.com/gtag/js?id=${import.meta.env.PUBLIC_GA4_ID}`} />
   )}
+  {import.meta.env.PUBLIC_META_PIXEL_ID && (
+    <noscript><img height="1" width="1" style="display:none" src={`https://www.facebook.com/tr?id=${import.meta.env.PUBLIC_META_PIXEL_ID}&ev=PageView&noscript=1`} /></noscript>
+  )}
 </head>
 <body class={Astro.props.bodyClass}>
+  <!-- V5.3 WOW factors -->
+  <ScrollProgress client:load />
+  <SmoothScroll client:load />
+  <ScrollEffects client:load />
+  <StickyMobileCTA client:load />
+  <StockToast client:load />
+
+
   <slot />
+
+  <!-- Global WhatsApp floating button (all pages) -->
+  <WhatsAppFloating />
+
+  <!-- Sticky lead form modal trigger — appears after 30s idle -->
+  <LeadForm client:idle />
 
   <!-- Global site script (minimal) -->
   <script is:inline>
@@ -114,5 +166,7 @@ const seo = buildSEO({
       });
     });
   </script>
+  <AnalyticsBoot />
+  <MonitorBoot client:idle />
 </body>
 </html>

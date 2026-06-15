@@ -1,0 +1,114 @@
+---
+/**
+ * PageHero.astro — Shared hero pattern V5.2 untuk secondary pages
+ *
+ * Layout asymmetric (kiri 7 col content, kanan 5 col photo/visual)
+ * Mirip EditorialHero tapi lebih ringkas — untuk page-level (bukan homepage).
+ *
+ * Props:
+ *   - eyebrow: string
+ *   - title: string
+ *   - accent: string (italic gold accent di title)
+ *   - description: string
+ *   - primaryCta: { text, href }
+ *   - secondaryCta: { text, href } (optional)
+ *   - stats: [{ value, label }]
+ *   - image: string (path)
+ *   - imageAlt: string
+ *   - imageBadge: string
+ *   - bgColor: 'cream' | 'white' | 'forest'
+ */
+
+import { ArrowRight } from 'lucide-svelte';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  accent?: string;
+  description: string;
+  primaryCta: { text: string; href: string };
+  secondaryCta?: { text: string; href: string };
+  stats?: Array<{ value: string; label: string }>;
+  image?: string;
+  imageAlt?: string;
+  imageBadge?: string;
+  bgColor?: 'cream' | 'white' | 'forest';
+}
+
+const {
+  eyebrow,
+  title,
+  accent,
+  description,
+  primaryCta,
+  secondaryCta,
+  stats = [],
+  image,
+  imageAlt = '',
+  imageBadge,
+  bgColor = 'cream',
+} = Astro.props;
+
+const bgClass = bgColor === 'forest' ? 'bg-forest-900 text-cream-50' : bgColor === 'white' ? 'bg-white' : 'bg-cream-50';
+---
+
+<section class:list={['reveal relative overflow-hidden', bgClass]}>
+  {bgColor === 'cream' && <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(27,67,50,0.04)_0%,transparent_70%)]" />}
+  {bgColor === 'forest' && <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,rgba(212,165,116,0.08)_0%,transparent_70%)]" />}
+  <div class="container-wide py-20 md:py-28 relative">
+    <div class="grid grid-cols-12 gap-8 lg:gap-12 items-center">
+      <div class:list={[image ? 'col-span-12 lg:col-span-7' : 'col-span-12 lg:col-span-10 lg:col-start-2 text-center']}>
+        <div class:list={["font-mono text-xs uppercase tracking-widest mb-4", bgColor === 'forest' ? 'text-gold-500' : 'text-gold-700']}>
+          — {eyebrow}
+        </div>
+        <h1 class:list={['font-display leading-[0.95] tracking-[-0.02em] text-editorial-lg font-bold', bgColor === 'forest' ? 'text-cream-50' : 'text-forest-700', 'mb-6']}>
+          {title}{accent && <><br/><em class="text-gold-700">{accent}</em></>}
+        </h1>
+        <p class:list={['font-body text-lg leading-relaxed max-w-2xl', bgColor === 'forest' ? 'text-cream-50/80' : 'text-ink-500', image ? '' : 'mx-auto', 'mb-8']}>
+          {description}
+        </p>
+
+        <div class:list={['flex flex-wrap gap-3', image ? '' : 'justify-center']}>
+          <a href={primaryCta.href} class="btn btn-primary btn-lg">
+            {primaryCta.text}
+            <ArrowRight class="w-4 h-4" />
+          </a>
+          {secondaryCta && (
+            <a href={secondaryCta.href} class="btn btn-outline btn-lg">
+              {secondaryCta.text}
+            </a>
+          )}
+        </div>
+
+        {stats.length > 0 && (
+          <div class="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-forest-700/10 max-w-2xl" class:list={[image ? '' : 'mx-auto']}>
+            {stats.map((s) => (
+              <div>
+                <div class:list={['font-display text-3xl', bgColor === 'forest' ? 'text-gold-500' : 'text-forest-700']}>{s.value}</div>
+                <div class:list={['text-xs uppercase tracking-wider mt-1', bgColor === 'forest' ? 'text-cream-50/60' : 'text-ink-mute']}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {image && (
+        <div class="col-span-12 lg:col-span-5 relative">
+          <div class="relative aspect-[4/5] overflow-hidden bg-forest-50">
+            <img
+              src={image}
+              alt={imageAlt}
+              class="w-full h-full object-cover"
+              loading="eager"
+            />
+            {imageBadge && (
+              <div class="absolute top-4 left-4 bg-forest-900/90 backdrop-blur-sm text-cream-50 px-3 py-2">
+                <span class="font-mono text-xs uppercase tracking-wider">{imageBadge}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+</section>

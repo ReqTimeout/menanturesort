@@ -1,0 +1,57 @@
+---
+/**
+ * Pattern.astro — Reusable SVG pattern background overlay (V5.3)
+ *
+ * Apply subtle texture ke section flat biar tidak terlihat kosong.
+ * Variants: dots, grid, diagonal, gold-sparkle, noise
+ *
+ * Usage:
+ *   <section class="bg-white relative">
+ *     <Pattern variant="dots" />
+ *     <div class="container-wide relative">...</div>
+ *   </section>
+ *
+ * Props:
+ *   - variant: 'dots' | 'dots-dense' | 'grid' | 'diagonal' | 'gold-sparkle' | 'noise'
+ *   - color: 'forest' | 'gold' | 'ink' (default: forest)
+ *   - opacity: 0-1 (default: 0.06)
+ *   - position: 'absolute' (default) | 'fixed'
+ */
+
+interface Props {
+  variant?: 'dots' | 'dots-dense' | 'grid' | 'diagonal' | 'gold-sparkle' | 'noise';
+  color?: 'forest' | 'gold' | 'ink' | 'cream';
+  opacity?: number;
+  position?: 'absolute' | 'fixed';
+  class?: string;
+}
+
+const {
+  variant = 'dots',
+  color = 'forest',
+  opacity = 0.06,
+  position = 'absolute',
+  class: className = '',
+} = Astro.props;
+
+const colorMap = {
+  forest: '27, 67, 50',    // #1B4332
+  gold: '212, 165, 116',   // #D4A574
+  ink: '13, 27, 20',       // #0D1B14
+  cream: '245, 240, 232',  // #F5F0E8
+};
+
+const rgb = colorMap[color];
+const variantClass = `bg-pattern-${variant}`;
+---
+
+<div
+  class:list={[
+    'pointer-events-none',
+    position === 'absolute' ? 'absolute inset-0' : 'fixed inset-0',
+    variantClass,
+    className,
+  ]}
+  style={`opacity: ${opacity};`}
+  aria-hidden="true"
+></div>

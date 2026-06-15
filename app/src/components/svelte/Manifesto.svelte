@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte';
+  import { motion } from '@humanspeak/svelte-motion';
 
   let sectionEl;
   let scrollProgress = $state(0);
@@ -18,13 +19,18 @@
     return () => window.removeEventListener('scroll', onScroll);
   });
 
-  // Letters reveal based on progress
   const text = "Warisan bukan sekadar properti. Ia adalah pernyataan: bahwa Anda berpikir lintas generasi. Bahwa Anda menolak hidup dalam siklus kerja-pakai-buang. Menantu Resort adalah jawaban untuk mereka yang memilih berbeda.";
   const words = text.split(' ');
+
+  const stats = [
+    { k: '1974', v: 'Sahid berdiri' },
+    { k: '50+', v: 'Tahun track record' },
+    { k: '20+', v: 'Properti aktif' },
+  ];
 </script>
 
-<section bind:this={sectionEl} class="manifesto relative overflow-hidden">
-  <!-- Massive oversized number/symbol bg -->
+<section bind:this={sectionEl} class="reveal manifesto relative overflow-hidden">
+  <!-- Massive oversized letter bg -->
   <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
     <span class="manifesto-bg-text" style="opacity: {0.04 + scrollProgress * 0.04};">M</span>
   </div>
@@ -51,51 +57,19 @@
         </p>
 
         <div class="mt-20 grid grid-cols-3 gap-12 border-t border-forest-700/20 pt-12">
-          {#each [
-            { k: '1974', v: 'Sahid berdiri' },
-            { k: '50+', v: 'Tahun track record' },
-            { k: '20+', v: 'Properti aktif' },
-          ] as s}
-            <div>
+          {#each stats as s, i}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] }}
+            >
               <div class="font-display text-6xl md:text-7xl text-forest-700 font-bold leading-none">{s.k}</div>
               <div class="font-body text-xs text-ink-500 uppercase tracking-wider mt-3">{s.v}</div>
-            </div>
+            </motion.div>
           {/each}
         </div>
       </div>
     </div>
   </div>
 </section>
-
-<style>
-  .manifesto {
-    background: #F5F0E8;
-    padding: 12rem 0;
-  }
-  .manifesto-bg-text {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(40rem, 100vw, 80rem);
-    color: #1B4332;
-    line-height: 0.8;
-    font-weight: 700;
-    font-style: italic;
-    transition: opacity 0.3s;
-  }
-  .manifesto-text {
-    font-size: clamp(2rem, 4.5vw, 4rem);
-    line-height: 1.15;
-    font-weight: 400;
-    font-style: italic;
-    color: #0D1B14;
-    letter-spacing: -0.01em;
-  }
-  .word {
-    display: inline-block;
-    opacity: 0.15;
-    transition: opacity 0.5s ease, color 0.5s ease;
-  }
-  .word.revealed {
-    opacity: 1;
-    color: #0D1B14;
-  }
-</style>

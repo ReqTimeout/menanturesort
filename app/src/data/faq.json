@@ -72,6 +72,18 @@
       {
         "q": "Bisakah saya menggunakan villa sendiri untuk liburan?",
         "a": "Ya, dengan sistem blokir kalender. Anda bisa blokir tanggal tertentu untuk penggunaan pribadi, dan tim Sahid akan menyesuaikan listing di platform booking."
+      },
+      {
+        "q": "Siapa yang mengelola villa setiap hari?",
+        "a": "Tim Sahid Hotel & Resort — operator 50+ tahun dengan 20+ hotel aktif. Standar operasional mengacu pada hotel bintang 5: housekeeping harian, maintenance preventif, marketing OTA, dan customer service 24/7."
+      },
+      {
+        "q": "Apakah saya boleh menginap di villa saya sendiri?",
+        "a": "Ya. Anda bisa menggunakan villa pribadi Anda untuk menginap kapan saja dengan konfirmasi minimal H-7. Bahkan saat Anda tidak menginap, villa tetap diikutsertakan dalam pool rental — sehingga income Anda tetap berjalan."
+      },
+      {
+        "q": "Bagaimana transparansi laporan keuangan?",
+        "a": "Owner mendapat laporan bulanan via dashboard online: okupansi, gross revenue, operasional, net share. Transfer profit share ke rekening Anda setiap tanggal 10 bulan berikutnya."
       }
     ]
   },
@@ -102,23 +114,6 @@
       {
         "q": "Bagaimana akses transport umum?",
         "a": "Stasiun KAI Cicalengka 8 menit dari lokasi. Bus antarkota tersedia di terminal Cicalengka. Untuk investasi, kebanyakan owner menggunakan kendaraan pribadi atau Grab/Gojek."
-      }
-    ]
-  },
-  {
-    "category": "Manajemen & Operasional",
-    "items": [
-      {
-        "q": "Siapa yang mengelola villa setiap hari?",
-        "a": "Tim Sahid Hotel & Resort — operator 50+ tahun dengan 20+ hotel aktif. Standar operasional mengacu pada hotel bintang 5: housekeeping harian, maintenance preventif, marketing OTA, dan customer service 24/7."
-      },
-      {
-        "q": "Apakah saya boleh menginap di villa saya sendiri?",
-        "a": "Ya. Anda bisa menggunakan villa pribadi Anda untuk menginap kapan saja dengan konfirmasi minimal H-7. Bahkan saat Anda tidak menginap, villa tetap diikutsertakan dalam pool rental — sehingga income Anda tetap berjalan."
-      },
-      {
-        "q": "Bagaimana transparansi laporan keuangan?",
-        "a": "Owner mendapat laporan bulanan via dashboard online: okupansi, gross revenue, operasional, net share. Transfer profit share ke rekening Anda setiap tanggal 10 bulan berikutnya."
       }
     ]
   }

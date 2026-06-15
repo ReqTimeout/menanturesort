@@ -35,7 +35,7 @@
   });
 </script>
 
-<section class="bg-cream-50 py-20 md:py-32">
+<section class="reveal bg-cream-50 py-14 md:py-24 relative overflow-hidden"><div class="absolute inset-0 pattern-dots opacity-30 pointer-events-none"></div><div class="container-wide relative">
   <div class="container-tight">
     <div class="text-center mb-12">
       <div class="inline-flex items-center gap-3 mb-4">

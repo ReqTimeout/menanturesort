@@ -1,125 +1,177 @@
 ---
+/**
+ * /investasi/passive-income — V7 rewrite (V5.2 design system)
+ * Sections: PageHero + 3 Villa Cards + Formula + ROI Guarantee + Final CTA
+ */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Navbar from '../../components/astro/Navbar.astro';
+import NavMenu from '../../components/svelte/NavMenu.svelte';
 import Footer from '../../components/astro/Footer.astro';
+import PageHero from '../../components/astro/PageHero.astro';
+import SectionDivider from '../../components/astro/SectionDivider.astro';
+import Pattern from '../../components/astro/Pattern.astro';
 import WhatsAppFloating from '../../components/astro/WhatsAppFloating.astro';
 import siteData from '../../data/site.json';
 import villaData from '../../data/villa.json';
 import { formatShort, waUrl } from '../../lib/utils';
-import { ArrowLeft, MessageCircle, Shield, TrendingUp, FileText } from 'lucide-svelte';
+import { MessageCircle, Shield, TrendingUp, ArrowRight } from 'lucide-svelte';
+
 const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'passive_income');
+
 const projections = villaData.types.map((v) => ({
   ...v,
   yearly: v.passiveIncome * 12,
   yield: ((v.passiveIncome * 12) / v.price * 100).toFixed(1),
 }));
----
-<BaseLayout title="Passive Income Rp 9-15 Juta per Bulan" description="Simulasi passive income villa Menantu Resort: Rp 9-15 juta/bulan. ROI guarantee 10% p.a. 2 tahun pertama. Okupansi 50%.">
-  <Navbar />
-  <main class="pt-20">
-    <section class="section section-cream">
-      <div class="container-tight">
-        <a href="/investasi" class="text-forest-500 text-sm hover:text-gold-700 inline-flex items-center gap-1 mb-4">
-          <ArrowLeft size="14" /> Kembali
-        </a>
-        <span class="eyebrow text-forest-500 block mb-3">Passive Income</span>
-        <h1 class="heading-title mb-6">
-          Passive Income <em>Rp 9-15 Juta.</em><br/>Otomatis Tiap Bulan.
-        </h1>
-        <p class="text-body-lg text-ink-500 max-w-2xl">
-          Villa Anda bekerja untuk Anda setiap hari. Dikelola profesional Sahid,
-          okupansi terjaga, pembayaran bulanan langsung ke rekening Anda.
-        </p>
-      </div>
-    </section>
 
-    <section class="section section-white">
-      <div class="container-tight">
-        <div class="text-center mb-12">
-          <span class="eyebrow">Proyeksi</span>
-          <h2 class="heading-title mt-4">3 Tipe Vila, <em>3 Tingkat Cashflow.</em></h2>
+const formula = [
+  { n: '1', title: 'Gross Monthly Revenue', desc: 'Tarif Rp 2,2jt/malam × 30 hari × okupansi (50% = 15 hari)', highlight: false },
+  { n: '2', title: 'Operasional (20%)', desc: 'Sahid hotel standard: cleaning, maintenance, marketing, utilitas', highlight: false },
+  { n: '3', title: 'Net Revenue (80%)', desc: 'Pendapatan bersih setelah operasional', highlight: false },
+  { n: '4', title: 'Owner Share (70%)', desc: '70% × Net Revenue = passive income bulanan Anda', highlight: true },
+];
+---
+
+<BaseLayout
+  title="Passive Income Rp 9-15 Juta per Bulan — Menantu Resort"
+  description="Simulasi passive income villa Menantu Resort: Rp 9-15 juta/bulan. ROI guarantee 10% p.a. 2 tahun pertama. Okupansi 50%."
+>
+  <NavMenu client:load />
+
+  <main class="pt-20">
+    <PageHero
+      eyebrow="Passive Income"
+      title="Passive Income"
+      accent="Rp 9-15 Juta / Bulan."
+      description="Villa Anda bekerja untuk Anda setiap hari. Dikelola profesional Sahid, okupansi terjaga, pembayaran bulanan langsung ke rekening Anda."
+      primaryCta={{ text: 'Simulasi KPR', href: '/investasi#kalkulator' }}
+      secondaryCta={{ text: 'Lihat Villa', href: '/villa' }}
+      stats={[
+        { value: 'Rp 9-15 jt', label: 'Per Bulan' },
+        { value: '50%', label: 'Okupansi' },
+        { value: '10%', label: 'ROI Guarantee' },
+      ]}
+      bgColor="cream"
+    />
+
+    <SectionDivider variant="diamond" />
+
+    <!-- 3 Villa Projections -->
+    <section class="relative bg-white py-20 md:py-32" data-section="projections">
+      <Pattern variant="dots" color="gold" opacity={0.05} />
+      <div class="container-wide relative">
+        <div class="grid grid-cols-12 gap-8 mb-12">
+          <div class="col-span-12 md:col-span-3">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— Proyeksi</div>
+          </div>
+          <div class="col-span-12 md:col-span-9">
+            <h2 class="font-display text-editorial-md text-forest-700 leading-[0.95] tracking-tight">
+              3 Tipe Vila, <em class="text-gold-700">3 Tingkat Cashflow.</em>
+            </h2>
+            <p class="font-body text-lg text-ink-soft mt-4 max-w-2xl">
+              Setiap tipe vila menghasilkan passive income berbeda. Pilih yang sesuai budget dan target cashflow Anda.
+            </p>
+          </div>
         </div>
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           {projections.map((p) => (
-            <div class="card accent-line p-10">
-              <div class="text-xs text-gold-700 uppercase tracking-widest mb-3">{p.taglineShort}</div>
-              <h3 class="font-display text-2xl text-forest-700 mb-1">{p.name}</h3>
-              <div class="font-mono text-4xl text-forest-500 font-bold mt-4 mb-1">{formatShort(p.passiveIncome)}</div>
+            <div class="card-premium p-8 md:p-10">
+              <div class="font-mono text-[10px] uppercase tracking-widest text-gold-700 mb-3">{p.taglineShort}</div>
+              <h3 class="font-display text-2xl text-forest-700 font-bold mb-4">{p.name}</h3>
+              <div class="font-mono text-4xl text-forest-500 font-bold mb-1">{formatShort(p.passiveIncome)}</div>
               <div class="text-sm text-ink-700 mb-6">per bulan (okupansi 50%)</div>
-              <ul class="space-y-2 text-sm text-ink-500 border-t border-cream-100 pt-6">
-                <li class="flex justify-between"><span>Setara per tahun</span><span class="font-mono">{formatShort(p.yearly)}</span></li>
-                <li class="flex justify-between"><span>Yield gross</span><span class="font-mono">{p.yield}% p.a.</span></li>
-                <li class="flex justify-between"><span>Surplus vs cicilan</span><span class="font-mono text-success">+{formatShort(p.surplusBank)}</span></li>
+              <ul class="space-y-3 text-sm text-ink-500 border-t border-cream-100 pt-6">
+                <li class="flex justify-between">
+                  <span>Setara per tahun</span>
+                  <span class="font-mono text-forest-700 font-semibold">{formatShort(p.yearly)}</span>
+                </li>
+                <li class="flex justify-between">
+                  <span>Yield gross</span>
+                  <span class="font-mono text-forest-700 font-semibold">{p.yield}% p.a.</span>
+                </li>
+                <li class="flex justify-between">
+                  <span>Surplus vs cicilan</span>
+                  <span class="font-mono text-success-600 font-semibold">+{formatShort(p.surplusBank)}</span>
+                </li>
               </ul>
+              <a href={`/villa/${p.id}`} class="mt-6 w-full inline-flex items-center justify-center gap-2 px-4 py-3 border border-forest-700 text-forest-700 font-body font-semibold text-sm tracking-wide hover:bg-forest-700 hover:text-cream-50 transition-all">
+                Lihat {p.name}
+                <ArrowRight size={14} />
+              </a>
             </div>
           ))}
         </div>
       </div>
     </section>
 
-    <section class="section section-cream">
-      <div class="container-tight">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    <SectionDivider variant="ornate" />
+
+    <!-- Formula -->
+    <section class="relative section-cream py-20 md:py-32" data-section="formula">
+      <Pattern variant="diagonal" color="forest" opacity={0.04} />
+      <div class="container-wide relative">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
-            <span class="eyebrow">Asumsi Perhitungan</span>
-            <h2 class="heading-title mt-4 mb-6">Bagaimana <em>Passive Income</em> Dihitung?</h2>
-            <p class="text-body-lg text-ink-500 mb-6">Berikut formula yang dipakai untuk simulasi. Angka aktual dapat bervariasi tergantung okupansi, season, dan event.</p>
-            <a href={waLink('Halo, saya mau tanya asumsi passive income')} target="_blank" rel="noopener" class="btn btn-primary">Tanya Detail Asumsi</a>
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— Asumsi Perhitungan</div>
+            <h2 class="font-display text-editorial-md text-forest-700 leading-[0.95] tracking-tight mb-6">
+              Bagaimana <em class="text-gold-700">Passive Income</em> Dihitung?
+            </h2>
+            <p class="font-body text-lg text-ink-soft mb-8 max-w-lg">
+              Berikut formula yang dipakai untuk simulasi. Angka aktual dapat bervariasi tergantung okupansi, season, dan event.
+            </p>
+            <a href={waLink('Halo, saya mau tanya asumsi passive income')} target="_blank" rel="noopener" class="btn btn-primary">
+              <MessageCircle size={16} />
+              Tanya Detail Asumsi
+            </a>
           </div>
-          <div class="card p-8 md:p-10">
-            <h3 class="heading text-xl mb-6">Formula Sederhana</h3>
+
+          <div class="card-premium p-8 md:p-10">
+            <h3 class="font-display text-xl text-forest-700 font-bold mb-6">Formula Sederhana</h3>
             <ol class="space-y-5">
-              <li class="flex gap-4">
-                <div class="w-8 h-8 bg-forest-500 text-gold-500 flex items-center justify-center font-display font-bold flex-shrink-0">1</div>
-                <div>
-                  <strong class="text-forest-700 block mb-1">Gross Monthly Revenue</strong>
-                  <p class="text-sm text-ink-500">Tarif Rp 2,2jt/malam × 30 hari × okupansi (50% = 15 hari)</p>
-                </div>
-              </li>
-              <li class="flex gap-4">
-                <div class="w-8 h-8 bg-forest-500 text-gold-500 flex items-center justify-center font-display font-bold flex-shrink-0">2</div>
-                <div>
-                  <strong class="text-forest-700 block mb-1">Operasional (20%)</strong>
-                  <p class="text-sm text-ink-500">Sahid hotel standard: cleaning, maintenance, marketing, utilitas</p>
-                </div>
-              </li>
-              <li class="flex gap-4">
-                <div class="w-8 h-8 bg-forest-500 text-gold-500 flex items-center justify-center font-display font-bold flex-shrink-0">3</div>
-                <div>
-                  <strong class="text-forest-700 block mb-1">Net Revenue (80%)</strong>
-                  <p class="text-sm text-ink-500">Pendapatan bersih setelah operasional</p>
-                </div>
-              </li>
-              <li class="flex gap-4">
-                <div class="w-8 h-8 bg-gold-500 text-forest-700 flex items-center justify-center font-display font-bold flex-shrink-0">4</div>
-                <div>
-                  <strong class="text-forest-700 block mb-1">Owner Share (70%)</strong>
-                  <p class="text-sm text-ink-500">70% × Net Revenue = passive income bulanan Anda</p>
-                </div>
-              </li>
+              {formula.map((f) => (
+                <li class="flex gap-4">
+                  <div class={`w-8 h-8 flex items-center justify-center font-display font-bold flex-shrink-0 ${f.highlight ? 'bg-gold-500 text-forest-700' : 'bg-forest-500 text-gold-500'}`}>
+                    {f.n}
+                  </div>
+                  <div>
+                    <strong class="text-forest-700 block mb-1">{f.title}</strong>
+                    <p class="text-sm text-ink-500">{f.desc}</p>
+                  </div>
+                </li>
+              ))}
             </ol>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="section section-white">
-      <div class="container-tight">
-        <div class="card p-10 md:p-16 text-center accent-line bg-forest-50">
-          <Shield size="40" class="text-gold-700 mx-auto mb-4" />
-          <span class="eyebrow text-forest-500 block mb-3">Jaminan Kami</span>
-          <h2 class="heading-title mb-4">ROI Guarantee 10% <em class="text-gold-700">2 Tahun Pertama.</em></h2>
-          <p class="text-body-lg text-ink-500 max-w-2xl mx-auto mb-8">
-            Jika passive income aktual di bawah 10% p.a. pada 2 tahun pertama,
-            developer akan menutup selisihnya. Jaminan tertulis dalam akad notaris.
-          </p>
-          <a href={waLink('Halo, saya mau pelajari garansi ROI')} target="_blank" rel="noopener" class="btn btn-primary btn-lg">
-            <MessageCircle size="18" /> Pelajari Garansi ROI
-          </a>
+    <SectionDivider variant="diamond" />
+
+    <!-- ROI Guarantee -->
+    <section class="relative bg-white py-20 md:py-32" data-section="guarantee">
+      <Pattern variant="gold-sparkle" color="gold" opacity={0.05} />
+      <div class="container-wide relative">
+        <div class="max-w-3xl mx-auto">
+          <div class="card-premium p-10 md:p-16 text-center bg-forest-50">
+            <Shield size={40} class="text-gold-700 mx-auto mb-4" />
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— Jaminan Kami</div>
+            <h2 class="font-display text-editorial-md text-forest-700 leading-[0.95] tracking-tight mb-6">
+              ROI Guarantee 10% <em class="text-gold-700">2 Tahun Pertama.</em>
+            </h2>
+            <p class="font-body text-lg text-ink-soft max-w-2xl mx-auto mb-8">
+              Jika passive income aktual di bawah 10% p.a. pada 2 tahun pertama,
+              developer akan menutup selisihnya. Jaminan tertulis dalam akad notaris.
+            </p>
+            <a href={waLink('Halo, saya mau pelajari garansi ROI')} target="_blank" rel="noopener" class="btn btn-primary btn-lg">
+              <MessageCircle size={18} />
+              Pelajari Garansi ROI
+            </a>
+          </div>
         </div>
       </div>
     </section>
   </main>
+
   <Footer />
   <WhatsAppFloating />
 </BaseLayout>

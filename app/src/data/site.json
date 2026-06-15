@@ -5,7 +5,7 @@
   "concept": "Green Ethnic Eco Resort — kawasan 3,5 Ha di Bandung Timur, dipadu kelestarian alam dan design culture",
   "description": "Villa produktif eco-resort 3.5 hektar di Cicalengka, Bandung Timur, dikelola Sahid Hotel & Resort. Mulai Rp 1,2 Miliar. SHM + izin komersial, ROI 10% p.a. guarantee 2 tahun pertama, bagi hasil 70% untuk pemilik.",
   "url": "https://menantu-resort.com",
-  "ogImage": "/og/og-image.webp",
+  "ogImage": "/og/og-image.png",
   "logo": "/images/logo/menantu-resort-logo.webp",
   "favicon": "/favicon.svg",
   "developer": {
@@ -200,6 +200,27 @@
       "role": "Pengusaha",
       "text": "View 360° perbukitan Bandung-nya menakjubkan sekali. Saya mendapatkan brosur promonya secara lengkap via email, penawaran diskon 200 juta langsung saya amankan. Legalitas SHM juga aman, transaksi sangat transparan sampai selesai.",
       "rating": 5
+    },
+    {
+      "name": "Hendra Wisnu",
+      "location": "Bandung",
+      "role": "Pengusaha",
+      "text": "Awalnya ragu beli villa di pinggiran. Tapi setelah melihat langsung kawasan dan manajemen Sahid, semua kekhawatiran hilang. Sekarang tinggal terima laporan bagi hasil tiap bulan.",
+      "rating": 5
+    },
+    {
+      "name": "Budi Hartono",
+      "location": "Jakarta",
+      "role": "Karyawan Swasta",
+      "text": "Cicilan Rp 9 juta per bulan, passive income Rp 12 juta. Baru 6 bulan sudah jelas cashflow positif. Worth it banget buat yang cari passive income.",
+      "rating": 5
+    },
+    {
+      "name": "Siti Rahma",
+      "location": "Semarang",
+      "role": "Dokter",
+      "text": "Lokasi Cicalengka benar-benar berbeda — sejuk, hijau, jauh dari hiruk-pikuk. Keluarga betah, tapi villa tetap produktif. Best of both worlds.",
+      "rating": 5
     }
   ],
   "keyBenefits": [
@@ -242,6 +263,225 @@
       "icon": "map",
       "title": "Lokasi 360° View Bandung Timur",
       "desc": "Cicalengka, udara sejuk pegunungan, view 360° perbukitan. 45 menit dari Gerbang Tol Cileunyi, hidden gem bukan overtourism."
+    }
+  ],
+  "villaLabels": {
+    "bijak": {
+      "label": "Attic",
+      "tagline": "Pintu Masuk Anda ke Properti Premium",
+      "icon": "home",
+      "color": "villa-bijak"
+    },
+    "idaman": {
+      "label": "Double Glass",
+      "tagline": "Standar Keluarga, Income Mengalir",
+      "icon": "gem",
+      "color": "villa-idaman"
+    },
+    "mapan": {
+      "label": "Luxury Private",
+      "tagline": "Untuk Mereka yang Tidak Puas dengan Cukup",
+      "icon": "crown",
+      "color": "villa-mapan"
+    }
+  },
+  "heroFacts": [
+    {
+      "value": "Rp 9 jt",
+      "label": "Cicilan mulai",
+      "sublabel": "per bulan"
+    },
+    {
+      "value": "10% p.a.",
+      "label": "ROI guarantee",
+      "sublabel": "2 tahun pertama"
+    },
+    {
+      "value": "58/74",
+      "label": "Unit terjual",
+      "sublabel": "16 tersisa"
+    }
+  ],
+  "concerns": [
+    {
+      "id": "legalitas",
+      "icon": "scale",
+      "text": "Takut sengketa legalitas, SHM tumpang tindih, atau izin macet."
+    },
+    {
+      "id": "terbengkalai",
+      "icon": "home",
+      "text": "Takut villa terbengkalai, kosong tanpa tamu dan penyewa tetap."
+    },
+    {
+      "id": "operasional",
+      "icon": "broom",
+      "text": "Takut pusing mengurus kebersihan, taman, sprei, & staf operasional."
+    },
+    {
+      "id": "transparansi",
+      "icon": "eye-off",
+      "text": "Takut bagi hasil tidak transparan dan properti cepat rusak."
+    }
+  ],
+  "solutions": [
+    {
+      "id": "bagi-hasil",
+      "title": "Bagi Hasil 70-30 Tercatat",
+      "desc": "Pendapatan bersih villa (setelah operasional 20%) dibagi 70% untuk pemilik. Tercatat teratur, dikirim bulanan ke rekening investor.",
+      "icon": "wallet"
+    },
+    {
+      "id": "lokasi",
+      "title": "Cicalengka, Sejuk, Bebas Banjir",
+      "desc": "Lokasi strategis Bandung Timur, kawasan hijau asri, udara sejuk pegunungan. Hidden gem, bukan overtourism Puncak/Lembang.",
+      "icon": "map-pin"
+    },
+    {
+      "id": "warisan",
+      "title": "Aset Nyata, Diwariskan",
+      "desc": "Sertifikat Hak Milik atas nama pribadi, bukan Hak Pakai. Aset tangible yang otomatis terus diwariskan ke anak cucu.",
+      "icon": "scroll"
+    }
+  ],
+  "popularitas": {
+    "bijak": {
+      "views": 247,
+      "label": "Menantu Bijak (Attic)"
+    },
+    "idaman": {
+      "views": 412,
+      "label": "Menantu Idaman (Double Glass)"
+    },
+    "mapan": {
+      "views": 189,
+      "label": "Menantu Mapan (Luxury Private)"
+    },
+    "liveViewers": 8,
+    "updatedAt": "Real-time"
+  },
+  "promo": {
+    "title": "Promo Spesial Pembelian Bulan Ini",
+    "subtitle": "Amankan unit terbaik + bonus eksklusif minggu ini",
+    "discount": "Rp 200 Juta",
+    "discountDesc": "Potongan harga langsung untuk Master Suite & Deluxe",
+    "bonus": "Mobil Listrik Baru",
+    "bonusDesc": "Bonus langsung untuk 10 pendaftar pertama",
+    "deadline": "2026-06-30T23:59:59+07:00",
+    "deadlineLabel": "30 Juni 2026, 23:59 WIB",
+    "quota": "10 pendaftar pertama",
+    "sk": "Berlaku untuk unit Master Suite & Deluxe. Tidak dapat digabung dengan promo lain. S&K berlaku."
+  },
+  "assets": {
+    "hero360": "/360/panorama-main.jpg",
+    "hero360Poster": "/360/panorama-poster.jpg",
+    "villa": {
+      "bijak": "/images/villa/bijak/hero-row.jpeg",
+      "idaman": "/images/villa/idaman/hero-row.jpeg",
+      "mapan": "/images/villa/mapan/hero-detail.jpeg",
+      "mapanStreet": "/images/villa/mapan/street-view.jpeg"
+    },
+    "interior": {
+      "hero": [
+        "/images/interior/hero/stairs-cream.jpg",
+        "/images/interior/hero/bathroom-bathtub.jpg",
+        "/images/interior/hero/kitchen-sink.jpg"
+      ],
+      "gallery": [
+        "/images/interior/gallery/01.jpg",
+        "/images/interior/gallery/02.jpg",
+        "/images/interior/gallery/03.jpg",
+        "/images/interior/gallery/04.jpg",
+        "/images/interior/gallery/05.jpg",
+        "/images/interior/gallery/06.jpg",
+        "/images/interior/gallery/07.jpg",
+        "/images/interior/gallery/08.jpg",
+        "/images/interior/gallery/09.jpg",
+        "/images/interior/gallery/10.jpg",
+        "/images/interior/gallery/11.jpg",
+        "/images/interior/gallery/12.jpg"
+      ]
+    }
+  },
+  "liveEvents": [
+    {
+      "name": "Budi H.",
+      "city": "Jakarta",
+      "action": "melihat detail",
+      "villa": "idaman",
+      "minutesAgo": 2
+    },
+    {
+      "name": "Sari W.",
+      "city": "Surabaya",
+      "action": "mengunduh brosur",
+      "villa": "mapan",
+      "minutesAgo": 4
+    },
+    {
+      "name": "Hendra K.",
+      "city": "Bandung",
+      "action": "menghitung KPR",
+      "villa": "bijak",
+      "minutesAgo": 6
+    },
+    {
+      "name": "Lina M.",
+      "city": "Bekasi",
+      "action": "melihat detail",
+      "villa": "idaman",
+      "minutesAgo": 8
+    },
+    {
+      "name": "Alexander H.",
+      "city": "Surabaya",
+      "action": "mengamankan unit",
+      "villa": "mapan",
+      "minutesAgo": 12
+    },
+    {
+      "name": "Dewi L.",
+      "city": "Jakarta",
+      "action": "membaca FAQ",
+      "villa": null,
+      "minutesAgo": 15
+    }
+  ],
+  "ctaMacros": [
+    {
+      "id": "survei",
+      "label": "Survei Gratis & Lihat Villa",
+      "icon": "📞",
+      "intent": "high",
+      "whatsapp": true
+    },
+    {
+      "id": "konsultasi",
+      "label": "Konsultasi WhatsApp",
+      "icon": "💬",
+      "intent": "medium",
+      "whatsapp": true
+    },
+    {
+      "id": "simulasi",
+      "label": "Hitung Simulasi KPR",
+      "icon": "📊",
+      "intent": "research",
+      "href": "/investasi"
+    },
+    {
+      "id": "brosur",
+      "label": "Download Brosur PDF",
+      "icon": "📥",
+      "intent": "low",
+      "href": "/kontak#brosur"
+    },
+    {
+      "id": "telepon",
+      "label": "Jadwalkan Telepon",
+      "icon": "🗓️",
+      "intent": "medium-high",
+      "whatsapp": true
     }
   ]
 }

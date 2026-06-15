@@ -1,0 +1,458 @@
+---
+/**
+ * VillaDetail.astro — Shared layout untuk 3 halaman detail villa V5.2
+ *
+ * Sections (8 total):
+ *   1. VillaHero        — foto + copy + WhatsApp CTA + micro-stats
+ *   2. KenapaVilla      — 4 USPs dengan gold line + icons
+ *   3. GaleriInterior   — 4-5 foto interior carousel
+ *   4. ArsitekturCerita — narrative section: tagline + architecture + features
+ *   5. CashflowSection  — simulasi cashflow real-time
+ *   6. ComparisonMini   — perbandingan ringkas 3 villa
+ *   7. PromoSlot        — promo spesial + deadline countdown
+ *   8. LeadFormFinal    — form final
+ *
+ * Props:
+ *   - villa: object (data villa)
+ *   - interiorImages: string[] (path ke foto interior)
+ *   - accentColor: 'bijak' | 'idaman' | 'mapan'
+ */
+
+import VillaHero from '../svelte/VillaHero.svelte';
+import GaleriInterior from '../svelte/GaleriInterior.svelte';
+import SectionDivider from './SectionDivider.astro';
+import Pattern from './Pattern.astro';
+import CountdownTimer from '../svelte/CountdownTimer.svelte';
+import { waUrl, formatRupiah, formatShort } from '@lib/utils';
+import { ArrowRight, Check, Bed, Maximize, Layers, Wallet, TrendingUp, Home, Calendar, MapPin, Award, Shield, Users, Sparkles, MessageCircle, Phone, CalendarCheck } from 'lucide-svelte';
+import siteData from '@data/site.json';
+import villaData from '@data/villa.json';
+
+interface Props {
+  villa: any;
+  interiorImages: string[];
+  accentColor: 'bijak' | 'idaman' | 'mapan';
+}
+
+const { villa, interiorImages, accentColor } = Astro.props;
+
+// USPs dengan icon mapping
+const uspIcons = ['Home', 'Sparkles', 'Award', 'Shield'];
+const uspIconMap = { Home, Sparkles, Award, Shield };
+
+// CTA WhatsApp messages
+const waKonsultasi = waUrl(
+  siteData.contact.whatsapp,
+  `Halo, saya tertarik dengan ${villa.name} (${villa.priceDisplay}). Mohon info detail & jadwal survey.`,
+  `villa_${villa.id}_konsultasi`
+);
+
+const waSimulasi = waUrl(
+  siteData.contact.whatsapp,
+  `Halo, saya mau simulasi KPR untuk ${villa.name}. Bisa tolong dijadwalkan konsultasi?`,
+  `villa_${villa.id}_simulasi`
+);
+
+const waBooking = waUrl(
+  siteData.contact.whatsapp,
+  `Halo, saya ingin booking ${villa.name} dengan booking fee ${formatRupiah(villa.bookingFee)}. Mohon info prosedur selanjutnya.`,
+  `villa_${villa.id}_booking`
+);
+
+// Cashflow formatted
+const cicilanFormatted = formatShort(villa.cicilanBank);
+const incomeFormatted = formatShort(villa.passiveIncome);
+const surplusFormatted = formatShort(Math.max(0, villa.passiveIncome - villa.cicilanBank));
+const dpFormatted = formatRupiah(villa.dpBank);
+const capitalGainFormatted = formatShort(villa.capitalGainBenchmark);
+---
+
+<VillaHero
+  client:load
+  villa={villa}
+  images={interiorImages}
+  badges={[
+    { label: villa.label, variant: accentColor },
+    { label: `${villa.lb}m² / ${villa.lt}m²`, variant: 'cream' },
+    { label: `${villa.bedrooms} BR · ${villa.bathrooms} BA · ${villa.floors}L`, variant: 'cream' },
+  ]}
+/>
+
+<!-- 2. Kenapa Villa Ini -->
+<section class="relative section-cream py-20 md:py-32" data-section="kenapa">
+  
+    <Pattern variant="dots" color="forest" opacity={0.07} />
+    <div class="container-wide">
+    <div class="grid grid-cols-12 gap-8 mb-12">
+      <div class="col-span-12 md:col-span-3">
+        <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— USPs</div>
+      </div>
+      <div class="col-span-12 md:col-span-9">
+        <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight">
+          Kenapa <em class="text-gold-700">{villa.name.split(' ')[1]}</em>?
+        </h2>
+        <p class="font-body text-lg text-ink-soft mt-4 max-w-2xl">
+          Empat kekuatan utama yang bikin villa ini jadi pilihan cerdas untuk Anda.
+        </p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {villa.usp.map((usp, i) => {
+        const IconName = uspIcons[i] || 'Home';
+        const Icon = uspIconMap[IconName];
+        return (
+          <div class="card-premium p-6">
+            <div class="w-12 h-12 bg-forest-700 text-gold-500 flex items-center justify-center mb-4">
+              <Icon class="w-6 h-6" />
+            </div>
+            <h3 class="font-display text-xl text-forest-700 mb-2">{usp}</h3>
+            <p class="text-sm text-ink-soft">
+              {i === 0 && 'Spesifikasi premium yang dirancang untuk kenyamanan maksimal.'}
+              {i === 1 && 'Detail arsitektur yang bikin setiap sudut punya cerita.'}
+              {i === 2 && 'Material dan finishing kelas resort bintang 5.'}
+              {i === 3 && 'Garansi dan layanan after-sales yang terukur.'}
+            </p>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<SectionDivider variant="ornate" />
+
+<!-- 3. Galeri Interior -->
+<section class="relative bg-white py-20 md:py-32" data-section="galeri">
+  
+    <Pattern variant="grid" color="forest" opacity={0.05} />
+    <div class="container-wide">
+    <div class="grid grid-cols-12 gap-8 mb-12">
+      <div class="col-span-12 md:col-span-3">
+        <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— Interior</div>
+      </div>
+      <div class="col-span-12 md:col-span-9">
+        <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight">
+          Standar Furnishing <em class="text-gold-700">Sahid Hospitality</em>
+        </h2>
+        <p class="font-body text-lg text-ink-soft mt-4 max-w-2xl">
+          Fully furnished, smart home ready. Tinggal terima kunci, langsung bisa di-booking.
+        </p>
+      </div>
+    </div>
+
+    <GaleriInterior
+      client:visible
+      images={interiorImages}
+      villaName={villa.name}
+      autoplay={true}
+      autoplayDelay={5000}
+    />
+  </div>
+</section>
+
+<SectionDivider variant="diamond" />
+
+<!-- 4. Arsitektur & Cerita -->
+<section class="relative section-cream py-20 md:py-32" data-section="arsitektur">
+  
+    <Pattern variant="diagonal" color="gold" opacity={0.04} />
+    <div class="container-wide">
+    <div class="grid grid-cols-12 gap-12">
+      <div class="col-span-12 lg:col-span-5">
+        <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— Arsitektur</div>
+        <blockquote class="font-display text-display-md text-forest-700 leading-[1.0] tracking-tight">
+          "{villa.labelDesc}"<br/>
+          <em class="text-gold-700">{villa.label}</em>
+        </blockquote>
+        <p class="font-body text-base text-ink-soft mt-6 leading-relaxed">
+          {villa.architecture}
+        </p>
+      </div>
+
+      <div class="col-span-12 lg:col-span-7">
+        <div class="card-premium p-8">
+          <h3 class="font-display text-2xl text-forest-700 mb-6">Spesifikasi & Fitur</h3>
+          <ul class="space-y-4">
+            {villa.features.map((feature) => (
+              <li class="flex items-start gap-3">
+                <div class="w-6 h-6 bg-forest-700 text-gold-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Check class="w-4 h-4" />
+                </div>
+                <span class="text-ink-700 font-body">{feature}</span>
+              </li>
+            ))}
+            <li class="flex items-start gap-3 pt-4 border-t border-forest-700/10">
+              <div class="w-6 h-6 bg-forest-700 text-gold-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Check class="w-4 h-4" />
+              </div>
+              <span class="text-ink-700 font-body"><strong>SHM</strong> + izin komersial resort</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <div class="w-6 h-6 bg-forest-700 text-gold-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Check class="w-4 h-4" />
+              </div>
+              <span class="text-ink-700 font-body"><strong>ROI Guarantee 10% p.a.</strong> 2 tahun pertama</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <div class="w-6 h-6 bg-forest-700 text-gold-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Check class="w-4 h-4" />
+              </div>
+              <span class="text-ink-700 font-body"><strong>Bagi hasil 70/30</strong> untuk pemilik</span>
+            </li>
+          </ul>
+
+          <div class="grid grid-cols-3 gap-4 mt-8 pt-8 border-t border-forest-700/10">
+            <div>
+              <div class="text-xs text-ink-mute uppercase tracking-wider">Luas Bangunan</div>
+              <div class="font-display text-2xl text-forest-700">{villa.lb} m²</div>
+            </div>
+            <div>
+              <div class="text-xs text-ink-mute uppercase tracking-wider">Luas Tanah</div>
+              <div class="font-display text-2xl text-forest-700">{villa.lt} m²</div>
+            </div>
+            <div>
+              <div class="text-xs text-ink-mute uppercase tracking-wider">Posisi</div>
+              <div class="font-display text-lg text-forest-700">{villa.position}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Cashflow Section -->
+<section class="bg-forest-900 text-cream-50 py-20 md:py-32 relative overflow-hidden" data-section="cashflow">
+  <div class="absolute inset-0 bg-gradient-to-br from-forest-900 via-forest-800 to-forest-900 opacity-50"></div>
+
+  <div class="container-wide relative">
+    <div class="grid grid-cols-12 gap-8 mb-12">
+      <div class="col-span-12 md:col-span-3">
+        <div class="font-mono text-xs uppercase tracking-widest text-gold-500 mb-3">— Cashflow</div>
+      </div>
+      <div class="col-span-12 md:col-span-9">
+        <h2 class="font-display text-display-md text-cream-50 leading-[0.95] tracking-tight">
+          Passive income yang <em class="text-gold-500">mengalir</em>,<br/>
+          bukan sekadar janji.
+        </h2>
+        <p class="font-body text-lg text-cream-50/80 mt-4 max-w-2xl">
+          Simulasi cashflow real untuk {villa.name} dengan okupansi konservatif 50%.
+        </p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <div class="bg-forest-800/50 backdrop-blur-sm border border-gold-700/20 p-6">
+        <div class="flex items-center gap-2 mb-3">
+          <Wallet class="w-5 h-5 text-gold-500" />
+          <span class="text-xs uppercase tracking-wider text-cream-50/60">Cicilan KPR / bln</span>
+        </div>
+        <div class="font-display text-4xl text-cream-50 mb-2">{cicilanFormatted}</div>
+        <div class="text-sm text-cream-50/60">DP {dpFormatted} · Tenor 15 tahun · Bunga 5%</div>
+      </div>
+
+      <div class="bg-forest-800/50 backdrop-blur-sm border border-gold-700/20 p-6">
+        <div class="flex items-center gap-2 mb-3">
+          <TrendingUp class="w-5 h-5 text-gold-500" />
+          <span class="text-xs uppercase tracking-wider text-cream-50/60">Passive Income / bln</span>
+        </div>
+        <div class="font-display text-4xl text-gold-500 mb-2">{incomeFormatted}</div>
+        <div class="text-sm text-cream-50/60">Okupansi 50% · Room rate Rp 2,2 jt · Bagi hasil 70%</div>
+      </div>
+
+      <div class="bg-gold-700/20 backdrop-blur-sm border border-gold-500/40 p-6">
+        <div class="flex items-center gap-2 mb-3">
+          <Sparkles class="w-5 h-5 text-gold-500" />
+          <span class="text-xs uppercase tracking-wider text-gold-500">Surplus / bln</span>
+        </div>
+        <div class="font-display text-4xl text-gold-500 mb-2">+{surplusFormatted}</div>
+        <div class="text-sm text-cream-50/60">Cicilan tertutup, cashflow positif dari bulan pertama</div>
+      </div>
+    </div>
+
+    <div class="bg-forest-800/80 border-l-4 border-gold-500 p-6 flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <div class="text-xs uppercase tracking-wider text-gold-500 mb-1">Capital Gain Estimasi (15 tahun)</div>
+        <div class="font-display text-3xl text-cream-50">+{capitalGainFormatted}</div>
+        <div class="text-sm text-cream-50/60 mt-1">Aset naik rata-rata 12-15% p.a. di Cicalengka</div>
+      </div>
+      <a href={waSimulasi} class="btn btn-primary btn-lg bg-gold-700 hover:bg-gold-800 text-forest-900 border-0">
+        <MessageCircle class="w-4 h-4" />
+        Simulasi Detail via WhatsApp
+        <ArrowRight class="w-4 h-4" />
+      </a>
+    </div>
+  </div>
+</section>
+
+<SectionDivider variant="ornate" />
+
+<!-- 6. Comparison Mini -->
+<section class="relative section-cream py-20 md:py-32" data-section="comparison-mini">
+  
+    <Pattern variant="dots-dense" color="forest" opacity={0.06} />
+    <div class="container-wide">
+    <div class="grid grid-cols-12 gap-8 mb-12">
+      <div class="col-span-12 md:col-span-3">
+        <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— Comparison</div>
+      </div>
+      <div class="col-span-12 md:col-span-9">
+        <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight">
+          Bandingkan dengan <em class="text-gold-700">2 tipe lain</em>
+        </h2>
+        <p class="font-body text-lg text-ink-soft mt-4 max-w-2xl">
+          Lihat ringkasan 3 tipe villa side-by-side.
+        </p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {villaData.types.map((v) => {
+        const isCurrent = v.id === villa.id;
+        return (
+          <a
+            href={`/villa/${v.id}`}
+            class={`card-premium p-6 transition-all hover:scale-[1.02] ${isCurrent ? 'ring-2 ring-gold-500 bg-gold-50/30' : ''}`}
+          >
+            <div class="flex items-center justify-between mb-3">
+              <span class={`badge badge-villa-${v.id}`}>{v.label}</span>
+              {isCurrent && <span class="text-xs font-mono text-gold-700 uppercase">— Anda di sini</span>}
+            </div>
+            <h3 class="font-display text-2xl text-forest-700 mb-2">{v.name}</h3>
+            <p class="text-sm text-ink-soft mb-4">{v.taglineShort}</p>
+            <div class="text-2xl font-display text-forest-700 mb-2">{v.priceDisplay}</div>
+            <div class="text-xs text-ink-mute">
+              {v.lb}m² · {v.bedrooms} BR · {v.bathrooms} BA · {v.floors}L
+            </div>
+            {isCurrent && (
+              <div class="mt-4 text-xs text-gold-700 font-semibold uppercase tracking-wider flex items-center gap-1">
+                Villa ini
+                <ArrowRight class="w-3 h-3" />
+              </div>
+            )}
+          </a>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<!-- 7. Promo Slot -->
+<section class="relative bg-white py-16 md:py-24" data-section="promo">
+  
+    <Pattern variant="gold-sparkle" color="gold" opacity={0.08} />
+    <div class="container-wide">
+    <div class="card-premium bg-gradient-to-br from-gold-50 to-cream-50 p-8 md:p-12 border-2 border-gold-500/30">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+        <div class="md:col-span-2">
+          <div class="badge badge-warning mb-3">— Promo Terbatas</div>
+          <h3 class="font-display text-display-sm text-forest-700 leading-tight mb-3">
+            Booking {villa.name} <em class="text-gold-700">hari ini</em><br/>
+            dapat bonus hingga {siteData.stats.promoDiscount}
+          </h3>
+          <p class="text-ink-soft mb-4">
+            Diskon khusus untuk {villa.totalUnits - 16} unit tersisa. Berlaku sampai akhir bulan.
+          </p>
+          <CountdownTimer client:load target={siteData.promo?.deadline || '2026-06-30T23:59:59'} />
+        </div>
+        <div class="flex flex-col gap-3">
+          <a href={waBooking} class="btn btn-primary btn-lg">
+            <CalendarCheck class="w-4 h-4" />
+            Booking Sekarang
+          </a>
+          <a href={waKonsultasi} class="btn btn-outline btn-lg">
+            <MessageCircle class="w-4 h-4" />
+            Tanya Detail
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. Lead Form Final -->
+<section class="relative section-cream py-20 md:py-32" data-section="lead-final">
+  
+    <Pattern variant="dots" color="gold" opacity={0.08} />
+    <div class="container-wide">
+    <div class="grid grid-cols-12 gap-12">
+      <div class="col-span-12 md:col-span-5">
+        <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">— Next Step</div>
+        <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight mb-6">
+          Siap punya <em class="text-gold-700">{villa.name}</em>?
+        </h2>
+        <p class="font-body text-lg text-ink-soft mb-8">
+          Isi form di samping, tim kami akan menghubungi Anda dalam 1x24 jam untuk jadwalkan survey lokasi.
+        </p>
+        <div class="space-y-3 text-sm text-ink-700">
+          <div class="flex items-center gap-2">
+            <Check class="w-4 h-4 text-gold-700" />
+            Survey lokasi gratis
+          </div>
+          <div class="flex items-center gap-2">
+            <Check class="w-4 h-4 text-gold-700" />
+            Konsultasi KPR dengan bank partner
+          </div>
+          <div class="flex items-center gap-2">
+            <Check class="w-4 h-4 text-gold-700" />
+            Simulasi passive income personal
+          </div>
+          <div class="flex items-center gap-2">
+            <Check class="w-4 h-4 text-gold-700" />
+            Booking fee bisa dicicil 2x
+          </div>
+        </div>
+      </div>
+      <div class="col-span-12 md:col-span-7">
+        <div class="card-premium p-8" data-section="lead-form">
+          <form
+            id="villa-lead-form"
+            method="POST"
+            action="#"
+            data-wa-url={waKonsultasi}
+            data-villa-id={villa.id}
+            class="villa-lead-form space-y-5"
+          >
+            <h3 class="font-display text-2xl text-forest-700 font-bold leading-tight">Hubungi Tim Sales</h3>
+            <p class="text-sm text-ink-soft">Tim kami akan menghubungi dalam 1x24 jam untuk jadwalkan survey.</p>
+
+            <div>
+              <label for="lf-name" class="block font-mono text-[10px] uppercase tracking-widest text-forest-700 font-semibold mb-2">Nama Lengkap *</label>
+              <input id="lf-name" name="name" type="text" placeholder="Nama Anda" required class="w-full px-4 py-3 border border-cream-100 bg-cream-50/30 font-body text-sm focus:outline-none focus:border-gold-500 focus:bg-white transition-colors" />
+            </div>
+
+            <div>
+              <label for="lf-phone" class="block font-mono text-[10px] uppercase tracking-widest text-forest-700 font-semibold mb-2">WhatsApp *</label>
+              <input id="lf-phone" name="phone" type="tel" placeholder="08xx-xxxx-xxxx" required class="w-full px-4 py-3 border border-cream-100 bg-cream-50/30 font-body text-sm focus:outline-none focus:border-gold-500 focus:bg-white transition-colors" />
+            </div>
+
+            <div>
+              <label for="lf-email" class="block font-mono text-[10px] uppercase tracking-widest text-forest-700 font-semibold mb-2">Email (opsional)</label>
+              <input id="lf-email" name="email" type="email" placeholder="email@anda.com" class="w-full px-4 py-3 border border-cream-100 bg-cream-50/30 font-body text-sm focus:outline-none focus:border-gold-500 focus:bg-white transition-colors" />
+            </div>
+
+            <button type="submit" class="w-full btn btn-primary btn-lg justify-center">
+              <MessageCircle class="w-4 h-4" />
+              Kirim via WhatsApp
+            </button>
+
+            <p class="text-xs text-ink-mute text-center">Data Anda aman. Tim kami tidak akan spam.</p>
+          </form>
+        </div>
+      </div>
+
+      <script is:inline>
+        document.querySelectorAll('.villa-lead-form').forEach(function(form) {
+          form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var waBase = form.getAttribute('data-wa-url').split('?')[0];
+            var villaId = form.getAttribute('data-villa-id');
+            var text = 'Halo, saya tertarik ' + villaId + ' detail.\n\nNama: ' + encodeURIComponent(form.name.value) + '\nWA: ' + encodeURIComponent(form.phone.value) + '\n\n— via villa_detail_form';
+            window.open(waBase + '?text=' + text, '_blank');
+          });
+        });
+      </script>
+    </div>
+  </div>
+</section>

@@ -1,6 +1,6 @@
 ---
 import siteData from '../../data/site.json';
-import { waUrl } from '../../lib/format';
+import { waUrl } from '../../lib/utils';
 
 const waLink = waUrl(siteData.contact.whatsapp, 'Halo, saya tertarik dengan Menantu Resort. Bisa info lebih lanjut?', 'floating_button');
 ---
@@ -9,7 +9,7 @@ const waLink = waUrl(siteData.contact.whatsapp, 'Halo, saya tertarik dengan Mena
   target="_blank"
   rel="noopener"
   id="wa-floating"
-  class="fixed bottom-6 right-6 z-30 w-14 h-14 md:w-16 md:h-16 rounded-full bg-whatsapp text-white flex items-center justify-center shadow-xl animate-pulse-wa hover:scale-110 transition-transform"
+  class="hidden md:flex fixed bottom-6 right-6 z-30 w-16 h-16 rounded-full bg-whatsapp text-white items-center justify-center shadow-xl animate-pulse-wa hover:scale-110 transition-transform"
   aria-label="Chat WhatsApp"
   data-track="whatsapp_click"
   data-source="floating_button"

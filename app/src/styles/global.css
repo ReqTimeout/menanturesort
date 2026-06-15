@@ -4,7 +4,7 @@
    Reference: Aman, Soho House, Six Senses
    ============================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+/* Fonts are preloaded via <link> in BaseLayout.astro (faster than @import) */
 
 @tailwind base;
 @tailwind components;
@@ -91,16 +91,29 @@
   ::-webkit-scrollbar-track { background: hsl(var(--cream-50)); }
   ::-webkit-scrollbar-thumb { background: hsl(var(--gold-700)); border-radius: 0; }
   ::-webkit-scrollbar-thumb:hover { background: hsl(var(--gold-500)); }
+
+  /* V5.2 — A11y: focus-visible global ring */
+  :focus { outline: none; }
+  :focus-visible {
+    outline: 2px solid hsl(var(--gold-500));
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  button:focus-visible,
+  a:focus-visible {
+    outline: 2px solid hsl(var(--gold-500));
+    outline-offset: 4px;
+  }
 }
 
 @layer components {
   .container-tight { @apply max-w-5xl mx-auto px-6 md:px-8; }
-  .container-wide { @apply max-w-[1600px] mx-auto px-6 md:px-8; }
+  .container-wide { @apply max-w-[1440px] mx-auto px-5 sm:px-6 md:px-8; }
 
   /* LIGHT MODE ONLY - no dark section variants */
-  .section { @apply py-20 md:py-32; }
+  .section { @apply py-14 md:py-24; }
   .section-lg { @apply py-24 md:py-40; }
-  .section-tight { @apply py-12 md:py-20; }
+  .section-tight { @apply py-10 md:py-16; }
   .section-cream { @apply bg-cream-50; }
   .section-cream-dark { @apply bg-cream-100; }
   .section-white { @apply bg-white; }
@@ -170,6 +183,40 @@
   .badge-forest { @apply bg-forest-500/15 text-forest-500; }
   .badge-dark { @apply bg-forest-700 text-gold-500; }
   .badge-light { @apply bg-cream-50 text-forest-700; }
+  /* V5.2 — Semantic badge variants */
+  .badge-success { @apply bg-success-100 text-success-800 border border-success-300; }
+  .badge-warning { @apply bg-warning-100 text-warning-800 border border-warning-300; }
+  .badge-danger { @apply bg-danger-100 text-danger-800 border border-danger-300; }
+  .badge-info { @apply bg-info-100 text-info-800 border border-info-300; }
+  .badge-villa-bijak { @apply bg-villa-bijak/15 text-villa-bijak border border-villa-bijak/30; }
+  .badge-villa-idaman { @apply bg-villa-idaman/15 text-villa-idaman border border-villa-idaman/30; }
+  .badge-villa-mapan { @apply bg-villa-mapan/15 text-villa-mapan border border-villa-mapan/30; }
+  .badge-live { @apply bg-danger text-white animate-pulse; }
+
+  /* V5.2 — Countdown timer segments */
+  .countdown-segment {
+    @apply flex flex-col items-center justify-center min-w-[64px] px-3 py-2 bg-forest-700 text-gold-500;
+  }
+  .countdown-value {
+    @apply font-mono text-2xl font-bold leading-none;
+  }
+  .countdown-label {
+    @apply text-[10px] uppercase tracking-widest text-cream-50/70 mt-1;
+  }
+
+  /* V5.2 — Live activity dot */
+  .live-dot {
+    @apply relative inline-block w-2 h-2 rounded-full bg-success-500;
+  }
+  .live-dot::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    background: theme('colors.success.500');
+    animation: ping-soft 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+    z-index: -1;
+  }
 
   .divider-gold {
     @apply h-px w-full;
@@ -220,6 +267,26 @@
     background-clip: text;
     color: transparent;
   }
+
+  /* V5.2 — Glassmorphism variants */
+  .glass-light {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+  .glass-dark {
+    background: rgba(13, 27, 20, 0.45);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .glass-cream {
+    background: rgba(245, 240, 232, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid hsl(var(--gold-300));
+  }
 }
 @layer utilities {
   /* Editorial grain texture */
@@ -245,9 +312,9 @@
   }
 
   /* Editorial display sizes */
-  .text-editorial-xl { font-size: clamp(3.5rem, 12vw, 11rem); line-height: 0.88; letter-spacing: -0.04em; }
-  .text-editorial-lg { font-size: clamp(2.5rem, 8vw, 7rem); line-height: 0.92; letter-spacing: -0.03em; }
-  .text-editorial-md { font-size: clamp(2rem, 5vw, 4.5rem); line-height: 0.95; letter-spacing: -0.02em; }
+  .text-editorial-xl { font-size: clamp(2.25rem, 4.5vw, 4rem); line-height: 0.98; letter-spacing: -0.025em; }
+  .text-editorial-lg { font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.0; letter-spacing: -0.025em; }
+  .text-editorial-md { font-size: clamp(1.5rem, 3vw, 2.5rem); line-height: 1.05; letter-spacing: -0.02em; }
 
   /* Number block editorial */
   .numeral {
@@ -283,4 +350,825 @@
     51% { transform-origin: left; transform: scaleX(0); }
     100% { transform-origin: left; transform: scaleX(1); }
   }
+
+  /* Magnetic button wrapper */
+  .magnetic-wrap {
+    position: relative;
+    display: inline-flex;
+  }
+
+  /* 3D perspective for tilt cards */
+  .perspective-1200 {
+    perspective: 1200px;
+  }
+
+  /* Spotlight glow effect */
+  .spotlight-glow {
+    position: relative;
+    overflow: hidden;
+  }
+  .spotlight-glow::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    background: radial-gradient(
+      600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      hsl(var(--gold-500) / 0.12),
+      transparent 40%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+  .spotlight-glow:hover::after {
+    opacity: 1;
+  }
+
+  /* Section narrative arc — consistent spacing */
+  .narrative-section {
+    @apply py-20 md:py-32 lg:py-40;
+  }
+  .narrative-section-dark {
+    @apply bg-forest-700 text-cream-50;
+  }
+
+  /* Gold accent top border for cards */
+  .gold-top::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, hsl(var(--gold-500)), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .gold-top:hover::before {
+    opacity: 1;
+  }
+
+  /* Reduced motion — respect accessibility (V5.2) */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    .reveal { opacity: 1; transform: none; }
+    .grain::before { animation: none; }
+    .live-dot::after { animation: none; }
+    .magnetic-wrap, .magnetic-wrap * { transform: none !important; }
+    .animate-pulse, .animate-ping, .animate-bounce, .animate-breathe, .animate-ping-soft { animation: none !important; }
+  }
+
+  /* V5.2 — Hover micro-interaction utilities */
+  .hover-lift { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease; }
+  .hover-lift:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -12px rgba(13, 27, 20, 0.18); }
+  .hover-lift-lg:hover { transform: translateY(-8px); box-shadow: 0 30px 60px -16px rgba(13, 27, 20, 0.25); }
+  .hover-scale { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+  .hover-scale:hover { transform: scale(1.03); }
+
+  /* V5.2 — Card premium */
+  .card-premium {
+    @apply relative bg-white border border-cream-100 transition-all duration-500 ease-premium;
+  }
+  .card-premium::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, hsl(var(--gold-500)), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .card-premium:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -12px rgba(13, 27, 20, 0.15); border-color: hsl(var(--gold-300)); }
+  .card-premium:hover::before { opacity: 1; }
 }
+
+/* V5.3 — Motion Fallback Pattern
+ * Section dengan Svelte motion + whileInView punya risiko stuck di opacity 0
+ * saat user scroll cepat / koneksi lambat / screenshot tool.
+ * Solusi: tambah class .motion-safe di section motion — kalau JS belum hydrate,
+ * section tetap visible. Motion JS opsional layer enhancement.
+ */
+.motion-safe {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+/* Pattern utilities V5.3 — SVG background untuk section flat */
+.bg-pattern-dots {
+  background-image: radial-gradient(circle, rgba(27, 67, 50, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.bg-pattern-dots-dense {
+  background-image: radial-gradient(circle, rgba(27, 67, 50, 0.05) 1px, transparent 1px);
+  background-size: 14px 14px;
+}
+.bg-pattern-grid {
+  background-image:
+    linear-gradient(rgba(27, 67, 50, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(27, 67, 50, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+.bg-pattern-diagonal {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(27, 67, 50, 0.04),
+    rgba(27, 67, 50, 0.04) 1px,
+    transparent 1px,
+    transparent 16px
+  );
+}
+.bg-pattern-noise {
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.25 0 0 0 0 0.18 0 0 0 0.4 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 200px 200px;
+  opacity: 0.4;
+}
+.bg-pattern-gold-sparkle {
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(212, 165, 116, 0.15) 1px, transparent 2px),
+    radial-gradient(circle at 80% 70%, rgba(212, 165, 116, 0.12) 1px, transparent 2px),
+    radial-gradient(circle at 50% 50%, rgba(212, 165, 116, 0.08) 1px, transparent 1px);
+  background-size: 240px 240px, 320px 320px, 180px 180px;
+}
+
+/* Gold radial gradient untuk hero accent */
+.bg-radial-gold {
+  background: radial-gradient(ellipse at top right, rgba(212, 165, 116, 0.18) 0%, transparent 60%),
+              radial-gradient(ellipse at bottom left, rgba(27, 67, 50, 0.06) 0%, transparent 50%);
+}
+.bg-radial-forest {
+  background: radial-gradient(ellipse at top, rgba(27, 67, 50, 0.95) 0%, rgba(13, 27, 20, 1) 100%);
+}
+
+/* V5.3 — inView motion classes
+ * Default state: VISIBLE (opacity 1) — no stuck blank
+ * Optional enhancement: animasi masuk saat 'in-view' class ditambah
+ * Jika JS gagal load / hydration issue / no IntersectionObserver, element tetap visible.
+ */
+[data-motion-from] {
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+[data-motion-from="bottom"] {
+  opacity: 1;
+  transform: none;
+}
+[data-motion-from="bottom"]:not(.in-view) {
+  /* Element SUDAH visible by default. Class .in-view opt-in untuk animasi masuk. */
+}
+
+[data-motion-from="top"] {
+  opacity: 1;
+  transform: none;
+}
+
+[data-motion-from="left"] {
+  opacity: 1;
+  transform: none;
+}
+
+[data-motion-from="right"] {
+  opacity: 1;
+  transform: none;
+}
+
+[data-motion-from="none"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* If browser supports IntersectionObserver dan element BELUM terlihat,
+ * kasih animasi masuk saat scroll. Pakai @supports untuk progressive enhancement. */
+@supports (selector(:has(*))) {
+  /* Modern browser dengan IO support — bisa pakai animasi masuk */
+  .motion-animate [data-motion-from="bottom"]:not(.in-view) {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  .motion-animate [data-motion-from="top"]:not(.in-view) {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+  .motion-animate [data-motion-from="left"]:not(.in-view) {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  .motion-animate [data-motion-from="right"]:not(.in-view) {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+
+/* Reduced motion — disable semua animation */
+@media (prefers-reduced-motion: reduce) {
+  [data-motion-from] {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* V5.3 — Motion safety net
+ * Jika @humanspeak/svelte-motion gagal (Svelte 5 runes issue, hydration race),
+ * override semua element dengan motion ke visible default. */
+.motion-safe-fallback [data-projection-id],
+.motion-safe-fallback [data-framer-name] {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Lebih agresif: target semua div di dalam .section agar fallback visible
+ * jika JS hydration telat. Pakai :where() untuk specificity rendah. */
+:where(.section, [data-section]) :where(div) {
+  /* Default visible */
+}
+
+/* Override opacity 0 dari motion library jika stuck */
+.motion-fallback-active [data-projection-id][style*="opacity: 0"],
+.motion-fallback-active [data-framer-name][style*="opacity: 0"] {
+  opacity: 1 !important;
+}
+
+/* ============================================
+   SCROLL REVEAL — Lenis + IntersectionObserver
+   .reveal elements start hidden + translated,
+   then .is-revealed triggers smooth reveal.
+   GPU-accelerated transform + opacity only.
+   ============================================ */
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  transition:
+    opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-revealed {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+.reveal--left {
+  transform: translate3d(-32px, 0, 0);
+}
+.reveal--left.is-revealed {
+  transform: translate3d(0, 0, 0);
+}
+.reveal--right {
+  transform: translate3d(32px, 0, 0);
+}
+.reveal--right.is-revealed {
+  transform: translate3d(0, 0, 0);
+}
+.reveal--scale {
+  transform: scale(0.96);
+}
+.reveal--scale.is-revealed {
+  transform: scale(1);
+}
+.reveal--blur {
+  transform: translate3d(0, 20px, 0);
+  filter: blur(6px);
+}
+.reveal--blur.is-revealed {
+  transform: translate3d(0, 0, 0);
+  filter: blur(0);
+}
+
+/* Stagger children — for grids/lists that should reveal in sequence */
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-stagger.is-revealed > * {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+.reveal-stagger.is-revealed > *:nth-child(1) { transition-delay: 0ms; }
+.reveal-stagger.is-revealed > *:nth-child(2) { transition-delay: 80ms; }
+.reveal-stagger.is-revealed > *:nth-child(3) { transition-delay: 160ms; }
+.reveal-stagger.is-revealed > *:nth-child(4) { transition-delay: 240ms; }
+.reveal-stagger.is-revealed > *:nth-child(5) { transition-delay: 320ms; }
+.reveal-stagger.is-revealed > *:nth-child(6) { transition-delay: 400ms; }
+.reveal-stagger.is-revealed > *:nth-child(7) { transition-delay: 480ms; }
+.reveal-stagger.is-revealed > *:nth-child(8) { transition-delay: 560ms; }
+
+/* Reduce motion — instant reveal, no animation */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal--left,
+  .reveal--right,
+  .reveal--scale,
+  .reveal--blur,
+  .reveal-stagger > * {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+}
+
+/* ============================================
+   COOKIE BANNER — body padding push-up
+   ============================================ */
+body.has-cookie-banner {
+  padding-bottom: 120px;
+}
+body.has-cookie-banner-desktop {
+  padding-bottom: 80px;
+}
+@media (min-width: 768px) {
+  body.has-cookie-banner {
+    padding-bottom: 96px;
+  }
+}
+
+
+/* ============================================
+   MARQUEE — horizontal infinite scroll
+   GPU-accelerated transform-only animation
+   ============================================ */
+.marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+.marquee-track {
+  display: inline-flex;
+  align-items: center;
+  animation: marquee-scroll linear infinite;
+  will-change: transform;
+}
+.marquee-item {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  font-weight: 400;
+  color: #1B4332;
+  padding-right: 3rem;
+  line-height: 1;
+}
+.marquee-sep {
+  color: #D4A574;
+  margin: 0 3rem;
+  font-size: 0.6em;
+  vertical-align: middle;
+}
+@keyframes marquee-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-25%, 0, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
+/* WhatsApp floating pulse — soft green ping halo (GPU only) */
+.animate-pulse-wa {
+  position: relative;
+}
+.animate-pulse-wa::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 9999px;
+  border: 2px solid #25D366;
+  opacity: 0.6;
+  animation: pulse-wa-ring 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
+}
+@keyframes pulse-wa-ring {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  70% { transform: scale(1.4); opacity: 0; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse-wa::after { animation: none; opacity: 0; }
+}
+
+/* Hero gradient shift — subtle, GPU only (background-position) */
+@keyframes hero-gradient-shift {
+  0%   { background-position:   0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position:   0% 50%; }
+}
+.animate-hero-gradient {
+  background-size: 200% 200%;
+  animation: hero-gradient-shift 16s ease-in-out infinite;
+  will-change: background-position;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-gradient { animation: none; }
+}
+
+/* Gold glow pulse — for premium CTA emphasis */
+@keyframes gold-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212, 165, 116, 0); }
+  50%      { box-shadow: 0 0 24px 0 rgba(212, 165, 116, 0.35); }
+}
+.animate-gold-glow { animation: gold-glow 3s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .animate-gold-glow { animation: none; }
+}
+
+/* Subtle float (lift) for cards */
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+.animate-float-soft { animation: float-soft 4s ease-in-out infinite; }
+
+/* Fade-in for live activity & floating elements */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fade-in 0.4s ease-out; }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fade-up 0.3s ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in, .animate-fade-up { animation: none; }
+}
+
+/* Ticker (used in legacy Ticker.svelte — kept for consistency) */
+@keyframes ticker-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+/* Generic fade-in (Tailwind-style utility alias) */
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Custom cursor (desktop only, hidden on touch) */
+.cursor-dot, .cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  will-change: transform;
+  mix-blend-mode: difference;
+}
+.cursor-dot {
+  width: 8px; height: 8px;
+  background: #D4A574;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.2s, width 0.3s, height 0.3s;
+}
+.cursor-ring {
+  width: 44px; height: 44px;
+  border: 1px solid rgba(212, 165, 116, 0.5);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.2s, width 0.3s, height 0.3s, border-color 0.3s;
+}
+.cursor-dot.visible, .cursor-ring.visible { opacity: 1; }
+.cursor-dot.hovering { width: 12px; height: 12px; }
+.cursor-ring.hovering {
+  width: 80px; height: 80px;
+  border-color: #D4A574;
+}
+.cursor-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #D4A574;
+}
+@media (pointer: coarse) {
+  .cursor-dot, .cursor-ring { display: none; }
+}
+
+/* Lenis-required CSS */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Hide native scrollbar when Lenis is active (optional — keep for accessibility) */
+html {
+  scrollbar-gutter: stable;
+}
+
+
+/* ============================================
+   BookingFlow component styles (moved from <style>)
+   ============================================ */
+.booking-card {
+    background: white;
+    padding: 2rem;
+    border-top: 2px solid #D4A574;
+    box-shadow: 0 4px 24px rgba(13, 27, 20, 0.06);
+  }
+  .step-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid #E5DFD5;
+    color: #7A8479;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .step-active {
+    border-color: #D4A574;
+    background: #D4A574;
+    color: #1B4332;
+  }
+  .step-done {
+    background: #1B4332;
+    border-color: #1B4332;
+    color: #D4A574;
+  }
+  .villa-option, .kpr-option {
+    position: relative;
+    padding: 1rem 1.25rem;
+    text-align: left;
+    background: white;
+    border: 1.5px solid #E5DFD5;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .villa-option:hover, .kpr-option:hover {
+    border-color: #D4A574;
+  }
+  .villa-selected, .kpr-selected {
+    border-color: #D4A574;
+    background: #FBF7EE;
+    box-shadow: 0 0 0 1px #D4A574;
+  }
+  .purpose-active {
+    background: #1B4332;
+    color: #F5F0E8;
+    border: 1px solid #1B4332;
+  }
+  .purpose-inactive {
+    background: white;
+    color: #3D4A40;
+    border: 1px solid #E5DFD5;
+  }
+  .purpose-inactive:hover {
+    border-color: #D4A574;
+  }
+  .form-input {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    background: white;
+    border: 1px solid #E5DFD5;
+    color: #0D1B14;
+    font-size: 0.875rem;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus {
+    outline: none;
+    border-color: #D4A574;
+    box-shadow: 0 0 0 1px #D4A574;
+  }
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+
+/* ============================================
+   KprCalculator component styles (moved from <style>)
+   ============================================ */
+.kpr-calc-card {
+    background: white;
+    padding: 2rem;
+    border-top: 2px solid #D4A574;
+    box-shadow: 0 4px 24px rgba(13, 27, 20, 0.06);
+  }
+  .kpr-slider {
+    appearance: none;
+    height: 4px;
+    background: #E5DFD5;
+    outline: none;
+    cursor: pointer;
+  }
+  .kpr-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #D4A574;
+    border: 2px solid #1B4332;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .kpr-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+  }
+  .kpr-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: #D4A574;
+    border: 2px solid #1B4332;
+    cursor: pointer;
+  }
+  .chip-active {
+    background: #1B4332;
+    color: #F5F0E8;
+    border: 1px solid #1B4332;
+  }
+  .chip-inactive {
+    background: white;
+    color: #3D4A40;
+    border: 1px solid #E5DFD5;
+  }
+  .chip-inactive:hover {
+    border-color: #D4A574;
+    color: #1B4332;
+  }
+  .bg-dots {
+    background-image: radial-gradient(circle, #D4A574 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+
+/* ============================================
+   ROISimulator component styles (moved from <style>)
+   ============================================ */
+.roi-card {
+    background: white;
+    padding: 2rem;
+    border-top: 2px solid #D4A574;
+    box-shadow: 0 4px 24px rgba(13, 27, 20, 0.06);
+  }
+  .roi-slider {
+    appearance: none;
+    height: 4px;
+    background: #E5DFD5;
+    outline: none;
+    cursor: pointer;
+  }
+  .roi-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #D4A574;
+    border: 2px solid #1B4332;
+    cursor: pointer;
+  }
+  .roi-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: #D4A574;
+    border: 2px solid #1B4332;
+    cursor: pointer;
+  }
+  .chip-active {
+    background: #1B4332;
+    color: #F5F0E8;
+    border: 1px solid #1B4332;
+  }
+  .chip-inactive {
+    background: white;
+    color: #3D4A40;
+    border: 1px solid #E5DFD5;
+  }
+  .chip-inactive:hover {
+    border-color: #D4A574;
+    color: #1B4332;
+  }
+
+
+/* ============================================
+   VillaCompare component styles (moved from <style>)
+   ============================================ */
+.compare-card {
+    background: white;
+    padding: 2rem;
+    border-top: 2px solid #D4A574;
+    box-shadow: 0 4px 24px rgba(13, 27, 20, 0.06);
+    overflow-x: auto;
+  }
+  .highlight-col {
+    background: #FBF7EE;
+    position: relative;
+  }
+  .highlight-col::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #D4A574;
+  }
+  .compare-slider {
+    appearance: none;
+    height: 4px;
+    background: #E5DFD5;
+    outline: none;
+    cursor: pointer;
+  }
+  .compare-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: #D4A574;
+    border: 2px solid #1B4332;
+    cursor: pointer;
+  }
+  .compare-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: #D4A574;
+    border: 2px solid #1B4332;
+    cursor: pointer;
+  }
+  .compare-mobile-card {
+    padding: 1rem;
+    background: white;
+    border: 1px solid #E5DFD5;
+    position: relative;
+  }
+  .highlight-card {
+    border-color: #D4A574;
+    border-width: 2px;
+    background: #FBF7EE;
+  }
+
+
+/* ============================================
+   UrgencyBanner component styles (moved from <style>)
+   ============================================ */
+@keyframes shimmer {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
+  }
+  .animate-shimmer { animation: shimmer 4s linear infinite; }
+
+
+/* ============================================
+   Manifesto component styles (moved from <style>)
+   ============================================ */
+.manifesto {
+    background: #F5F0E8;
+    padding: 12rem 0;
+  }
+  .manifesto-bg-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40rem, 100vw, 80rem);
+    color: #1B4332;
+    line-height: 0.8;
+    font-weight: 700;
+    font-style: italic;
+    transition: opacity 0.3s;
+  }
+  .manifesto-text {
+    font-size: clamp(2rem, 4.5vw, 4rem);
+    line-height: 1.15;
+    font-weight: 400;
+    font-style: italic;
+    color: #0D1B14;
+    letter-spacing: -0.01em;
+  }
+  .word {
+    display: inline-block;
+    opacity: 0.15;
+    transition: opacity 0.5s ease, color 0.5s ease;
+  }
+  .word.revealed {
+    opacity: 1;
+    color: #0D1B14;
+  }

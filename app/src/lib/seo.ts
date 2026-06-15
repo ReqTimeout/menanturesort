@@ -20,7 +20,7 @@ const SITE_URL = 'https://menantu-resort.com';
 export function buildSEO({
   title,
   description = DEFAULT_DESC,
-  image = '/og/og-image.webp',
+  image = '/og/og-image.png',
   canonical,
   type = 'website',
   publishedTime,

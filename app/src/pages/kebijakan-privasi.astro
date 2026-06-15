@@ -1,89 +1,207 @@
 ---
+/**
+ * /kebijakan-privasi — V5.2 rewrite
+ * PageHero + TOC sidebar + Legal content (no emoji, V5.2 typography)
+ */
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Navbar from '../components/astro/Navbar.astro';
+import NavMenu from '../components/svelte/NavMenu.svelte';
 import Footer from '../components/astro/Footer.astro';
+import PageHero from '../components/astro/PageHero.astro';
+import SectionDivider from '../components/astro/SectionDivider.astro';
+import Pattern from '../components/astro/Pattern.astro';
 import WhatsAppFloating from '../components/astro/WhatsAppFloating.astro';
 import siteData from '../data/site.json';
+import { Mail, MessageCircle, MapPin, Shield, Lock, Database, Eye, Trash2, Users, Server } from 'lucide-svelte';
+import { waUrl } from '../lib/utils';
+
+const waKontak = waUrl(siteData.contact.whatsapp, 'Halo, saya ingin bertanya soal kebijakan privasi', 'privacy');
+
+const sections = [
+  { id: 'komitmen', icon: Shield, title: 'Komitmen Kami' },
+  { id: 'data', icon: Database, title: 'Data yang Dikumpulkan' },
+  { id: 'penggunaan', icon: Eye, title: 'Cara Kami Menggunakan Data' },
+  { id: 'cookies', icon: Server, title: 'Cookies & Analytics' },
+  { id: 'pembagian', icon: Users, title: 'Pembagian ke Pihak Ketiga' },
+  { id: 'keamanan', icon: Lock, title: 'Keamanan Data' },
+  { id: 'hak', icon: Trash2, title: 'Hak Anda' },
+  { id: 'kontak', icon: MessageCircle, title: 'Hubungi Kami' },
+];
 ---
 <BaseLayout
-  title="Kebijakan Privasi"
-  description="Kebijakan privasi menantu-resort.com — bagaimana kami mengelola data pribadi Anda."
+  title="Kebijakan Privasi — Menantu Resort"
+  description="Kebijakan privasi menantu-resort.com — bagaimana kami mengelola data pribadi Anda sesuai UU PDP."
 >
-  <Navbar />
+  <NavMenu client:load />
 
-  <main class="pt-32 pb-3xl">
-    <div class="container-narrow">
-      <h1 class="heading-1 mb-md">Kebijakan Privasi</h1>
-      <p class="text-sm text-gray-500 mb-2xl">Terakhir diperbarui: 1 Juni 2026</p>
+  <main class="pt-20">
+    <PageHero
+      eyebrow="Legal"
+      title="Kebijakan"
+      accent="Privasi."
+      description="PT Cipta Multikarya Propertindo berkomitmen melindungi privasi dan data pribadi Anda. Dokumen ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi informasi yang Anda berikan."
+      primaryCta={{ text: 'Chat WhatsApp', href: waKontak }}
+      secondaryCta={{ text: 'Syarat & Ketentuan', href: '/syarat-dan-ketentuan' }}
+      bgColor="white"
+    />
 
-      <div class="prose prose-lg max-w-none space-y-xl">
-        <section>
-          <h2 class="heading-3 mb-md">Komitmen Kami</h2>
-          <p>PT Cipta Multikarya Propertindo ("Kami") berkomitmen melindungi privasi dan data pribadi Anda. Kebijakan ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi informasi yang Anda berikan melalui website menantu-resort.com.</p>
-        </section>
+    <SectionDivider variant="diamond" />
 
-        <section>
-          <h2 class="heading-3 mb-md">1. Data yang Kami Kumpulkan</h2>
-          <ul class="list-disc pl-xl space-y-xs">
-            <li><strong>Data identitas:</strong> nama, email, nomor WhatsApp/telepon</li>
-            <li><strong>Data preferensi:</strong> tipe villa yang diminati, budget, tujuan investasi</li>
-            <li><strong>Data teknis:</strong> alamat IP, browser, device, halaman yang dikunjungi (via cookies & analytics)</li>
-          </ul>
-        </section>
+    <!-- Content + Sidebar TOC -->
+    <section class="relative bg-cream-50 py-20 md:py-28" data-section="content">
+      <Pattern variant="dots" color="forest" opacity={0.04} />
+      <div class="container-wide relative">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <!-- Sidebar TOC -->
+          <aside class="lg:col-span-3 lg:sticky lg:top-24 lg:self-start">
+            <div class="text-xs text-ink-mute uppercase tracking-widest mb-4 font-mono">Daftar Isi</div>
+            <nav class="space-y-1">
+              {sections.map((s) => (
+                <a href={`#${s.id}`} class="block text-sm text-ink-700 hover:text-gold-700 hover:translate-x-1 transition py-1.5 border-l-2 border-transparent hover:border-gold-700 pl-3">
+                  {s.title}
+                </a>
+              ))}
+            </nav>
+            <div class="mt-8 text-xs text-ink-mute leading-relaxed border-l-2 border-gold-700 pl-3">
+              <strong class="text-ink-700 block mb-1">Berlaku sejak</strong>
+              1 Juni 2026<br/>
+              <span class="text-ink-mute">v2.0</span>
+            </div>
+          </aside>
 
-        <section>
-          <h2 class="heading-3 mb-md">2. Cara Kami Menggunakan Data</h2>
-          <ul class="list-disc pl-xl space-y-xs">
-            <li>Merespons pertanyaan dan permintaan konsultasi Anda</li>
-            <li>Mengirimkan informasi terkait unit, promo, dan update proyek</li>
-            <li>Meningkatkan kualitas website dan layanan</li>
-            <li>Analitik dan riset pasar (data agregat, tidak individual)</li>
-          </ul>
-        </section>
+          <!-- Main Content -->
+          <article class="lg:col-span-9 max-w-3xl space-y-12">
+            <div class="text-xs text-ink-mute font-mono">Terakhir diperbarui: 1 Juni 2026</div>
 
-        <section>
-          <h2 class="heading-3 mb-md">3. Cookies & Analytics</h2>
-          <p>Kami menggunakan Google Analytics 4 (GA4) untuk memahami pola kunjungan. Data dikumpulkan secara anonim dan agregat. Anda dapat menonaktifkan cookies melalui pengaturan browser.</p>
-        </section>
+            <!-- 0. Komitmen -->
+            <section id="komitmen">
+              <div class="flex items-center gap-3 mb-4">
+                <Shield size={24} class="text-gold-700" />
+                <h2 class="font-display text-2xl md:text-3xl text-forest-700 font-bold">Komitmen Kami</h2>
+              </div>
+              <p class="text-base text-ink-700 leading-relaxed">
+                PT Cipta Multikarya Propertindo (<strong class="text-forest-700">"Kami"</strong>) berkomitmen melindungi privasi dan data pribadi Anda sesuai dengan <strong>Undang-Undang No. 27 Tahun 2022 tentang Pelindungan Data Pribadi (UU PDP)</strong>. Kebijakan ini menjelaskan bagaimana kami mengumpulkan, menggunakan, menyimpan, dan melindungi informasi yang Anda berikan melalui website <strong class="text-forest-700">menantu-resort.com</strong>.
+              </p>
+            </section>
 
-        <section>
-          <h2 class="heading-3 mb-md">4. Pembagian Data ke Pihak Ketiga</h2>
-          <p>Kami <strong>tidak akan menjual atau membagikan</strong> data pribadi Anda ke pihak ketiga untuk tujuan pemasaran. Data hanya dibagikan ke:</p>
-          <ul class="list-disc pl-xl space-y-xs">
-            <li>Sahid Hotel & Resort (sebagai operator, untuk pengelolaan villa Anda)</li>
-            <li>Bank atau lembaga pembiayaan (hanya jika Anda mengajukan KPR, dan atas persetujuan Anda)</li>
-            <li>Penyedia layanan teknologi (analytics, email) yang telah terikat perjanjian kerahasiaan</li>
-          </ul>
-        </section>
+            <!-- 1. Data -->
+            <section id="data">
+              <div class="flex items-center gap-3 mb-4">
+                <Database size={24} class="text-gold-700" />
+                <h2 class="font-display text-2xl md:text-3xl text-forest-700 font-bold">1. Data yang Kami Kumpulkan</h2>
+              </div>
+              <ul class="space-y-3 text-base text-ink-700">
+                <li class="flex gap-3 items-start pl-4 border-l-2 border-gold-700/30">
+                  <span><strong class="text-forest-700">Data identitas:</strong> nama lengkap, email, nomor WhatsApp / telepon, alamat.</span>
+                </li>
+                <li class="flex gap-3 items-start pl-4 border-l-2 border-gold-700/30">
+                  <span><strong class="text-forest-700">Data preferensi:</strong> tipe villa yang diminati, budget, tujuan investasi (aset / tinggal / rental).</span>
+                </li>
+                <li class="flex gap-3 items-start pl-4 border-l-2 border-gold-700/30">
+                  <span><strong class="text-forest-700">Data teknis:</strong> alamat IP, browser, device, halaman yang dikunjungi, waktu akses (via cookies & analytics).</span>
+                </li>
+              </ul>
+            </section>
 
-        <section>
-          <h2 class="heading-3 mb-md">5. Keamanan Data</h2>
-          <p>Kami menerapkan langkah-langkah keamanan standar industri untuk melindungi data Anda, termasuk enkripsi HTTPS, akses terbatas, dan penyimpanan di server yang aman.</p>
-        </section>
+            <!-- 2. Penggunaan -->
+            <section id="penggunaan">
+              <div class="flex items-center gap-3 mb-4">
+                <Eye size={24} class="text-gold-700" />
+                <h2 class="font-display text-2xl md:text-3xl text-forest-700 font-bold">2. Cara Kami Menggunakan Data</h2>
+              </div>
+              <ul class="space-y-3 text-base text-ink-700">
+                <li class="flex gap-3 items-start"><span class="text-gold-700 mt-1">—</span> <span>Merespons pertanyaan dan permintaan konsultasi Anda.</span></li>
+                <li class="flex gap-3 items-start"><span class="text-gold-700 mt-1">—</span> <span>Mengirimkan informasi terkait unit, promo, dan update proyek (hanya dengan persetujuan Anda).</span></li>
+                <li class="flex gap-3 items-start"><span class="text-gold-700 mt-1">—</span> <span>Meningkatkan kualitas website dan pengalaman pengguna.</span></li>
+                <li class="flex gap-3 items-start"><span class="text-gold-700 mt-1">—</span> <span>Analitik dan riset pasar (data agregat, tidak individual).</span></li>
+              </ul>
+            </section>
 
-        <section>
-          <h2 class="heading-3 mb-md">6. Hak Anda</h2>
-          <p>Anda berhak untuk:</p>
-          <ul class="list-disc pl-xl space-y-xs">
-            <li>Mengakses data pribadi yang kami simpan</li>
-            <li>Meminta koreksi atau penghapusan data</li>
-            <li>Menarik persetujuan komunikasi pemasaran kapan saja</li>
-            <li>Mengajukan keluhan ke otoritas perlindungan data</li>
-          </ul>
-        </section>
+            <!-- 3. Cookies -->
+            <section id="cookies">
+              <div class="flex items-center gap-3 mb-4">
+                <Server size={24} class="text-gold-700" />
+                <h2 class="font-display text-2xl md:text-3xl text-forest-700 font-bold">3. Cookies & Analytics</h2>
+              </div>
+              <p class="text-base text-ink-700 leading-relaxed mb-3">
+                Kami menggunakan <strong>Google Analytics 4 (GA4)</strong> untuk memahami pola kunjungan. Data dikumpulkan secara anonim dan agregat — tidak dapat digunakan untuk mengidentifikasi Anda secara pribadi.
+              </p>
+              <p class="text-base text-ink-700 leading-relaxed">
+                Anda dapat menonaktifkan cookies melalui pengaturan browser Anda. Untuk Google Analytics, tersedia add-on <em>Google Analytics Opt-out Browser Add-on</em>.
+              </p>
+            </section>
 
-        <section>
-          <h2 class="heading-3 mb-md">7. Hubungi Kami</h2>
-          <p>Untuk pertanyaan, permintaan akses data, atau penghapusan data:</p>
-          <ul class="list-none space-y-xs">
-            <li>📧 {siteData.contact.email}</li>
-            <li>💬 WhatsApp: {siteData.contact.whatsappDisplay}</li>
-          </ul>
-        </section>
+            <!-- 4. Pembagian -->
+            <section id="pembagian">
+              <div class="flex items-center gap-3 mb-4">
+                <Users size={24} class="text-gold-700" />
+                <h2 class="font-display text-2xl md:text-3xl text-forest-700 font-bold">4. Pembagian Data ke Pihak Ketiga</h2>
+              </div>
+              <p class="text-base text-ink-700 leading-relaxed mb-4">
+                Kami <strong class="text-forest-700">tidak akan menjual atau membagikan</strong> data pribadi Anda ke pihak ketiga untuk tujuan pemasaran. Data hanya dibagikan ke:
+              </p>
+              <ul class="space-y-3 text-base text-ink-700">
+                <li class="flex gap-3 items-start"><span class="text-gold-700 mt-1">—</span> <span><strong class="text-forest-700">Sahid Hotel & Resort</strong> — sebagai operator, untuk pengelolaan villa Anda (hanya setelah akad).</span></li>
+                <li class="flex gap-3 items-start"><span class="text-gold-700 mt-1">—</span> <span><strong class="text-forest-700">Bank atau lembaga pembiayaan</strong> — hanya jika Anda mengajukan KPR, dan atas persetujuan tertulis Anda.</span></li>
+                <li class="flex gap-3 items-start"><span class="text-gold-700 mt-1">—</span> <span><strong class="text-forest-700">Penyedia layanan teknologi</strong> — analytics, email, hosting, yang telah terikat perjanjian kerahasiaan (NDA).</span></li>
+              </ul>
+            </section>
+
+            <!-- 5. Keamanan -->
+            <section id="keamanan">
+              <div class="flex items-center gap-3 mb-4">
+                <Lock size={24} class="text-gold-700" />
+                <h2 class="font-display text-2xl md:text-3xl text-forest-700 font-bold">5. Keamanan Data</h2>
+              </div>
+              <p class="text-base text-ink-700 leading-relaxed">
+                Kami menerapkan langkah-langkah keamanan standar industri untuk melindungi data Anda, termasuk: <strong>enkripsi HTTPS/TLS 1.3</strong>, akses terbatas berbasis peran (role-based access control), audit log aktivitas, dan penyimpanan di server terenkripsi dengan backup harian. Meskipun tidak ada sistem yang 100% aman, kami secara berkala mengevaluasi dan meningkatkan protokol keamanan kami.
+              </p>
+            </section>
+
+            <!-- 6. Hak -->
+            <section id="hak">
+              <div class="flex items-center gap-3 mb-4">
+                <Trash2 size={24} class="text-gold-700" />
+                <h2 class="font-display text-2xl md:text-3xl text-forest-700 font-bold">6. Hak Anda</h2>
+              </div>
+              <p class="text-base text-ink-700 leading-relaxed mb-4">Sesuai UU PDP, Anda berhak untuk:</p>
+              <ul class="space-y-3 text-base text-ink-700">
+                <li class="flex gap-3 items-start"><span class="text-gold-700 mt-1">—</span> <span><strong class="text-forest-700">Akses</strong> — mendapatkan salinan data pribadi yang kami simpan.</span></li>
+                <li class="flex gap-3 items-start"><span class="text-gold-700 mt-1">—</span> <span><strong class="text-forest-700">Koreksi</strong> — meminta perbaikan data yang tidak akurat.</span></li>
+                <li class="flex gap-3 items-start"><span class="text-gold-700 mt-1">—</span> <span><strong class="text-forest-700">Penghapusan</strong> — meminta data Anda dihapus dari sistem kami.</span></li>
+                <li class="flex gap-3 items-start"><span class="text-gold-700 mt-1">—</span> <span><strong class="text-forest-700">Menarik persetujuan</strong> — berhenti menerima komunikasi pemasaran kapan saja.</span></li>
+                <li class="flex gap-3 items-start"><span class="text-gold-700 mt-1">—</span> <span><strong class="text-forest-700">Mengajukan keluhan</strong> ke otoritas perlindungan data terkait.</span></li>
+              </ul>
+            </section>
+
+            <!-- 7. Kontak -->
+            <section id="kontak" class="card-premium p-8 md:p-10 bg-forest-50">
+              <div class="flex items-center gap-3 mb-4">
+                <MessageCircle size={24} class="text-gold-700" />
+                <h2 class="font-display text-2xl md:text-3xl text-forest-700 font-bold">7. Hubungi Kami</h2>
+              </div>
+              <p class="text-base text-ink-700 leading-relaxed mb-6">
+                Untuk pertanyaan, permintaan akses data, atau penghapusan data, hubungi Data Protection Officer kami:
+              </p>
+              <div class="space-y-3 text-base text-ink-700">
+                <div class="flex items-start gap-3">
+                  <Mail size={18} class="text-gold-700 flex-shrink-0 mt-0.5" />
+                  <a href={`mailto:${siteData.contact.email}`} class="hover:text-gold-700 transition">{siteData.contact.email}</a>
+                </div>
+                <div class="flex items-start gap-3">
+                  <MessageCircle size={18} class="text-gold-700 flex-shrink-0 mt-0.5" />
+                  <a href={waKontak} target="_blank" rel="noopener" class="hover:text-gold-700 transition">WhatsApp {siteData.contact.whatsappDisplay}</a>
+                </div>
+                <div class="flex items-start gap-3">
+                  <MapPin size={18} class="text-gold-700 flex-shrink-0 mt-0.5" />
+                  <span>{siteData.contact.address}</span>
+                </div>
+              </div>
+            </section>
+          </article>
+        </div>
       </div>
-    </div>
+    </section>
   </main>
-
   <Footer />
   <WhatsAppFloating />
 </BaseLayout>

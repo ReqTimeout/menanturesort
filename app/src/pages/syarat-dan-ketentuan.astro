@@ -1,80 +1,208 @@
 ---
+/**
+ * /syarat-dan-ketentuan — V5.2 rewrite
+ * PageHero + TOC sidebar + Legal content (no emoji, V5.2 typography)
+ */
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Navbar from '../components/astro/Navbar.astro';
+import NavMenu from '../components/svelte/NavMenu.svelte';
 import Footer from '../components/astro/Footer.astro';
+import PageHero from '../components/astro/PageHero.astro';
+import SectionDivider from '../components/astro/SectionDivider.astro';
+import Pattern from '../components/astro/Pattern.astro';
 import WhatsAppFloating from '../components/astro/WhatsAppFloating.astro';
 import siteData from '../data/site.json';
+import { Mail, MessageCircle, MapPin, FileText, Package, Calculator, CreditCard, Building2, Shield, Lock, Scale, Phone } from 'lucide-svelte';
+import { waUrl } from '../lib/utils';
+
+const waKontak = waUrl(siteData.contact.whatsapp, 'Halo, saya ingin bertanya soal syarat & ketentuan', 'tos');
+
+const sections = [
+  { id: 'umum', icon: FileText, title: '1. Umum' },
+  { id: 'informasi', icon: Package, title: '2. Informasi Produk' },
+  { id: 'simulasi', icon: Calculator, title: '3. Simulasi & Ilustrasi' },
+  { id: 'pembayaran', icon: CreditCard, title: '4. Skema Pembayaran' },
+  { id: 'kpr', icon: Building2, title: '5. Skema KPR' },
+  { id: 'hak', icon: Shield, title: '6. Hak & Tanggung Jawab' },
+  { id: 'privasi', icon: Lock, title: '7. Privasi' },
+  { id: 'hukum', icon: Scale, title: '8. Hukum yang Berlaku' },
+  { id: 'kontak', icon: Phone, title: '9. Kontak' },
+];
 ---
 <BaseLayout
-  title="Syarat & Ketentuan"
+  title="Syarat & Ketentuan — Menantu Resort"
   description="Syarat dan ketentuan pembelian villa di Menantu Resort managed by Sahid."
 >
-  <Navbar />
+  <NavMenu client:load />
 
-  <main class="pt-32 pb-3xl">
-    <div class="container-narrow">
-      <h1 class="heading-1 mb-md">Syarat & Ketentuan</h1>
-      <p class="text-sm text-gray-500 mb-2xl">Terakhir diperbarui: 1 Juni 2026</p>
+  <main class="pt-20">
+    <PageHero
+      eyebrow="Legal"
+      title="Syarat &"
+      accent="Ketentuan."
+      description="Syarat dan ketentuan ini mengatur penggunaan website menantu-resort.com dan transaksi pembelian villa. Dengan mengakses website, Anda dianggap telah membaca dan menyetujui seluruh ketentuan."
+      primaryCta={{ text: 'Chat WhatsApp', href: waKontak }}
+      secondaryCta={{ text: 'Kebijakan Privasi', href: '/kebijakan-privasi' }}
+      bgColor="white"
+    />
 
-      <div class="prose prose-lg max-w-none space-y-xl">
-        <section>
-          <h2 class="heading-3 mb-md">1. Umum</h2>
-          <p>Website <strong>menantu-resort.com</strong> dikelola oleh PT Cipta Multikarya Propertindo ("Kami"), bekerja sama dengan PT Sahid International Hotels Group sebagai operator pengelolaan villa. Dengan mengakses dan menggunakan website ini, Anda ("Pengguna") dianggap telah membaca, memahami, dan menyetujui seluruh syarat dan ketentuan yang berlaku.</p>
-        </section>
+    <SectionDivider variant="diamond" />
 
-        <section>
-          <h2 class="heading-3 mb-md">2. Informasi Produk</h2>
-          <p>Seluruh informasi produk, harga, spesifikasi, dan ketersediaan unit villa yang ditampilkan di website ini dapat berubah sewaktu-waktu tanpa pemberitahuan terlebih dahulu, sesuai dengan kebijakan perusahaan. Harga yang tercantum belum termasuk biaya notaris, PPJB, pajak (PPN 12%, BPHTB, PPH), AJB, BN SHM, dan asuransi, dengan estimasi biaya tambahan Rp 30-50 juta.</p>
-        </section>
+    <!-- Content + Sidebar TOC -->
+    <section class="relative bg-cream-50 py-20 md:py-28" data-section="content">
+      <Pattern variant="dots" color="gold" opacity={0.05} />
+      <div class="container-wide relative">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <!-- Sidebar TOC -->
+          <aside class="lg:col-span-3 lg:sticky lg:top-24 lg:self-start">
+            <div class="text-xs text-ink-mute uppercase tracking-widest mb-4 font-mono">Daftar Isi</div>
+            <nav class="space-y-1">
+              {sections.map((s) => (
+                <a href={`#${s.id}`} class="block text-sm text-ink-700 hover:text-gold-700 hover:translate-x-1 transition py-1.5 border-l-2 border-transparent hover:border-gold-700 pl-3">
+                  {s.title}
+                </a>
+              ))}
+            </nav>
+            <div class="mt-8 text-xs text-ink-mute leading-relaxed border-l-2 border-gold-700 pl-3">
+              <strong class="text-ink-700 block mb-1">Berlaku sejak</strong>
+              1 Juni 2026<br/>
+              <span class="text-ink-mute">v2.0</span>
+            </div>
+          </aside>
 
-        <section>
-          <h2 class="heading-3 mb-md">3. Simulasi & Ilustrasi</h2>
-          <p>Seluruh angka passive income, capital gain, dan simulasi cicilan yang ditampilkan di website ini adalah <strong>ILUSTRASI EDUKATIF</strong>, bukan jaminan performa aktual. Performa aktual tergantung pada kondisi pasar, tingkat okupansi, suku bunga, biaya operasional, dan faktor lain di luar kendali developer atau pengelola.</p>
-        </section>
+          <!-- Main Content -->
+          <article class="lg:col-span-9 max-w-3xl space-y-12">
+            <div class="text-xs text-ink-mute font-mono">Terakhir diperbarui: 1 Juni 2026</div>
 
-        <section>
-          <h2 class="heading-3 mb-md">4. Skema Pembayaran</h2>
-          <p>Booking fee sebesar Rp 10.000.000 (sepuluh juta rupiah) sudah termasuk dalam harga jual dan dapat di-refund 100% dalam waktu 30 hari kalender. Pembayaran sah hanya melalui rekening resmi:</p>
-          <ul class="list-disc pl-xl space-y-xs">
-            {siteData.bankAccounts.map(b => (
-              <li><strong>{b.bank}</strong>: {b.number} a.n. {b.name}</li>
-            ))}
-          </ul>
-        </section>
+            <!-- 1. Umum -->
+            <section id="umum">
+              <div class="flex items-center gap-3 mb-4">
+                <FileText size={24} class="text-gold-700" />
+                <h2 class="font-display text-2xl md:text-3xl text-forest-700 font-bold">1. Umum</h2>
+              </div>
+              <p class="text-base text-ink-700 leading-relaxed">
+                Website <strong class="text-forest-700">menantu-resort.com</strong> dikelola oleh <strong class="text-forest-700">PT Cipta Multikarya Propertindo</strong> ("Kami"), bekerja sama dengan <strong class="text-forest-700">PT Sahid International Hotels Group</strong> sebagai operator pengelolaan villa. Dengan mengakses dan menggunakan website ini, Anda ("Pengguna") dianggap telah membaca, memahami, dan menyetujui seluruh syarat dan ketentuan yang berlaku.
+              </p>
+            </section>
 
-        <section>
-          <h2 class="heading-3 mb-md">5. Skema KPR</h2>
-          <p>KPR Bank tunduk pada kebijakan bank masing-masing dan membutuhkan BI Checking. KPR Developer (langsung ke developer) tidak membutuhkan BI Checking dengan tenor hingga 15 tahun. Persetujuan KPR dan suku bunga final ditentukan oleh bank atau lembaga pembiayaan.</p>
-        </section>
+            <!-- 2. Informasi Produk -->
+            <section id="informasi">
+              <div class="flex items-center gap-3 mb-4">
+                <Package size={24} class="text-gold-700" />
+                <h2 class="font-display text-2xl md:text-3xl text-forest-700 font-bold">2. Informasi Produk</h2>
+              </div>
+              <p class="text-base text-ink-700 leading-relaxed">
+                Seluruh informasi produk, harga, spesifikasi, dan ketersediaan unit villa yang ditampilkan di website ini dapat berubah sewaktu-waktu tanpa pemberitahuan terlebih dahulu, sesuai dengan kebijakan perusahaan. Harga yang tercantum <strong>belum termasuk</strong> biaya notaris, PPJB, pajak (PPN 12%, BPHTB, PPH), AJB, BN SHM, dan asuransi, dengan estimasi biaya tambahan <strong class="text-forest-700">Rp 30-50 juta</strong>.
+              </p>
+            </section>
 
-        <section>
-          <h2 class="heading-3 mb-md">6. Hak & Tanggung Jawab</h2>
-          <p>Pembeli memiliki hak penuh atas unit villa berupa Sertifikat Hak Milik (SHM) atas nama pribadi. Semua villa dikelola oleh Sahid Hotel & Resort sesuai standar operasional yang berlaku. Laporan income dikirimkan bulanan.</p>
-        </section>
+            <!-- 3. Simulasi -->
+            <section id="simulasi">
+              <div class="flex items-center gap-3 mb-4">
+                <Calculator size={24} class="text-gold-700" />
+                <h2 class="font-display text-2xl md:text-3xl text-forest-700 font-bold">3. Simulasi & Ilustrasi</h2>
+              </div>
+              <div class="card-premium p-6 bg-gold-50 border-l-4 border-gold-700">
+                <p class="text-base text-ink-700 leading-relaxed">
+                  Seluruh angka passive income, capital gain, dan simulasi cicilan yang ditampilkan di website ini adalah <strong class="text-forest-700">ILUSTRASI EDUKATIF</strong>, bukan jaminan performa aktual. Performa aktual tergantung pada kondisi pasar, tingkat okupansi, suku bunga, biaya operasional, dan faktor lain di luar kendali developer atau pengelola.
+                </p>
+              </div>
+            </section>
 
-        <section>
-          <h2 class="heading-3 mb-md">7. Privasi</h2>
-          <p>Data pribadi yang Anda berikan melalui form konsultasi akan digunakan hanya untuk kepentingan komunikasi terkait Menantu Resort. Kami tidak akan membagikan data Anda ke pihak ketiga tanpa persetujuan. Lihat detail di halaman <a href="/kebijakan-privasi" class="text-secondary hover:underline">Kebijakan Privasi</a>.</p>
-        </section>
+            <!-- 4. Pembayaran -->
+            <section id="pembayaran">
+              <div class="flex items-center gap-3 mb-4">
+                <CreditCard size={24} class="text-gold-700" />
+                <h2 class="font-display text-2xl md:text-3xl text-forest-700 font-bold">4. Skema Pembayaran</h2>
+              </div>
+              <p class="text-base text-ink-700 leading-relaxed mb-4">
+                Booking fee sebesar <strong class="text-forest-700">Rp 10.000.000</strong> (sepuluh juta rupiah) sudah termasuk dalam harga jual dan dapat di-refund 100% dalam waktu 30 hari kalender. Pembayaran sah hanya melalui rekening resmi:
+              </p>
+              <div class="card-premium p-6 bg-forest-50 space-y-2">
+                {siteData.bankAccounts.map((bank) => (
+                  <div class="flex items-center justify-between py-2 border-b border-cream-100 last:border-0">
+                    <div>
+                      <div class="font-bold text-forest-700">{bank.bank}</div>
+                      <div class="font-mono text-sm text-ink-700">{bank.number}</div>
+                    </div>
+                    <div class="text-xs text-ink-mute text-right">a.n.<br/><strong class="text-ink-700">{bank.name}</strong></div>
+                  </div>
+                ))}
+              </div>
+            </section>
 
-        <section>
-          <h2 class="heading-3 mb-md">8. Hukum yang Berlaku</h2>
-          <p>Syarat dan ketentuan ini tunduk pada hukum Republik Indonesia. Segala sengketa yang timbul akan diselesaikan melalui musyawarah, dan apabila tidak tercapai kesepakatan, akan diselesaikan melalui jalur hukum di wilayah hukum Bandung.</p>
-        </section>
+            <!-- 5. KPR -->
+            <section id="kpr">
+              <div class="flex items-center gap-3 mb-4">
+                <Building2 size={24} class="text-gold-700" />
+                <h2 class="font-display text-2xl md:text-3xl text-forest-700 font-bold">5. Skema KPR</h2>
+              </div>
+              <p class="text-base text-ink-700 leading-relaxed">
+                KPR Bank tunduk pada kebijakan bank masing-masing dan membutuhkan BI Checking kolektibilitas 1. KPR Developer (langsung ke developer) tidak membutuhkan BI Checking dengan tenor hingga 15 tahun. Persetujuan KPR dan suku bunga final ditentukan oleh bank atau lembaga pembiayaan terkait, dan dapat berbeda dari ilustrasi di website.
+              </p>
+            </section>
 
-        <section>
-          <h2 class="heading-3 mb-md">9. Kontak</h2>
-          <p>Untuk pertanyaan terkait syarat dan ketentuan, hubungi kami di:</p>
-          <ul class="list-none space-y-xs">
-            <li>📧 {siteData.contact.email}</li>
-            <li>💬 WhatsApp: {siteData.contact.whatsappDisplay}</li>
-            <li>📍 {siteData.contact.address}</li>
-          </ul>
-        </section>
+            <!-- 6. Hak -->
+            <section id="hak">
+              <div class="flex items-center gap-3 mb-4">
+                <Shield size={24} class="text-gold-700" />
+                <h2 class="font-display text-2xl md:text-3xl text-forest-700 font-bold">6. Hak & Tanggung Jawab</h2>
+              </div>
+              <p class="text-base text-ink-700 leading-relaxed">
+                Pembeli memiliki hak penuh atas unit villa berupa <strong class="text-forest-700">Sertifikat Hak Milik (SHM) atas nama pribadi</strong>. Semua villa dikelola oleh Sahid Hotel & Resort sesuai standar operasional hotel bintang 4. Laporan income dikirimkan bulanan melalui dashboard owner. Pemeliharaan dan operasional menjadi tanggung jawab operator (Sahid), bukan pembeli.
+              </p>
+            </section>
+
+            <!-- 7. Privasi -->
+            <section id="privasi">
+              <div class="flex items-center gap-3 mb-4">
+                <Lock size={24} class="text-gold-700" />
+                <h2 class="font-display text-2xl md:text-3xl text-forest-700 font-bold">7. Privasi</h2>
+              </div>
+              <p class="text-base text-ink-700 leading-relaxed">
+                Data pribadi yang Anda berikan melalui form konsultasi akan digunakan hanya untuk kepentingan komunikasi terkait Menantu Resort. Kami tidak akan membagikan data Anda ke pihak ketiga tanpa persetujuan. Lihat detail lengkap di halaman <a href="/kebijakan-privasi" class="text-gold-700 hover:underline font-semibold">Kebijakan Privasi</a>.
+              </p>
+            </section>
+
+            <!-- 8. Hukum -->
+            <section id="hukum">
+              <div class="flex items-center gap-3 mb-4">
+                <Scale size={24} class="text-gold-700" />
+                <h2 class="font-display text-2xl md:text-3xl text-forest-700 font-bold">8. Hukum yang Berlaku</h2>
+              </div>
+              <p class="text-base text-ink-700 leading-relaxed">
+                Syarat dan ketentuan ini tunduk pada hukum Republik Indonesia. Segala sengketa yang timbul akan diselesaikan melalui musyawarah untuk mufakat, dan apabila tidak tercapai kesepakatan dalam waktu 60 hari, akan diselesaikan melalui jalur hukum di wilayah hukum <strong class="text-forest-700">Bandung</strong>.
+              </p>
+            </section>
+
+            <!-- 9. Kontak -->
+            <section id="kontak" class="card-premium p-8 md:p-10 bg-forest-50">
+              <div class="flex items-center gap-3 mb-4">
+                <Phone size={24} class="text-gold-700" />
+                <h2 class="font-display text-2xl md:text-3xl text-forest-700 font-bold">9. Kontak</h2>
+              </div>
+              <p class="text-base text-ink-700 leading-relaxed mb-6">
+                Untuk pertanyaan terkait syarat dan ketentuan, hubungi kami di:
+              </p>
+              <div class="space-y-3 text-base text-ink-700">
+                <div class="flex items-start gap-3">
+                  <Mail size={18} class="text-gold-700 flex-shrink-0 mt-0.5" />
+                  <a href={`mailto:${siteData.contact.email}`} class="hover:text-gold-700 transition">{siteData.contact.email}</a>
+                </div>
+                <div class="flex items-start gap-3">
+                  <MessageCircle size={18} class="text-gold-700 flex-shrink-0 mt-0.5" />
+                  <a href={waKontak} target="_blank" rel="noopener" class="hover:text-gold-700 transition">WhatsApp {siteData.contact.whatsappDisplay}</a>
+                </div>
+                <div class="flex items-start gap-3">
+                  <MapPin size={18} class="text-gold-700 flex-shrink-0 mt-0.5" />
+                  <span>{siteData.contact.address}</span>
+                </div>
+              </div>
+            </section>
+          </article>
+        </div>
       </div>
-    </div>
+    </section>
   </main>
-
   <Footer />
   <WhatsAppFloating />
 </BaseLayout>

@@ -1,30 +1,83 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Navbar from '../components/astro/Navbar.astro';
+import NavMenu from '../components/svelte/NavMenu.svelte';
 import Footer from '../components/astro/Footer.astro';
 import WhatsAppFloating from '../components/astro/WhatsAppFloating.astro';
+import Pattern from '../components/astro/Pattern.astro';
+import SectionDivider from '../components/astro/SectionDivider.astro';
 import siteData from '../data/site.json';
-import { waUrl } from '../lib/format';
+import { waUrl } from '../lib/utils';
+import { MessageCircle, Home, ArrowLeft, MapPin } from 'lucide-svelte';
 
 const waLink = waUrl(siteData.contact.whatsapp, 'Halo, saya tidak menemukan halaman yang dicari', '404_page');
+
+const popularPages = [
+  { href: '/', label: 'Beranda', desc: 'Halaman utama resort' },
+  { href: '/villa', label: 'Tipe Villa', desc: '3 pilihan: Bijak, Idaman, Mapan' },
+  { href: '/investasi', label: 'Skema Investasi', desc: 'KPR Bank & Developer' },
+  { href: '/kontak', label: 'Kontak', desc: 'WhatsApp & konsultasi' },
+];
 ---
-<BaseLayout title="Halaman Tidak Ditemukan" noindex={true}>
-  <Navbar />
+<BaseLayout title="Halaman Tidak Ditemukan | Menantu Resort" description="Halaman yang Anda cari tidak ada." noindex={true}>
+  <NavMenu client:load />
 
-  <main class="min-h-screen flex items-center justify-center pt-20">
-    <div class="container text-center py-3xl">
-      <div class="text-9xl font-display text-secondary mb-md">404</div>
-      <h1 class="heading-1 mb-md">Halaman Tidak Ditemukan</h1>
-      <p class="text-body-lg text-gray-700 mb-xl max-w-md mx-auto">
-        Maaf, halaman yang Anda cari tidak ada atau sudah dipindahkan.
-      </p>
-      <div class="flex flex-wrap gap-md justify-center">
-        <a href="/" class="btn btn-primary">← Kembali ke Beranda</a>
-        <a href={waLink} target="_blank" rel="noopener" class="btn btn-whatsapp">💬 Tanya via WhatsApp</a>
+  <main class="pt-20">
+    <section class="relative bg-forest-700 text-cream-50 py-24 md:py-32 overflow-hidden">
+      <Pattern variant="gold-sparkle" color="gold" opacity={0.08} />
+      <div class="container-tight relative text-center">
+        <div class="font-display text-[10rem] md:text-[14rem] text-gold-500 leading-none font-bold tracking-tighter opacity-90">
+          404
+        </div>
+        <div class="font-mono text-xs uppercase tracking-widest text-gold-500 mb-4">— Halaman Tidak Ditemukan</div>
+        <h1 class="font-display text-3xl md:text-5xl text-cream-50 font-bold leading-[0.95] tracking-[-0.02em] mb-6">
+          Sepertinya Anda <em class="text-gold-500">Tersesat.</em>
+        </h1>
+        <p class="text-base md:text-lg text-cream-50/80 max-w-xl mx-auto mb-10">
+          Halaman yang Anda cari tidak ada atau sudah dipindahkan. Mungkin salah ketik URL? Atau sudah ketinggalan promo?
+        </p>
+        <div class="flex flex-wrap gap-3 justify-center">
+          <a href={waLink} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">
+            <MessageCircle size={18} /> Tanya via WhatsApp
+          </a>
+          <a href="/" class="btn btn-outline-light btn-lg">
+            <Home size={18} /> Kembali ke Beranda
+          </a>
+        </div>
       </div>
-    </div>
-  </main>
+    </section>
 
+    <SectionDivider variant="diamond" />
+
+    <section class="relative bg-cream-50 py-20 md:py-24" data-section="popular">
+      <Pattern variant="dots" color="forest" opacity={0.04} />
+      <div class="container-tight relative">
+        <div class="text-center mb-10">
+          <span class="eyebrow">Mungkin Anda Mencari</span>
+          <h2 class="font-display text-2xl md:text-3xl text-forest-700 font-bold mt-3">Halaman <em class="text-gold-700">Populer</em></h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {popularPages.map((p) => (
+            <a
+              href={p.href}
+              class="card-premium p-6 flex items-center justify-between group hover:border-gold-700 transition"
+            >
+              <div>
+                <div class="font-display text-lg text-forest-700 font-bold mb-1 group-hover:text-gold-700 transition">
+                  {p.label}
+                </div>
+                <div class="text-sm text-ink-soft">{p.desc}</div>
+              </div>
+              <ArrowLeft size={20} class="text-gold-700 rotate-180 group-hover:translate-x-1 transition" />
+            </a>
+          ))}
+        </div>
+
+        <div class="text-center mt-12 text-sm text-ink-mute">
+          Atau kembali ke <a href="/sitemap-index.xml" class="text-gold-700 hover:underline">peta situs lengkap</a>.
+        </div>
+      </div>
+    </section>
+  </main>
   <Footer />
   <WhatsAppFloating />
 </BaseLayout>
