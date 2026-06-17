@@ -6,186 +6,187 @@
 
 ---
 
-## 🎯 5 Sitemap URL yang Tersedia
+## 🎯 Submit INI ke Google Search Console
 
-| # | URL | Type | URLs | Tujuan |
-|---|---|---|---|---|
-| 1 | **`https://menantu-resort.com/sitemap.xml`** | **Main** | **175** | **Submit INI ke GSC** — semua URL |
-| 2 | `https://menantu-resort.com/sitemap-index.xml` | Index | 1 | Reference ke sitemap-0.xml (auto-gen) |
-| 3 | `https://menantu-resort.com/news-sitemap.xml` | News | 147 | Google News crawler (Top Stories) |
-| 4 | `https://menantu-resort.com/image-sitemap.xml` | Image | 153 | Google Image search |
-| 5 | `https://menantu-resort.com/sitemap-0.xml` | Auto-gen | 175 | Backup (dari @astrojs/sitemap plugin) |
-
-**URL yang harus di-submit ke Google Search Console:**
-
+**HANYA submit 1 URL:**
 ```
 https://menantu-resort.com/sitemap.xml
 ```
 
-Submit **hanya 1 URL** ini. Google akan auto-crawl sitemap-index → sitemap-0 + news-sitemap + image-sitemap via internal references di robots.txt.
+**Jangan** submit `sitemap-index.xml` atau `sitemap-0.xml` — itu sudah dihapus (generate oleh @astrojs/sitemap plugin yang sudah di-remove untuk menghindari konflik).
+
+---
+
+## ✅ Fix yang Sudah Dilakukan
+
+**Root cause error "Sitemap could not be read":**
+
+1. ❌ **Custom `/sitemap.xml.ts` punya `X-Robots-Tag: noindex` header** → Google skip
+2. ❌ **`@astrojs/sitemap` plugin** generate `sitemap-0.xml` dengan `changefreq="weekly"` & priority berbeda → konflik dengan custom
+3. ❌ `sitemap-index.xml` reference ke plugin sitemap (yang override)
+
+**Fix:**
+
+1. ✅ **Hapus `X-Robots-Tag: noindex`** dari semua sitemap endpoint
+2. ✅ **Hapus `@astrojs/sitemap` plugin** dari `astro.config.mjs`
+3. ✅ **Hapus `sitemap-0.xml` dan `sitemap-index.xml`** dari server (404 now)
+4. ✅ **Update `robots.txt`**: hanya reference 3 sitemap aktif
+5. ✅ **Update `sitemap.xml.ts`**: 
+   - All artikel: `<changefreq>daily</changefreq>` `<priority>0.9</priority>`
+   - Featured: `<priority>1.0</priority>`
+   - Cache: 5 min (sebelumnya 1 jam)
+6. ✅ **Update `news-sitemap.xml.ts`**: NO X-Robots-Tag
+7. ✅ **Update `image-sitemap.xml.ts`**: NO X-Robots-Tag
+
+**Live verification:**
+```bash
+curl -sI https://menantu-resort.com/sitemap.xml
+# Expected: 200 OK, no X-Robots-Tag, content-type application/xml
+
+curl -s https://menantu-resort.com/sitemap.xml | grep -A1 "menantu-resort-promo"
+# Expected:
+#   <loc>https://menantu-resort.com/artikel/menantu-resort-promo/</loc>
+#   <lastmod>2026-06-17</lastmod>
+#   <changefreq>daily</changefreq>
+#   <priority>0.9</priority>
+```
+
+---
+
+## 🗺️ 3 Sitemap Aktif
+
+| URL | URLs | Type | Prioritas |
+|---|---|---|---|
+| **`sitemap.xml`** | 175 | Main | Submit INI ke GSC |
+| `news-sitemap.xml` | 147 | News | Submit juga (Top Stories) |
+| `image-sitemap.xml` | 153 | Image | Submit juga (Image Search) |
+
+**Verifikasi live:**
+- https://menantu-resort.com/sitemap.xml
+- https://menantu-resort.com/news-sitemap.xml
+- https://menantu-resort.com/image-sitemap.xml
 
 ---
 
 ## 🚀 Submit ke Google Search Console (5 menit)
 
-### Step 1: Buka Search Console
-https://search.google.com/search-console/
+### Step 1: Hapus Sitemap Lama yang Error
 
-### Step 2: Pilih Property
-Pilih `https://menantu-resort.com` (kalau belum ada, tambahkan → Domain `menantu-resort.com`)
+1. Buka [Google Search Console](https://search.google.com/search-console/)
+2. Pilih property `https://menantu-resort.com`
+3. Menu **Sitemaps** (sidebar)
+4. Lihat list sitemap — kalau ada `sitemap-index.xml` atau `sitemap-0.xml` dengan status "Couldn't fetch":
+   - Klik 3 titik di kanan
+   - Pilih **"Remove sitemap"**
+5. Tunggu 24 jam untuk propagasi
 
-### Step 3: Verifikasi Property
-- Meta tag `google-site-verification` sudah ada di `<head>` BaseLayout: `d-7Ysdp2HpFgntspeuC4-jsiy_cvgq3LxNVubodaYyU`
-- Klik "Verify" → otomatis verified
+### Step 2: Submit Sitemap Baru
 
-### Step 4: Submit Sitemap
-1. Menu **Sitemaps** (sidebar kiri)
-2. Input field "Add a new sitemap": `sitemap.xml`
+1. Menu **Sitemaps** (sidebar)
+2. Input field: `sitemap.xml`
 3. Klik **Submit**
-4. Status → "Success" (refresh dalam 5-15 menit)
+4. Status: **"Success"** (refresh dalam 5-15 menit)
+5. Ulangi untuk `news-sitemap.xml`
 
-### Step 5: (Optional) Submit News Sitemap
-1. Sitemap yang sama → "Add a new sitemap"
-2. Input: `news-sitemap.xml`
-3. Submit
+### Step 3: Verify Status
 
-**Optional:** Submit juga `image-sitemap.xml` untuk Google Image search.
+Search Console → Sitemaps → klik "sitemap.xml" → lihat:
+- **Status:** Success
+- **Discovered URLs:** 175
+- **Last read:** 17 Juni 2026
 
 ---
 
-## 🔍 Verifikasi Sitemap Live (Cek Sendiri)
+## ⚡ Priority & Changefreq Strategy
 
-Buka di browser:
-- https://menantu-resort.com/sitemap.xml → harusnya XML dengan 175 URL
-- https://menantu-resort.com/robots.txt → harusnya list 5 sitemap
+**Kenapa `daily` + `0.9` priority?**
 
-Atau via terminal:
+Google tidak guarantee crawl frequency sesuai `<changefreq>`, tapi **ini signals**:
+- `daily` → "URL ini sering update, crawl sesering mungkin"
+- `0.9` → "URL ini penting, prioritaskan dari URL lain"
+
+**Untuk artikel baru SEO:**
+
+```xml
+<url>
+  <loc>https://menantu-resort.com/artikel/[slug]/</loc>
+  <lastmod>2026-06-17</lastmod>
+  <changefreq>daily</changefreq>
+  <priority>0.9</priority>
+</url>
+```
+
+**Berlaku untuk:**
+- ✅ Semua 147 artikel (priority 0.9)
+- ✅ Featured article "menantu-resort-harga-simulasi-bijak-idaman-mapan-2026" (priority 1.0)
+- ✅ Static pages (priority 0.4-1.0, daily/weekly/yearly sesuai update frequency)
+- ✅ Pagination pages (priority 0.7, daily)
+
+---
+
+## 📊 Schema Markup Tetap Aktif
+
+Setiap halaman tetap punya schema JSON-LD:
+- `Organization`, `WebSite`, `BreadcrumbList` di semua halaman
+- `Product` di `/villa/[tipe]/`
+- `FAQPage`, `Article` di `/artikel/[slug]/`
+- `LocalBusiness` di `/lokasi/`
+
+---
+
+## 🧪 Test Sitemap Validity
+
+### 1. Google Search Console Test
+- Buka sitemap.xml di GSC
+- Status harus "Success"
+
+### 2. XML Validator
+- [xml-sitemaps.com/validator](https://www.xml-sitemaps.com/validator.html)
+- Paste URL → Expected: No errors
+
+### 3. Schema Test
+- [search.google.com/test/rich-results](https://search.google.com/test/rich-results)
+- Test 1 URL artikel → Expected: FAQ + Article detected
+
+### 4. Manual Verify
 ```bash
-curl -s https://menantu-resort.com/sitemap.xml | head -20
-# Expected: XML dengan <url><loc>https://menantu-resort.com/...
+# Should return 200 with 175 URLs
+curl -sI https://menantu-resort.com/sitemap.xml
+curl -s https://menantu-resort.com/sitemap.xml | grep -oE "<loc>" | wc -l
 ```
 
 ---
 
-## 📊 Schema Markup yang Sudah Terpasang
+## 🔧 Cache Busting (Penting!)
 
-Setiap halaman sudah punya schema JSON-LD. Cek via [Schema Markup Validator](https://validator.schema.org/):
+LiteSpeed serve `cache-control: max-age=2592000` (30 hari) — artinya GSC mungkin lihat file cache lama.
 
-| Tipe Schema | Lokasi | Schema |
+**Cara fix:**
+1. **Submit ulang sitemap** di GSC → trigger re-fetch
+2. **Tunggu 24-48 jam** → GSC akan crawl fresh
+3. **Gunakan URL Inspection** di GSC untuk test 1-2 URL artikel:
+   - URL Inspection → paste URL → "Request Indexing"
+   - Lihat "Last crawl" → kalau masih tanggal lama, tunggu
+
+**Atau** minta support IDCloudHost untuk flush LiteSpeed cache untuk path `/sitemap.xml`.
+
+---
+
+## 📈 Timeline Indexing
+
+| Hari | Action | Expected |
 |---|---|---|
-| `Organization` | Homepage | Brand, logo, contact, social |
-| `WebSite` | Homepage | Search box |
-| `BreadcrumbList` | Semua halaman | Navigation breadcrumb |
-| `Product` | `/villa/[tipe]/` | Villa specs, harga, availability |
-| `FAQPage` | `/artikel/[slug]/` | 3-5 Q&A per artikel |
-| `Article` | `/artikel/[slug]/` | headline, image, author, date |
-| `LocalBusiness` | `/lokasi/` | Address, geo, opening hours |
-| `Place` | `/resort/` | Resort info, amenities |
-
-**Test schema validity:**
-```
-https://validator.schema.org/
-→ Paste URL artikel
-→ Expected: Article + FAQPage valid (0 errors)
-```
+| D-0 | Submit sitemap.xml ke GSC | Status: Pending/Success |
+| D-1 | Status berubah ke Success | 175 URL discovered |
+| D-1-3 | Google mulai crawl sitemap | 30-50 URL crawled |
+| D-3-7 | Bulk crawl artikel baru | 100-148 URL indexed |
+| D-7-14 | Request indexing manual untuk 12 batch | 148 URL indexed |
+| D-14-30 | Ranking muncul di SERP | Top 50 untuk long-tail keyword |
+| D-30-60 | Ranking stabil | Top 10-20 untuk branded keyword |
 
 ---
 
-## 🤖 Robots.txt — Optimized for Daily Crawl
-
-File `https://menantu-resort.com/robots.txt` punya:
-
-**Bot-specific rules:**
-- `Googlebot` — Allow all, Crawl-delay 0
-- `Googlebot-Image` — Allow all
-- `Googlebot-News` — Allow /artikel/
-- `Googlebot-Video` — Allow all
-- `Bingbot` — Allow all, Crawl-delay 0
-- `YandexBot` — Allow all (untuk market Rusia)
-- `Baiduspider` — Allow all (untuk market China)
-
-**AI/LLM Crawlers — Allowed:**
-- GPTBot, ChatGPT-User (OpenAI)
-- Claude-Web, anthropic-ai (Anthropic)
-- PerplexityBot
-- Google-Extended
-
-**Blocked (SEO spam):**
-- AhrefsBot, SemrushBot, MJ12bot, DotBot, BLEXBot
-
-**Sitemap declarations:**
-- 5 sitemap URLs di-define di robots.txt
-- Host directive untuk Yandex
-
----
-
-## ⚡ Strategi Percepatan Indexing
-
-### Tier 1: Sitemap Submit (D-0)
-- Submit `sitemap.xml` ke GSC
-- Google akan mulai crawl dalam 1-3 hari
-- News sitemap → Google News crawler mulai crawl dalam 1-2 hari
-- Image sitemap → Google Image crawler mulai crawl dalam 3-5 hari
-
-### Tier 2: URL Inspection Request (D-1 sampai D-15)
-- 10-12 URL per hari, total 148 artikel = 12-15 hari
-- Prioritas: high-intent keyword (harga, simulasi KPR, summarecon, podomoro)
-- Panduan batch ada di `SUBMIT_GSC.md`
-
-### Tier 3: Backlink (D-7+)
-- Share ke social media (FB, IG, LinkedIn)
-- Submit ke direktori bisnis (Yellow Pages, Kaskus, dll)
-- Guest post di blog properti (Brainstorm, Rumah123, dll)
-- Press release di media online
-
-### Tier 4: Indexing API (Optional, D-1)
-Gunakan Google Indexing API untuk ping Google langsung:
-```bash
-curl -X POST "https://indexing.googleapis.com/v3/urlNotifications:publish" \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $(gcloud auth application-default print-access-token)" \
-  -d '{
-    "url": "https://menantu-resort.com/artikel/menantu-resort-harga-simulasi-bijak-idaman-mapan-2026/",
-    "type": "URL_UPDATED"
-  }'
-```
-
----
-
-## 📈 Monitoring Indexing Progress
-
-### Cek URL yang sudah ter-index:
-Search Console → **URL Inspection** → paste URL → enter
-
-Atau query di Google:
-```
-site:menantu-resort.com/artikel/
-```
-
-### Cek Schema Markup:
-[Rich Results Test](https://search.google.com/test/rich-results) → paste URL artikel → expected: FAQ detected
-
-### Cek Index Coverage:
-Search Console → **Coverage** → lihat graph "Valid", "Excluded", "Error"
-
----
-
-## 🗂️ File-file Sitemap
-
-| File | Fungsi |
-|---|---|
-| `app/src/pages/sitemap.xml.ts` | Main sitemap endpoint (175 URLs) |
-| `app/src/pages/news-sitemap.xml.ts` | Google News sitemap (147 news) |
-| `app/src/pages/image-sitemap.xml.ts` | Google Image sitemap (153 images) |
-| `app/src/pages/robots.txt.ts` | Bot directives + 5 sitemap refs |
-| `app/dist/client/sitemap-0.xml` | Auto-gen dari @astrojs/sitemap (175 URLs) |
-| `app/dist/client/sitemap-index.xml` | Reference ke sitemap-0.xml |
-| `SUBMIT_GSC.md` | Panduan submit + 12-batch indexing plan |
-| `SITEMAP_INDEX.md` | File ini — overview semua sitemap |
-
----
-
-## 🎯 Quick Reference
+## 📚 Quick Reference
 
 **Submit INI ke Google Search Console:**
 ```
@@ -193,22 +194,22 @@ https://menantu-resort.com/sitemap.xml
 ```
 
 **Cek live:**
-```
-https://menantu-resort.com/sitemap.xml → 175 URL
-https://menantu-resort.com/news-sitemap.xml → 147 news
-https://menantu-resort.com/image-sitemap.xml → 153 images
-https://menantu-resort.com/robots.txt → bot rules
+```bash
+curl -s https://menantu-resort.com/sitemap.xml | head -3
+curl -s https://menantu-resort.com/sitemap.xml | grep -oE "<loc>" | wc -l
 ```
 
-**Schema untuk test:**
-- Article + FAQPage → https://search.google.com/test/rich-results
-- Organization → https://validator.schema.org/
+**Schema test:**
+- https://search.google.com/test/rich-results
+- https://validator.schema.org/
 
-**Performance tracking:**
-- 7 hari setelah submit → Search Console → Performance
-- 30 hari → cek average position per keyword
-- 60 hari → cek apakah ranking di page 1-3 untuk high-intent keyword
+**Files:**
+- `app/src/pages/sitemap.xml.ts` — Main sitemap (175 URLs)
+- `app/src/pages/news-sitemap.xml.ts` — News (147 entries)
+- `app/src/pages/image-sitemap.xml.ts` — Image (153 images)
+- `app/src/pages/robots.txt.ts` — Bot rules + sitemap refs
+- `app/astro.config.mjs` — Config (no sitemap plugin)
 
 ---
 
-*Last updated: 2026-06-17 · Menantu Resort SEO Build · 5 sitemaps + 175 URLs + 147 news + 153 images*
+*Last updated: 2026-06-18 · Menantu Resort SEO Build · Fixed sitemap error + daily priority*
