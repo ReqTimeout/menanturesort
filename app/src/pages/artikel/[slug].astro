@@ -1,7 +1,7 @@
 ---
 /**
- * /artikel/[slug] — Single article page
- * Real content, SEO-friendly, with CTA to WhatsApp
+ * /artikel/[slug] — Single article page (V5.4)
+ * Rank Math SEO + FAQ schema + Table of Contents + Proof block + WA CTA
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import NavMenu from '../../components/svelte/NavMenu.svelte';
@@ -11,7 +11,7 @@ import SectionBackground from '../../components/astro/SectionBackground.astro';
 import articles from '../../data/articles.json';
 import siteData from '../../data/site.json';
 import { waUrl } from '../../lib/utils';
-import { ArrowRight, ArrowLeft, Calendar, Clock, Share2, MessageCircle, Tag, ChevronRight } from 'lucide-svelte';
+import { ArrowRight, ArrowLeft, Calendar, Clock, Share2, MessageCircle, Tag, ChevronRight, CheckCircle2, Shield, Award, Sparkles, List, Phone } from 'lucide-svelte';
 
 export function getStaticPaths() {
   return articles.map((post) => ({
@@ -21,6 +21,9 @@ export function getStaticPaths() {
 }
 
 const { post } = Astro.props;
+const focusKeyword = post.focusKeyword || post.title;
+const postKeywords = [focusKeyword, ...(post.keywords || [])].join(', ');
+const postUrl = `https://menantu-resort.com/artikel/${post.slug}/`;
 
 const idx = articles.findIndex((p) => p.slug === post.slug);
 const hasPrev = idx > 0;
@@ -29,8 +32,6 @@ const prevPost = hasPrev ? articles[idx - 1] : null;
 const nextPost = hasNext ? articles[idx + 1] : null;
 const related = articles.filter((p) => p.slug !== post.slug).slice(0, 3);
 
-const postUrl = `https://menantu-resort.com/artikel/${post.slug}/`;
-
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
@@ -38,36 +39,65 @@ const articleSchema = {
   image: `https://menantu-resort.com${post.image}`,
   datePublished: post.date,
   dateModified: post.date,
-  author: { '@type': 'Organization', name: post.author },
+  author: { '@type': 'Organization', name: post.author || 'Tim MK LAND' },
   publisher: {
     '@type': 'Organization',
     name: 'Menantu Resort',
     logo: { '@type': 'ImageObject', url: 'https://menantu-resort.com/favicon.svg' }
   },
   description: post.excerpt,
+  keywords: post.keywords?.join(', '),
+  articleSection: post.cat,
   mainEntityOfPage: { '@type': 'WebPage', '@id': postUrl }
 };
 
+const faqSchema = post.faqs && post.faqs.length > 0 ? {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: post.faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a }
+  }))
+} : null;
+
 const waMessage = waUrl(
   siteData.contact.whatsapp,
-  `Saya baru baca artikel "${post.title}". Saya ingin diskusi lebih lanjut tentang investasi villa di Menantu Resort.`,
+  `Halo, saya baru baca artikel "${post.title}". Saya ingin diskusi lebih lanjut tentang investasi villa di Menantu Resort.`,
   `artikel_${post.slug}`
 );
 
-const shareJs = `navigator.share ? navigator.share({title: '${post.title.replace(/'/g, "\\'")}', url: window.location.href}).catch(() => {}) : navigator.clipboard.writeText(window.location.href).then(() => alert('Link disalin!'))`;
+const shareJs = `navigator.share ? navigator.share({title: ${JSON.stringify(post.title)}, url: window.location.href}).catch(() => {}) : navigator.clipboard.writeText(window.location.href).then(() => alert('Link disalin!'))`;
+
+// Render markdown-ish (bold/italic) to safe HTML
+const renderInline = (text) => text
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/\*\*(.+?)\*\*/g, '<strong class="text-forest-700 font-semibold">$1</strong>')
+  .replace(/(^|[^*])\*([^*]+)\*/g, '$1<em class="text-gold-700 font-display">$2</em>')
+  .replace(/\n/g, '<br />');
+
+const toc = post.tableOfContents || [];
+const faqs = post.faqs || [];
+const proof = post.proof;
+const cta = post.cta;
 ---
 
 <script type="application/ld+json" set:html={JSON.stringify(articleSchema)}></script>
+{faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>}
 
 <BaseLayout
-  title={`${post.title} — Insight Menantu Resort`}
+  title={`${post.title} — Menantu Resort`}
   description={post.excerpt}
   ogImage={post.image}
   canonical={postUrl}
+  keywords={postKeywords}
 >
   <NavMenu client:load />
 
-  <main class="pt-20">
+  <main class="pt-20 bg-cream-50">
+    <!-- Breadcrumb -->
     <div class="bg-cream-50 border-b border-cream-100">
       <div class="container-wide py-4">
         <nav class="flex items-center gap-2 text-xs font-mono text-ink-mute" aria-label="Breadcrumb">
@@ -80,7 +110,9 @@ const shareJs = `navigator.share ? navigator.share({title: '${post.title.replace
       </div>
     </div>
 
-    <article class="bg-cream-50 relative overflow-hidden">
+    <!-- Hero -->
+    <article class="relative overflow-hidden">
+      <SectionBackground variant="gold" pattern={true} orbs={true} intensity="subtle" />
       <div class="container-wide py-12 md:py-20 relative">
         <div class="max-w-4xl mx-auto">
           <div class="flex flex-wrap items-center gap-3 mb-6">
@@ -115,7 +147,7 @@ const shareJs = `navigator.share ? navigator.share({title: '${post.title.replace
                 M
               </div>
               <div>
-                <div class="font-body text-sm font-semibold text-forest-700">{post.author}</div>
+                <div class="font-body text-sm font-semibold text-forest-700">{post.author || 'Tim MK LAND'}</div>
                 <div class="font-mono text-[10px] text-ink-mute uppercase tracking-wider">Insight Menantu Resort</div>
               </div>
             </div>
@@ -133,86 +165,230 @@ const shareJs = `navigator.share ? navigator.share({title: '${post.title.replace
       </div>
     </article>
 
+    <!-- Featured Image -->
     <div class="bg-cream-50">
       <div class="container-wide relative">
         <div class="max-w-5xl mx-auto">
-          <div class="aspect-[21/9] overflow-hidden bg-forest-700">
-            <img src={post.image} alt={post.title} class="w-full h-full object-cover" loading="eager" />
+          <div class="aspect-[21/9] overflow-hidden bg-forest-700 shadow-2xl">
+            <img src={post.image} alt={post.title} class="w-full h-full object-cover" loading="eager" width="1280" height="549" />
           </div>
         </div>
       </div>
     </div>
 
+    <!-- Body: 2-column with TOC sidebar -->
     <section class="bg-cream-50 relative">
       <div class="container-wide py-16 md:py-24 relative">
-        <div class="max-w-3xl mx-auto">
-          <div class="prose prose-lg max-w-none">
-            {post.content.map((para, i) => (
-              <p class:list={['font-body text-lg text-ink-700 leading-[1.8] mb-6', i === 0 ? 'text-xl md:text-2xl first-letter:text-5xl first-letter:font-display first-letter:font-bold first-letter:text-forest-700 first-letter:float-left first-letter:mr-3 first-letter:leading-none' : '']} set:html={para.replace(/\*\*(.+?)\*\*/g, '<strong class="text-forest-700 font-semibold">$1</strong>').replace(/\*(.+?)\*/g, '<em class="text-gold-700">$1</em>')} />
-            ))}
-          </div>
-
-          <div class="mt-12 pt-8 border-t border-cream-100">
-            <div class="font-mono text-xs text-ink-mute uppercase tracking-wider mb-3">Topik Terkait</div>
-            <div class="flex flex-wrap gap-2">
-              <a href="/artikel" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-cream-50 border border-cream-100 text-sm text-ink-700 hover:border-gold-500 hover:text-gold-700 transition-colors">#{post.cat}</a>
-              <a href="/villa" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-cream-50 border border-cream-100 text-sm text-ink-700 hover:border-gold-500 hover:text-gold-700 transition-colors">#Villa</a>
-              <a href="/investasi" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-cream-50 border border-cream-100 text-sm text-ink-700 hover:border-gold-500 hover:text-gold-700 transition-colors">#Investasi</a>
-              <a href="/lokasi" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-cream-50 border border-cream-100 text-sm text-ink-700 hover:border-gold-500 hover:text-gold-700 transition-colors">#Lokasi</a>
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-12 max-w-6xl mx-auto">
+          <!-- Main content -->
+          <div class="min-w-0">
+            <div class="prose prose-lg max-w-none">
+              {post.content.map((para, i) => (
+                <p
+                  class:list={[
+                    'font-body text-lg text-ink-700 leading-[1.8] mb-6',
+                    i === 0 ? 'text-xl md:text-2xl first-letter:text-5xl first-letter:font-display first-letter:font-bold first-letter:text-forest-700 first-letter:float-left first-letter:mr-3 first-letter:leading-none md:first-letter:text-6xl' : ''
+                  ]}
+                  set:html={renderInline(para)}
+                />
+              ))}
             </div>
-          </div>
 
-          <div class="mt-12 p-8 md:p-10 bg-forest-700 text-cream-50 relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-64 h-64 bg-gold-500/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="relative">
-              <div class="font-mono text-xs uppercase tracking-widest text-gold-500 mb-3 font-bold">— Diskusi Personal</div>
-              <h3 class="font-display text-2xl md:text-3xl text-cream-50 mb-3 leading-tight">
-                Punya pertanyaan setelah baca artikel ini?
-              </h3>
-              <p class="text-cream-50/80 leading-relaxed mb-6 max-w-xl">
-                Tim konsultan kami siap jawab via WhatsApp — gratis, tanpa komitmen, <strong class="text-gold-500">dijawab langsung oleh tim internal MK LAND</strong> (bukan admin bot).
-              </p>
-              <a
-                href={waMessage}
-                target="_blank"
-                rel="noopener"
-                class="btn btn-whatsapp btn-lg"
-              >
-                <MessageCircle size={18} />
-                Chat WhatsApp Sekarang
-                <ArrowRight class="w-4 h-4" />
-              </a>
+            <!-- Proof Block -->
+            {proof && (
+              <div class="mt-12 p-8 md:p-10 bg-forest-700 text-cream-50 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-gold-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative">
+                  <div class="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-gold-500 mb-4 font-bold">
+                    <Shield size={14} /> Bukti Nyata, Bukan Janji
+                  </div>
+                  <h3 class="font-display text-2xl md:text-3xl text-cream-50 mb-6 leading-tight">
+                    {proof.headline}
+                  </h3>
+                  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    {proof.stats?.map((s) => (
+                      <div class="border-l-2 border-gold-500 pl-3">
+                        <div class="font-display text-2xl md:text-3xl text-gold-500 font-bold leading-none">{s.value}</div>
+                        <div class="font-mono text-[10px] uppercase tracking-wider text-cream-50/70 mt-1">{s.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div class="space-y-2">
+                    {proof.bullets?.map((b) => (
+                      <div class="flex items-start gap-2 text-sm text-cream-50/90">
+                        <CheckCircle2 size={16} class="text-gold-500 flex-shrink-0 mt-0.5" />
+                        <span>{b}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <!-- FAQ Block -->
+            {faqs.length > 0 && (
+              <div class="mt-12">
+                <div class="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-gold-700 mb-4 font-bold">
+                  <List size={14} /> Pertanyaan yang Sering Ditanyakan
+                </div>
+                <h2 class="font-display text-2xl md:text-3xl text-forest-700 font-bold leading-tight mb-6">
+                  FAQ: {post.cat}
+                </h2>
+                <div class="space-y-3">
+                  {faqs.map((f, i) => (
+                    <details class="group bg-white border border-cream-100 hover:border-gold-500 transition-colors" open={i === 0}>
+                      <summary class="cursor-pointer p-5 flex items-center justify-between gap-4 list-none">
+                        <h3 class="font-body text-base md:text-lg font-semibold text-forest-700 leading-snug pr-4">
+                          {f.q}
+                        </h3>
+                        <span class="flex-shrink-0 w-7 h-7 rounded-full bg-forest-700 text-gold-500 flex items-center justify-center group-open:rotate-45 transition-transform">
+                          <span class="block w-3 h-px bg-gold-500 absolute"></span>
+                          <span class="block w-3 h-px bg-gold-500 absolute rotate-90"></span>
+                        </span>
+                      </summary>
+                      <div class="px-5 pb-5 text-ink-700 leading-relaxed border-t border-cream-100 pt-4">
+                        {f.a}
+                      </div>
+                    </details>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <!-- CTA Block -->
+            {cta && (
+              <div class="mt-12 p-8 md:p-10 bg-gradient-to-br from-forest-700 via-forest-800 to-forest-700 text-cream-50 relative overflow-hidden">
+                <div class="absolute -top-20 -right-20 w-72 h-72 bg-gold-500/20 rounded-full blur-3xl"></div>
+                <div class="absolute -bottom-20 -left-20 w-72 h-72 bg-gold-500/10 rounded-full blur-3xl"></div>
+                <div class="relative">
+                  <div class="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-gold-500 mb-4 font-bold">
+                    <Sparkles size={14} /> Langkah Anda Berikutnya
+                  </div>
+                  <h3 class="font-display text-2xl md:text-3xl text-cream-50 mb-4 leading-tight">
+                    {cta.headline}
+                  </h3>
+                  <p class="text-cream-50/80 leading-relaxed mb-6 max-w-xl">
+                    {cta.body}
+                  </p>
+                  <div class="flex flex-col sm:flex-row gap-3">
+                    <a
+                      href={waMessage}
+                      target="_blank"
+                      rel="noopener"
+                      onclick="typeof gtag_report_conversion==='function' && gtag_report_conversion('https://wa.me/6285925942277');"
+                      class="btn btn-whatsapp btn-lg"
+                    >
+                      <MessageCircle size={18} />
+                      Chat WhatsApp Sekarang
+                      <ArrowRight class="w-4 h-4" />
+                    </a>
+                    <a
+                      href="/villa"
+                      class="btn btn-outline-light btn-lg"
+                    >
+                      Lihat Tipe Villa
+                    </a>
+                  </div>
+                  <div class="mt-6 flex flex-wrap items-center gap-4 text-xs font-mono text-cream-50/70">
+                    <span class="inline-flex items-center gap-1.5"><Award size={12} class="text-gold-500" /> Konsultan internal MK LAND</span>
+                    <span class="inline-flex items-center gap-1.5"><Phone size={12} class="text-gold-500" /> Respon &lt; 5 menit</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <!-- Tags -->
+            <div class="mt-12 pt-8 border-t border-cream-100">
+              <div class="font-mono text-xs text-ink-mute uppercase tracking-wider mb-3">Topik Terkait</div>
+              <div class="flex flex-wrap gap-2">
+                <a href="/artikel" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-cream-50 border border-cream-100 text-sm text-ink-700 hover:border-gold-500 hover:text-gold-700 transition-colors">#{post.cat}</a>
+                <a href="/villa" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-cream-50 border border-cream-100 text-sm text-ink-700 hover:border-gold-500 hover:text-gold-700 transition-colors">#Villa</a>
+                <a href="/investasi" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-cream-50 border border-cream-100 text-sm text-ink-700 hover:border-gold-500 hover:text-gold-700 transition-colors">#Investasi</a>
+                <a href="/lokasi" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-cream-50 border border-cream-100 text-sm text-ink-700 hover:border-gold-500 hover:text-gold-700 transition-colors">#Lokasi</a>
+              </div>
             </div>
+
+            <!-- Prev/Next -->
+            <nav class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-4" aria-label="Navigasi artikel">
+              {prevPost ? (
+                <a href={`/artikel/${prevPost.slug}/`} class="group block p-6 bg-white border border-cream-100 hover:border-gold-500 transition-colors">
+                  <div class="font-mono text-xs text-ink-mute uppercase tracking-wider mb-2 flex items-center gap-1">
+                    <ArrowLeft size={12} /> Artikel Sebelumnya
+                  </div>
+                  <div class="font-display text-base text-forest-700 group-hover:text-gold-700 transition-colors line-clamp-2 leading-tight">
+                    {prevPost.title}
+                  </div>
+                </a>
+              ) : <div></div>}
+              {nextPost ? (
+                <a href={`/artikel/${nextPost.slug}/`} class="group block p-6 bg-white border border-cream-100 hover:border-gold-500 transition-colors md:text-right">
+                  <div class="font-mono text-xs text-ink-mute uppercase tracking-wider mb-2 flex items-center md:justify-end gap-1">
+                    Artikel Berikutnya <ArrowRight size={12} />
+                  </div>
+                  <div class="font-display text-base text-forest-700 group-hover:text-gold-700 transition-colors line-clamp-2 leading-tight">
+                    {nextPost.title}
+                  </div>
+                </a>
+              ) : <div></div>}
+            </nav>
           </div>
 
-          <nav class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-4" aria-label="Navigasi artikel">
-            {prevPost ? (
-              <a href={`/artikel/${prevPost.slug}/`} class="group block p-6 bg-cream-50 border border-cream-100 hover:border-gold-500 transition-colors">
-                <div class="font-mono text-xs text-ink-mute uppercase tracking-wider mb-2 flex items-center gap-1">
-                  <ArrowLeft size={12} /> Artikel Sebelumnya
+          <!-- Sidebar: TOC + sticky CTA -->
+          <aside class="hidden lg:block">
+            <div class="sticky top-24 space-y-6">
+              {toc.length > 0 && (
+                <div class="bg-white border border-cream-100 p-6">
+                  <div class="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-gold-700 mb-4 font-bold">
+                    <List size={14} /> Daftar Isi
+                  </div>
+                  <ol class="space-y-2.5">
+                    {toc.map((item, i) => (
+                      <li class="flex gap-3 text-sm">
+                        <span class="font-mono text-xs text-gold-700 font-bold flex-shrink-0 w-5">{String(i + 1).padStart(2, '0')}</span>
+                        <a href={`#toc-${i + 1}`} class="text-ink-700 hover:text-gold-700 leading-snug transition-colors">
+                          {item}
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
                 </div>
-                <div class="font-display text-base text-forest-700 group-hover:text-gold-700 transition-colors line-clamp-2 leading-tight">
-                  {prevPost.title}
+              )}
+
+              <div class="bg-forest-700 text-cream-50 p-6 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-gold-500/15 rounded-full blur-2xl"></div>
+                <div class="relative">
+                  <div class="font-mono text-[10px] uppercase tracking-widest text-gold-500 mb-2 font-bold">Butuh diskusi?</div>
+                  <h3 class="font-display text-lg leading-tight mb-3">Konsultan kami balas dalam 5 menit</h3>
+                  <a
+                    href={waMessage}
+                    target="_blank"
+                    rel="noopener"
+                    onclick="typeof gtag_report_conversion==='function' && gtag_report_conversion('https://wa.me/6285925942277');"
+                    class="btn btn-whatsapp w-full justify-center text-sm"
+                  >
+                    <MessageCircle size={16} /> Chat WhatsApp
+                  </a>
                 </div>
-              </a>
-            ) : <div></div>}
-            {nextPost ? (
-              <a href={`/artikel/${nextPost.slug}/`} class="group block p-6 bg-cream-50 border border-cream-100 hover:border-gold-500 transition-colors md:text-right">
-                <div class="font-mono text-xs text-ink-mute uppercase tracking-wider mb-2 flex items-center md:justify-end gap-1">
-                  Artikel Berikutnya <ArrowRight size={12} />
-                </div>
-                <div class="font-display text-base text-forest-700 group-hover:text-gold-700 transition-colors line-clamp-2 leading-tight">
-                  {nextPost.title}
-                </div>
-              </a>
-            ) : <div></div>}
-          </nav>
+              </div>
+
+              <div class="bg-white border border-cream-100 p-6">
+                <div class="font-mono text-[10px] uppercase tracking-widest text-ink-mute mb-3 font-bold">Trust Signals</div>
+                <ul class="space-y-2 text-sm text-ink-700">
+                  <li class="flex items-start gap-2"><CheckCircle2 size={14} class="text-gold-700 flex-shrink-0 mt-0.5" /> SHM Bersih atas nama pribadi</li>
+                  <li class="flex items-start gap-2"><CheckCircle2 size={14} class="text-gold-700 flex-shrink-0 mt-0.5" /> Dikelola Sahid 50+ tahun</li>
+                  <li class="flex items-start gap-2"><CheckCircle2 size={14} class="text-gold-700 flex-shrink-0 mt-0.5" /> ROI guarantee 9% p.a.</li>
+                  <li class="flex items-start gap-2"><CheckCircle2 size={14} class="text-gold-700 flex-shrink-0 mt-0.5" /> Cicilan mulai 9,1 jt/bln</li>
+                </ul>
+              </div>
+            </div>
+          </aside>
         </div>
       </div>
     </section>
 
     <SectionDivider variant="ornate" />
 
+    <!-- Related -->
     <section class="bg-white relative">
       <SectionBackground variant="cream" pattern={true} orbs={true} intensity="subtle" />
       <div class="container-wide py-16 md:py-24 relative">
@@ -226,7 +402,7 @@ const shareJs = `navigator.share ? navigator.share({title: '${post.title.replace
           {related.map((p) => (
             <a href={`/artikel/${p.slug}/`} class="group block bg-cream-50 border border-cream-100 hover:border-gold-500 transition-all overflow-hidden">
               <div class="aspect-[16/10] overflow-hidden bg-forest-700">
-                <img src={p.image} alt={p.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                <img src={p.image} alt={p.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" width="640" height="400" />
               </div>
               <div class="p-5">
                 <div class="font-mono text-[10px] uppercase tracking-widest text-gold-700 font-bold mb-2">{p.cat} · {p.readTime}</div>

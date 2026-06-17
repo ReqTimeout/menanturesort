@@ -1,6 +1,6 @@
 ---
 /**
- * /artikel — V5.3 rewrite (storytelling + 6 articles + subscribe)
+ * /artikel — V5.4 (sync from articles.json, 11 SEO articles)
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NavMenu from '../components/svelte/NavMenu.svelte';
@@ -8,118 +8,73 @@ import Footer from '../components/astro/Footer.astro';
 import PageHero from '../components/astro/PageHero.astro';
 import SectionDivider from '../components/astro/SectionDivider.astro';
 import SectionBackground from '../components/astro/SectionBackground.astro';
+import articles from '../data/articles.json';
 import siteData from '../data/site.json';
 import { waUrl } from '../lib/utils';
-import { ArrowRight, Calendar, Tag, MessageCircle, TrendingUp, BookOpen, Sparkles, Award } from 'lucide-svelte';
+import { ArrowRight, Calendar, Tag, MessageCircle, TrendingUp, BookOpen, Sparkles, Award, Search } from 'lucide-svelte';
 
 const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'artikel');
 
-const posts = [
-  {
-    slug: 'mengapa-investasi-villa-lebih-stabil-dari-saham-2026',
-    title: 'Mengapa Investasi Vila Lebih Stabil dari Saham di 2026',
-    cat: 'Investasi',
-    date: '14 Juni 2026',
-    readTime: '6 min',
-    excerpt: 'Tangible asset vs paper asset — yield 10% per tahun, risiko lebih terkontrol, dan Anda tetap punya aset fisik yang bisa diwariskan. Ini bukan perbandingan emosional, ini data.',
-    image: '/images/villa/idaman/hero-row.jpeg',
-    highlight: 'Yield 10% / year'
-  },
-  {
-    slug: 'roi-10-guarantee-realita-atau-marketing',
-    title: 'ROI 10% Guarantee: Realita atau Marketing?',
-    cat: 'Edukasi',
-    date: '10 Juni 2026',
-    readTime: '5 min',
-    excerpt: 'Kami bedah akad ROI guarantee — apa yang dijamin, apa yang tidak, dan bagaimana mitigasi risikonya. Tanpa jargon, tanpa selling, murni transparansi.',
-    image: '/images/villa/bijak/hero-row.jpeg',
-    highlight: 'Bedah Akad'
-  },
-  {
-    slug: 'kpr-bank-vs-kpr-developer-pilih-yang-mana',
-    title: 'KPR Bank vs KPR Developer: Pilih yang Mana?',
-    cat: 'Pembiayaan',
-    date: '5 Juni 2026',
-    readTime: '7 min',
-    excerpt: 'Simulasi total bayar 15 tahun untuk kedua skema, dengan kasus DP 25-30%. Mana yang lebih hemat di 2026? Jawaban: tergantung profil Anda.',
-    image: '/images/villa/mapan/hero-detail.jpeg',
-    highlight: 'Simulasi 15 Tahun'
-  },
-  {
-    slug: 'bandung-timur-hidden-gem-properti-2026',
-    title: 'Bandung Timur: Hidden Gem Properti 2026',
-    cat: 'Lokasi',
-    date: '1 Juni 2026',
-    readTime: '4 min',
-    excerpt: 'Data kenaikan harga 28% YoY, akses Tol Cisumdawu yang baru dibuka, dan kenapa Cicalengka menjadi incaran investor savvy. Bukan opini — data BPS.',
-    image: '/images/villa/idaman/hero-row.jpeg',
-    highlight: 'Data BPS 2026'
-  },
-  {
-    slug: '5-pertanyaan-wajib-sebelum-beli-villa-investasi',
-    title: '5 Pertanyaan Wajib Sebelum Beli Vila Investasi',
-    cat: 'Edukasi',
-    date: '28 Mei 2026',
-    readTime: '8 min',
-    excerpt: 'Checklist due diligence: legalitas SHM, track record operator, yield projection, exit strategy, dan 1 pertanyaan yang 90% investor lupa.',
-    image: '/images/villa/bijak/hero-row.jpeg',
-    highlight: 'Checklist PDF'
-  },
-  {
-    slug: 'sahid-hotel-50-tahun-standar-hospitality-indonesia',
-    title: 'Sahid Hotel: 50 Tahun Standar Hospitality Indonesia',
-    cat: 'Manajemen',
-    date: '20 Mei 2026',
-    readTime: '6 min',
-    excerpt: 'Track record Sahid dari 1970-an hingga sekarang — apa yang membuat mereka tetap relevan, dan kenapa Anda menitipkan villa pada mereka adalah keputusan rasional.',
-    image: '/images/villa/mapan/street-view.jpeg',
-    highlight: 'Heritage 1970'
-  },
+// Sort: highest-intent "harga" article first, then by date desc
+const sortedArticles = [...articles].sort((a, b) => {
+  if (a.slug.includes('harga-simulasi')) return -1;
+  if (b.slug.includes('harga-simulasi')) return 1;
+  return new Date(b.date).getTime() - new Date(a.date).getTime();
+});
+
+const featured = sortedArticles[0];
+const grid = sortedArticles.slice(1);
+
+const categories = [
+  { name: 'Harga & Simulasi', count: 0, color: 'gold' },
+  { name: 'Investasi', count: 0, color: 'forest' },
+  { name: 'Lokasi', count: 0, color: 'forest' },
+  { name: 'Kompetitor', count: 0, color: 'gold' }
 ];
+sortedArticles.forEach((a) => {
+  const c = categories.find((c) => c.name === a.cat);
+  if (c) c.count++;
+});
 ---
 
 <BaseLayout
-  title="Insight & Edukasi Investasi Vila — Update Mingguan | Menantu Resort"
-  description="Artikel edukatif untuk calon investor properti: analisis yield, bedah skema KPR, ROI guarantee, dan data lokasi. Ditulis oleh tim internal + konsultan properti. Update mingguan via WhatsApp."
+  title="Insight & Artikel Investasi Villa Bandung — Menantu Resort"
+  description="Insight properti, simulasi KPR, dan review jujur investasi villa di Bandung Timur. Dipublikasikan oleh tim internal MK LAND & Sahid."
+  canonical="https://menantu-resort.com/artikel/"
 >
   <NavMenu client:load />
 
-  <main class="pt-20">
-    <PageHero
-      eyebrow="Insight & Edukasi"
-      title="Baca Sebelum Beli:"
-      accent="Insight dari Tim & Pakar."
-      description="Artikel edukatif untuk calon investor properti — bebas jargon, fokus pada data. Kami tidak menjual, kami menjelaskan. Karena keputusan Rp 1-2 Miliar harus didasari pemahaman, bukan emosi."
-      primaryCta={{ text: 'Subscribe via WhatsApp', href: waLink('Halo, saya mau subscribe update artikel mingguan via WhatsApp.') }}
-      stats={[
-        { value: '6+', label: 'Artikel' },
-        { value: 'Weekly', label: 'Update' },
-        { value: '100%', label: 'Gratis' },
-      ]}
-      bgColor="cream"
-    />
-
-    <SectionDivider variant="diamond" />
-
-    <!-- Stats Banner — kenapa baca di sini -->
-    <section class="relative bg-forest-700 text-cream-50 py-16 md:py-20 overflow-hidden gsap-fade" data-section="why-read">
-      <SectionBackground variant="dark" pattern={true} orbs={true} intensity="normal" />
+  <main>
+    <!-- HERO -->
+    <section class="relative bg-forest-700 text-cream-50 overflow-hidden pt-32 pb-20 md:pt-40 md:pb-32">
+      <SectionBackground variant="forest" pattern={true} orbs={true} intensity="medium" />
       <div class="container-wide relative">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div class="text-center">
-            <BookOpen size={32} class="text-gold-500 mx-auto mb-3" />
-            <div class="font-display text-3xl text-gold-500 font-bold mb-2">Bebas Jargon</div>
-            <p class="text-cream-50/80 text-sm">Tidak ada istilah teknis tanpa penjelasan. Cocok untuk first-time investor.</p>
+        <div class="max-w-4xl">
+          <div class="font-mono text-xs uppercase tracking-widest text-gold-500 mb-6 font-bold flex items-center gap-2">
+            <BookOpen size={14} /> Insight · Edukasi · Transparansi
           </div>
-          <div class="text-center">
-            <TrendingUp size={32} class="text-gold-500 mx-auto mb-3" />
-            <div class="font-display text-3xl text-gold-500 font-bold mb-2">Data-Driven</div>
-            <p class="text-cream-50/80 text-sm">Setiap klaim didukung data BPS, riset pasar, atau benchmark industri.</p>
+          <h1 class="font-display text-display-xl text-cream-50 leading-[0.95] tracking-tight mb-8">
+            Baca <em class="text-gold-500">cerdas</em> sebelum<br />
+            <em class="text-gold-500">beli</em> villa investasi.
+          </h1>
+          <p class="font-body text-xl md:text-2xl text-cream-50/85 leading-relaxed max-w-2xl mb-10">
+            Simulasi KPR, review jujur kompetitor, analisis yield, dan strategi ROI — tanpa jargon sales, murni data & pengalaman operator 50 tahun.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href={waLink('Halo, saya mau konsultasi gratis via WhatsApp setelah baca artikel.')} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">
+              <MessageCircle size={18} /> Konsultasi Gratis
+            </a>
+            <a href="#articles" class="btn btn-outline-light btn-lg">
+              Mulai Baca <ArrowRight size={16} />
+            </a>
           </div>
-          <div class="text-center">
-            <Award size={32} class="text-gold-500 mx-auto mb-3" />
-            <div class="font-display text-3xl text-gold-500 font-bold mb-2">No Selling</div>
-            <p class="text-cream-50/80 text-sm">Kami jelaskan pro & kontra. Keputusan ada di tangan Anda.</p>
+
+          <!-- Trust strip -->
+          <div class="mt-12 pt-8 border-t border-gold-500/20 flex flex-wrap items-center gap-x-8 gap-y-3 text-xs font-mono text-cream-50/70">
+            <span class="inline-flex items-center gap-1.5"><Sparkles size={12} class="text-gold-500" /> {articles.length} artikel terpublikasi</span>
+            <span class="inline-flex items-center gap-1.5"><Award size={12} class="text-gold-500" /> Ditulis tim internal MK LAND + Sahid</span>
+            <span class="inline-flex items-center gap-1.5"><TrendingUp size={12} class="text-gold-500" /> Update mingguan</span>
           </div>
         </div>
       </div>
@@ -127,29 +82,70 @@ const posts = [
 
     <SectionDivider variant="ornate" />
 
-    <!-- Article Grid -->
-    <section class="relative bg-white py-20 md:py-32 gsap-fade" data-section="articles">
-      <SectionBackground variant="cream" pattern={true} orbs={true} intensity="subtle" />
-      <SectionBackground variant="cream" pattern={true} orbs={true} intensity="subtle" />
-      <div class="container-wide relative">
-        <div class="grid grid-cols-12 gap-8 mb-12">
-          <div class="col-span-12 md:col-span-3">
-            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3 font-semibold">— 6 Artikel Pilihan</div>
+    <!-- FEATURED -->
+    {featured && (
+      <section class="bg-cream-50 relative" id="articles">
+        <SectionBackground variant="gold" pattern={true} orbs={true} intensity="subtle" />
+        <div class="container-wide py-16 md:py-24 relative">
+          <div class="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-gold-700 mb-6 font-bold">
+            <Sparkles size={14} /> Paling Diminati · Paling Dicari
           </div>
-          <div class="col-span-12 md:col-span-9">
-            <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight mb-4">
-              Mulai dari yang <em class="text-gold-700">paling relevan</em> untuk Anda
+
+          <a href={`/artikel/${featured.slug}/`} class="group block card-premium overflow-hidden grid grid-cols-1 lg:grid-cols-2 bg-white hover:border-gold-500 transition-colors">
+            <div class="relative aspect-[16/10] lg:aspect-auto overflow-hidden bg-forest-700">
+              <img src={featured.image} alt={featured.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="eager" width="800" height="500" />
+              <div class="absolute top-4 left-4 flex gap-2">
+                <span class="badge badge-gold text-[10px] uppercase tracking-wider font-bold">Featured</span>
+                <span class="badge badge-gold text-[10px] uppercase tracking-wider font-bold">{featured.cat}</span>
+              </div>
+            </div>
+            <div class="p-8 md:p-12 flex flex-col justify-center">
+              <div class="flex items-center gap-3 mb-3 text-xs text-ink-mute font-mono">
+                <Calendar size={12} />
+                <span>{featured.date}</span>
+                <span>·</span>
+                <span>{featured.readTime} baca</span>
+              </div>
+              <h2 class="font-display text-2xl md:text-4xl text-forest-700 font-bold leading-[1.1] mb-4 group-hover:text-gold-700 transition-colors">
+                {featured.title}
+              </h2>
+              <p class="text-ink-700 text-base md:text-lg leading-relaxed mb-6">
+                {featured.excerpt}
+              </p>
+              <div class="flex items-center gap-2 text-gold-700 font-bold uppercase tracking-wider text-sm group-hover:gap-3 transition-all">
+                Baca Versi Lengkap
+                <ArrowRight size={16} />
+              </div>
+            </div>
+          </a>
+        </div>
+      </section>
+    )}
+
+    <!-- GRID -->
+    <section class="bg-cream-50 relative">
+      <div class="container-wide pb-20 md:pb-32 relative">
+        <div class="flex flex-wrap items-end justify-between gap-4 mb-10">
+          <div>
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-2 font-semibold">— Insight Lengkap</div>
+            <h2 class="font-display text-3xl md:text-4xl text-forest-700 font-bold leading-tight">
+              Semua <em class="text-gold-700">Artikel</em>
             </h2>
-            <p class="font-body text-lg text-ink-soft max-w-2xl">Topik disusun berdasarkan pertanyaan yang paling sering masuk dari calon investor.</p>
+          </div>
+          <div class="font-mono text-xs text-ink-mute uppercase tracking-wider">
+            {grid.length} artikel
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {posts.map((p, i) => (
-            <a href={`/artikel/${p.slug}/`} class="card-premium overflow-hidden hover:scale-[1.02] transition-all duration-300 group flex flex-col">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {grid.map((p) => (
+            <a
+              href={`/artikel/${p.slug}/`}
+              class="card-premium group overflow-hidden flex flex-col"
+            >
               <div class="relative aspect-[16/10] overflow-hidden bg-forest-700">
-                <img src={p.image} alt={p.title} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
-                <div class="absolute inset-0 bg-gradient-to-t from-forest-900/60 via-transparent to-transparent"></div>
+                <img src={p.image} alt={p.title} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" width="640" height="400" />
+                <div class="absolute inset-0 bg-gradient-to-t from-forest-900/40 via-transparent to-transparent"></div>
                 <div class="absolute top-4 left-4">
                   <span class="badge badge-gold text-[10px] uppercase tracking-wider font-bold">{p.cat}</span>
                 </div>
@@ -157,19 +153,19 @@ const posts = [
                   <span class="px-2 py-1 bg-forest-900/80 backdrop-blur text-cream-50 text-[10px] font-mono uppercase tracking-wider">{p.readTime}</span>
                 </div>
               </div>
-              <div class="p-7 flex-1 flex flex-col">
-                <div class="flex items-center gap-3 mb-3 text-xs text-ink-mute">
-                  <Calendar size={12} />
-                  <span class="font-mono">{p.date}</span>
-                  <span class="font-mono text-gold-700 font-bold uppercase tracking-wider">· {p.highlight}</span>
+              <div class="p-6 md:p-7 flex-1 flex flex-col">
+                <div class="flex items-center gap-2 mb-3 text-xs text-ink-mute font-mono">
+                  <Calendar size={11} />
+                  <span>{p.date}</span>
+                  <span class="text-gold-700 font-bold">· {p.highlight}</span>
                 </div>
-                <h2 class="font-display text-xl text-forest-700 font-bold mb-3 group-hover:text-gold-700 transition-colors leading-tight">
+                <h3 class="font-display text-lg md:text-xl text-forest-700 font-bold mb-3 group-hover:text-gold-700 transition-colors leading-tight line-clamp-3">
                   {p.title}
-                </h2>
-                <p class="text-sm text-ink-soft mb-5 leading-relaxed flex-1">{p.excerpt}</p>
-                <a href={`/artikel/${p.slug}/`} class="text-gold-700 text-sm font-bold inline-flex items-center gap-2 hover:gap-3 transition-all uppercase tracking-wider">
-                  Baca Versi Lengkap <ArrowRight size={14} />
-                </a>
+                </h3>
+                <p class="text-sm text-ink-soft leading-relaxed mb-5 flex-1 line-clamp-3">{p.excerpt}</p>
+                <div class="text-gold-700 text-xs font-bold inline-flex items-center gap-2 group-hover:gap-3 transition-all uppercase tracking-wider mt-auto">
+                  Baca <ArrowRight size={14} />
+                </div>
               </div>
             </a>
           ))}
@@ -179,9 +175,8 @@ const posts = [
 
     <SectionDivider variant="diamond" />
 
-    <!-- Subscribe CTA -->
+    <!-- SUBSCRIBE CTA -->
     <section class="relative section-cream py-20 md:py-32 gsap-fade" data-section="subscribe">
-      <SectionBackground variant="gold" pattern={true} orbs={true} intensity="subtle" />
       <SectionBackground variant="gold" pattern={true} orbs={true} intensity="subtle" />
       <div class="container-wide relative">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -198,8 +193,14 @@ const posts = [
               <li class="flex items-start gap-3"><Sparkles size={18} class="text-gold-700 flex-shrink-0 mt-0.5" /><span class="text-ink-700">Data pasar properti bulanan</span></li>
               <li class="flex items-start gap-3"><Sparkles size={18} class="text-gold-700 flex-shrink-0 mt-0.5" /><span class="text-ink-700">Promo eksklusif subscriber</span></li>
             </ul>
-            <a href={waLink('Halo, saya mau subscribe update artikel mingguan via WhatsApp.')} target="_blank" rel="noopener" class="btn btn-whatsapp btn-lg">
-              <MessageCircle size={18} /> Subscribe via WhatsApp <ArrowRight class="w-4 h-4" />
+            <a
+              href={waLink('Halo, saya mau subscribe update artikel mingguan via WhatsApp.')}
+              target="_blank"
+              rel="noopener"
+              onclick="typeof gtag_report_conversion==='function' && gtag_report_conversion('https://wa.me/6285925942277');"
+              class="btn btn-whatsapp btn-lg"
+            >
+              <MessageCircle size={18} /> Subscribe via WhatsApp <ArrowRight size={16} />
             </a>
           </div>
           <div class="card-premium p-10 bg-forest-700 text-cream-50 relative overflow-hidden">
