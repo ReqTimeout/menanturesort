@@ -102,38 +102,59 @@
          min-h-[680px] sm:min-h-[640px] sm:h-screen
          pt-28 pb-36 sm:pt-0 sm:pb-0"
 >
-  <!-- Parallax BG (GPU only, transform) -->
+  <!-- Parallax BG: Video loop + poster fallback (GPU only, transform) -->
   <div
-    class="absolute inset-0 z-0 will-change-transform"
-    style="transform: translate3d({mouseX}px, {mouseY + bgY}px, 0) scale(1.06);"
+    class="absolute inset-0 z-0 will-change-transform overflow-hidden"
+    style="transform: translate3d({mouseX}px, {mouseY + bgY}px, 0) scale(1.08);"
   >
+    <!-- Video: cinematic 360° loop, 12s trimmed, 1.2MB -->
+    <video
+      class="absolute inset-0 w-full h-full object-cover hidden sm:block"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="metadata"
+      poster="/images/hero/hero-360-poster-1280.jpg"
+      aria-hidden="true"
+    >
+      <source src="/images/hero/hero-360.mp4" type="video/mp4" />
+    </video>
+    <!-- Mobile: poster only (no autoplay video — save bandwidth) -->
     <img
-      src="/images/ref/villa-mapan-detail.jpg"
+      class="absolute inset-0 w-full h-full object-cover sm:hidden"
+      src="/images/hero/hero-360-poster-1280.jpg"
       alt="Menantu Resort — Villa Resort Premium Bandung Timur dengan arsitektur Limasan modern"
-      class="w-full h-full object-cover"
       loading="eager"
       fetchpriority="high"
       decoding="async"
     />
+    <!-- Subtle darken + brand blend (multiply) untuk konsistensi warna -->
+    <div
+      class="absolute inset-0 pointer-events-none"
+      style="background: linear-gradient(180deg,
+        rgba(13, 27, 20, 0.20) 0%,
+        rgba(27, 67, 50, 0.15) 50%,
+        rgba(13, 27, 20, 0.40) 100%);"
+    ></div>
   </div>
 
-  <!-- Animated premium gradient (subtle, GPU only) -->
+  <!-- Animated premium gradient (color tint, GPU only) -->
   <div
     class="absolute inset-0 z-[1] animate-hero-gradient pointer-events-none"
     style="background: linear-gradient(135deg,
-      rgba(27, 67, 50, 0.20) 0%,
-      rgba(212, 165, 116, 0.12) 35%,
-      rgba(13, 27, 20, 0.30) 70%,
-      rgba(27, 67, 50, 0.18) 100%);"
+      rgba(27, 67, 50, 0.45) 0%,
+      rgba(13, 27, 20, 0.35) 50%,
+      rgba(27, 67, 50, 0.45) 100%);"
   ></div>
 
-  <!-- Layered overlays (gradient + grain) -->
+  <!-- Layered overlays (vignette for text legibility) -->
   <div
     class="absolute inset-0 z-[1]"
     style="background: linear-gradient(180deg,
-      rgba(13, 27, 20, 0.45) 0%,
-      rgba(13, 27, 20, 0.15) 30%,
-      rgba(13, 27, 20, 0.55) 70%,
+      rgba(13, 27, 20, 0.55) 0%,
+      rgba(13, 27, 20, 0.30) 30%,
+      rgba(13, 27, 20, 0.70) 70%,
       rgba(13, 27, 20, 0.95) 100%);"
   ></div>
   <div
