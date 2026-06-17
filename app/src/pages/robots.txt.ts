@@ -98,10 +98,8 @@ Disallow: /
 
 # === Sitemap declarations (submit all to GSC) ===
 Sitemap: https://menantu-resort.com/sitemap.xml
-Sitemap: https://menantu-resort.com/sitemap-index.xml
 Sitemap: https://menantu-resort.com/news-sitemap.xml
 Sitemap: https://menantu-resort.com/image-sitemap.xml
-Sitemap: https://menantu-resort.com/sitemap-0.xml
 
 # === Host directive (Yandex specific) ===
 Host: https://menantu-resort.com
