@@ -102,60 +102,59 @@
          min-h-[680px] sm:min-h-[640px] sm:h-screen
          pt-28 pb-36 sm:pt-0 sm:pb-0"
 >
-  <!-- Parallax BG: Video loop + poster fallback (GPU only, transform) -->
+  <!-- Parallax BG: Panorama image (GPU only, transform) — image sudah punya gradient tone -->
   <div
-    class="absolute inset-0 z-0 will-change-transform overflow-hidden"
-    style="transform: translate3d({mouseX}px, {mouseY + bgY}px, 0) scale(1.08);"
+    class="absolute inset-0 z-0 will-change-transform overflow-hidden bg-forest-900"
+    style="transform: translate3d({mouseX}px, {mouseY + bgY}px, 0) scale(1.06);"
   >
-    <!-- Video: cinematic 360° loop, 12s trimmed, 1.2MB -->
-    <video
-      class="absolute inset-0 w-full h-full object-cover hidden sm:block"
-      autoplay
-      muted
-      loop
-      playsinline
-      preload="metadata"
-      poster="/images/hero/hero-360-poster-1280.jpg"
-      aria-hidden="true"
-    >
-      <source src="/images/hero/hero-360.mp4" type="video/mp4" />
-    </video>
-    <!-- Mobile: poster only (no autoplay video — save bandwidth) -->
+    <!-- Mobile: vertical-friendly crop (centered) -->
     <img
       class="absolute inset-0 w-full h-full object-cover sm:hidden"
-      src="/images/hero/hero-360-poster-1280.jpg"
-      alt="Menantu Resort — Villa Resort Premium Bandung Timur dengan arsitektur Limasan modern"
+      src="/images/hero/hero-panorama-mobile.jpg"
+      alt=""
       loading="eager"
       fetchpriority="high"
       decoding="async"
     />
-    <!-- Subtle darken + brand blend (multiply) untuk konsistensi warna -->
+    <!-- Desktop: full panorama landscape -->
+    <img
+      class="absolute inset-0 w-full h-full object-cover hidden sm:block"
+      src="/images/hero/hero-panorama-1920.jpg"
+      srcset="/images/hero/hero-panorama-800.jpg 800w, /images/hero/hero-panorama-1280.jpg 1280w, /images/hero/hero-panorama-1920.jpg 1920w"
+      sizes="100vw"
+      alt="Menantu Resort — Panorama kawasan eco-resort Cicalengka, Bandung Timur dengan pegunungan di kejauhan"
+      loading="eager"
+      fetchpriority="high"
+      decoding="async"
+    />
+    <!-- THIN gradient overlay (image sudah punya tone, jadi tipis saja) -->
     <div
       class="absolute inset-0 pointer-events-none"
       style="background: linear-gradient(180deg,
-        rgba(13, 27, 20, 0.20) 0%,
-        rgba(27, 67, 50, 0.15) 50%,
-        rgba(13, 27, 20, 0.40) 100%);"
+        rgba(13, 27, 20, 0.45) 0%,
+        rgba(13, 27, 20, 0.20) 25%,
+        rgba(13, 27, 20, 0.55) 65%,
+        rgba(13, 27, 20, 0.92) 100%);"
     ></div>
   </div>
 
-  <!-- Animated premium gradient (color tint, GPU only) -->
+  <!-- Thin brand tint (image sudah punya tone, jadi sangat subtle) -->
   <div
     class="absolute inset-0 z-[1] animate-hero-gradient pointer-events-none"
     style="background: linear-gradient(135deg,
-      rgba(27, 67, 50, 0.45) 0%,
-      rgba(13, 27, 20, 0.35) 50%,
-      rgba(27, 67, 50, 0.45) 100%);"
+      rgba(27, 67, 50, 0.18) 0%,
+      rgba(13, 27, 20, 0.10) 50%,
+      rgba(27, 67, 50, 0.20) 100%);"
   ></div>
 
-  <!-- Layered overlays (vignette for text legibility) -->
+  <!-- Vignette tipis (cukup untuk text legibility, tidak menutupi panorama) -->
   <div
     class="absolute inset-0 z-[1]"
     style="background: linear-gradient(180deg,
-      rgba(13, 27, 20, 0.55) 0%,
-      rgba(13, 27, 20, 0.30) 30%,
-      rgba(13, 27, 20, 0.70) 70%,
-      rgba(13, 27, 20, 0.95) 100%);"
+      rgba(13, 27, 20, 0.20) 0%,
+      rgba(13, 27, 20, 0.05) 25%,
+      rgba(13, 27, 20, 0.40) 65%,
+      rgba(13, 27, 20, 0.85) 100%);"
   ></div>
   <div
     class="absolute inset-0 z-[1] opacity-[0.07] mix-blend-overlay"
