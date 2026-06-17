@@ -8,8 +8,8 @@
 
   let selectedId = $state('idaman');
   let dpPercent = $state(30);
-  let tenorYears = $state(20);
-  let interestRate = $state(5);
+  let tenorYears = $state(10);
+  let interestRate = $state(12);
   let occupancy = $state(55);
   let nightlyRate = $state(2200000);
 
@@ -114,20 +114,25 @@
           <label class="text-[15px] font-semibold text-ink-700">Down Payment</label>
           <div class="font-mono text-[14px] md:text-[15px] text-forest-700 font-bold">{dpPercent}% · {fmtShort(kpr().dp)}</div>
         </div>
-        <input type="range" min="20" max="60" step="5" bind:value={dpPercent} class="w-full kpr-slider" />
+        <input type="range" min="30" max="60" step="10" bind:value={dpPercent} class="w-full kpr-slider" />
         <div class="flex justify-between text-[11px] text-ink-mute font-mono mt-1.5">
-          <span>20%</span><span>40%</span><span>60%</span>
+          <span>30%</span><span>50%</span><span>60%</span>
         </div>
       </div>
 
       <div>
         <div class="flex items-center justify-between mb-2">
-          <label class="text-[15px] font-semibold text-ink-700">Tenor</label>
+          <label class="text-[15px] font-semibold text-ink-700 flex items-center gap-2">
+            Tenor
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-gold-500/15 text-gold-700 text-[10px] font-bold uppercase tracking-wider rounded">
+              Bunga tetap 12%
+            </span>
+          </label>
           <div class="font-mono text-[14px] md:text-[15px] text-forest-700 font-bold">{tenorYears} tahun</div>
         </div>
-        <input type="range" min="5" max="20" step="5" bind:value={tenorYears} class="w-full kpr-slider" />
+        <input type="range" min="10" max="20" step="5" bind:value={tenorYears} class="w-full kpr-slider" />
         <div class="flex justify-between text-[11px] text-ink-mute font-mono mt-1.5">
-          <span>5</span><span>10</span><span>15</span><span>20</span>
+          <span>10</span><span>15</span><span>15</span><span>20</span>
         </div>
       </div>
 
@@ -274,7 +279,7 @@
         <MessageCircle size={16} /> Konsultasi Simulasi Ini via WhatsApp
       </a>
       <p class="text-[10px] text-ink-mute text-center font-mono">
-        * Simulasi edukatif. Suku bunga final ditentukan bank/developer setelah appraisal.
+        * Simulasi edukatif. Bunga fixed <strong>12% p.a.</strong>, DP 30/50/60%, tenor 10–20 tahun. Final rate & terms ditentukan setelah appraisal.
       </p>
     </div>
   </div>
