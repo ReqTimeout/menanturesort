@@ -212,19 +212,52 @@ const SITE_URL = 'https://menantu-resort.com';
   // Usage: onclick="return gtag_report_conversion('https://wa.me/...')"
   // ═══════════════════════════════════════════════════════════
   // Helper: open URL in new tab (wa.me always opens in new tab to keep current page)
+  // IMPORTANT: NEVER navigate current tab. If popup blocked, show inline notice
+  // so user can click again (better UX than losing their scroll position).
   window.mrOpenInNewTab = function(url) {
-    if (!url) return;
-    if (window._mrOpened === url) return;
+    if (!url) return false;
+    if (window._mrOpened === url) return false;
     window._mrOpened = url;
-    // Open in new tab (works in desktop + mobile browsers)
-    const win = window.open(url, '_blank', 'noopener,noreferrer');
+
+    // Try to open in new tab first
+    let win = null;
+    try {
+      win = window.open(url, '_blank', 'noopener,noreferrer');
+    } catch (e) {
+      win = null;
+    }
+
+    // Try alternative method (some browsers prefer this)
     if (!win) {
-      // Popup blocked fallback: navigate current tab
-      window.location.href = url;
-    } else {
+      try {
+        const a = document.createElement('a');
+        a.href = url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        return true;
+      } catch (e) {
+        win = null;
+      }
+    }
+
+    if (win) {
       // Focus the new tab (in case browser kept current tab focused)
       try { win.focus(); } catch (e) {}
+      return true;
     }
+
+    // Last resort: show inline notice (do NOT navigate current tab!)
+    console.warn('[Menantu] Popup blocked. WhatsApp URL:', url);
+    const notice = document.createElement('div');
+    notice.style.cssText = 'position:fixed;bottom:20px;left:20px;right:20px;background:#1B4332;color:#fff;padding:16px 20px;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.3);z-index:99999;font-family:system-ui;display:flex;align-items:center;gap:12px;';
+    notice.innerHTML = '<span style="flex:1">Popup diblokir. Klik tombol untuk buka WhatsApp:</span><a href="' + url + '" target="_blank" rel="noopener" style="background:#D4A574;color:#1B4332;padding:8px 16px;border-radius:4px;font-weight:700;text-decoration:none">Buka WhatsApp</a>';
+    document.body.appendChild(notice);
+    setTimeout(() => notice.remove(), 8000);
+    return false;
   };
 
   /**
