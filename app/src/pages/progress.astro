@@ -1,0 +1,350 @@
+---
+/**
+ * /progress — V1.0 Halaman Progress Pembangunan
+ *
+ * Sections:
+ *   1. PageHero (forest dark) — ajakan nonton video progress
+ *   2. Video embed (YouTube iMN2D5dTE68) — di dalam card premium
+ *   3. Story section — kenapa kami share progress (transparency, trust)
+ *   4. Highlight milestone — apa yang sudah dibangun & yang akan datang
+ *   5. Timeline ringkas — Q1/Q2/Q3/Q4 2026
+ *   6. FOMO + urgency (16 unit tersisa, harga naik)
+ *   7. Final CTA WhatsApp (dual CTA)
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NavMenu from '../components/svelte/NavMenu.svelte';
+import Footer from '../components/astro/Footer.astro';
+import PageHero from '../components/astro/PageHero.astro';
+import SectionDivider from '../components/astro/SectionDivider.astro';
+import SectionBackground from '../components/astro/SectionBackground.astro';
+import { waUrl } from '../lib/utils';
+import {
+  Play, MessageCircle, ArrowRight, ShieldCheck, HardHat, TreePine,
+  Building2, CheckCircle2, Clock, Sparkles, Award, CalendarDays,
+  TrendingUp, AlertCircle, Eye,
+} from 'lucide-svelte';
+import siteData from '../data/site.json';
+
+const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'progress_page');
+
+const videoId = 'iMN2D5dTE68';
+const videoEmbed = `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`;
+const videoThumb = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
+
+const milestones = [
+  {
+    quarter: 'Q1 2026',
+    title: 'Pondasi & Infrastruktur',
+    icon: HardHat,
+    items: [
+      'Pekerjaan pondasi 16 unit villa batch 1 selesai 100%',
+      'Akses jalan internal 3,5 Ha hotmix & paving block',
+      'Jaringan air bersih (deep well + treatment) & listrik 23 KVA tersambung',
+      'Pintu gerbang utama dan pos keamanan operasional',
+    ],
+  },
+  {
+    quarter: 'Q2 2026',
+    title: 'Struktur & Atap Villa',
+    icon: Building2,
+    items: [
+      'Struktur beton bertulang 3 tipe villa (Bijak, Idaman, Mapan)',
+      'Pekerjaan atap & dak — finishing slate tile premium',
+      'Instalasi pipa air panas & dingin ke seluruh unit',
+      'Instalasi listrik smart home ready (IoT control panel)',
+    ],
+  },
+  {
+    quarter: 'Q3 2026',
+    title: 'Interior & Fasilitas Resort',
+    icon: TreePine,
+    items: [
+      'Sentuhan akhir interior: marmer, kayu solid, sanitary premium',
+      'Lobby resort, resto, spa, kolam renang, area yoga outdoor',
+      'Landscaping 70% kawasan — taman tropis & area duduk',
+      'Marketing gallery & show unit siap untuk presentasi investor',
+    ],
+  },
+  {
+    quarter: 'Q4 2026',
+    title: 'Serah Terima & Soft Opening',
+    icon: Award,
+    items: [
+      'Penyerahan SHM, kunci, dan sertifikat operasional',
+      'Trial operation 30 hari sebelum serah terima resmi',
+      'Sahid onboarding: training, SOP, sistem bagi hasil 70/30',
+      'Grand launch resort & first guests stay',
+    ],
+  },
+];
+
+const whyTransparent = [
+  { title: 'Bukti, Bukan Janji', desc: 'Setiap progress yang kami klaim bisa Anda verifikasi langsung melalui video, foto, dan kunjungan lapangan. Tidak ada investor yang membeli "mimpi" — semua unit real, semua material real.', icon: Eye },
+  { title: 'Standar Pro Tinggi', desc: 'Kami kontraktor dengan standar hotel — bukan kontraktor perumahan. Material, finishing, dan SOP mengacu pada standar Sahid Hotel & Resort yang sudah teruji 50+ tahun.', icon: ShieldCheck },
+  { title: 'Timeline Realistis', desc: 'Kami tidak janji serah terima dalam 6 bulan. Proyek resort sekelas ini butuh 12-18 bulan. Janji muluk = bahaya. Janji terukur = profesional.', icon: Clock },
+  { title: 'Komunitas Investor', desc: 'Setiap 2 minggu kami kirim video & foto update ke seluruh pemilik. Anda tidak hanya dapat villa — Anda dapat visibilitas penuh atas aset Anda.', icon: Sparkles },
+];
+---
+
+<BaseLayout
+  title="Progress Pembangunan Menantu Resort — Update Konstruksi Real-Time | Menantu Resort"
+  description="Lihat progress pembangunan Sahid Menantu Resort secara real-time. Video dokumentasi, timeline Q1-Q4 2026, foto setiap milestone. 16 dari 74 unit tersisa sebelum harga naik."
+>
+  <NavMenu client:load variant="dark" />
+
+  <main class="pt-20">
+    <PageHero
+      bgColor="forest"
+      eyebrow="Update Konstruksi Real-Time"
+      title="Lihat Sendiri,"
+      accent="Villa Anda Sedang Dibangun."
+      description="Tidak ada proyek properti yang lebih transparan dari ini. Setiap minggu kami dokumentasikan progress — dari galian pondasi, pengecoran, instalasi, hingga finishing. Tekan play dan buktikan sendiri."
+      primaryCta={{ text: 'Tonton Video Progress', href: '#video-update' }}
+      secondaryCta={{ text: 'Chat Survey Lokasi', href: waLink('Halo, saya ingin lihat langsung progress pembangunan Menantu Resort. Bisa dijadwalkan kunjungan?') }}
+      stats={[
+        { value: '78%', label: 'Pembangunan' },
+        { value: 'Q4 2026', label: 'Serah Terima' },
+        { value: '16/74', label: 'Unit Tersisa' },
+      ]}
+      trustCopy={['SHM Bersih', 'Dikelola Sahid 50+ Tahun', 'ROI 10% Guarantee']}
+    />
+
+    <SectionDivider variant="ornate" />
+
+    <!-- Video Embed -->
+    <section id="video-update" class="relative bg-cream-50 py-20 md:py-28 gsap-fade">
+      <SectionBackground variant="forest" pattern={true} orbs={true} intensity="subtle" />
+      <div class="container-wide relative">
+        <div class="grid grid-cols-12 gap-8 mb-10">
+          <div class="col-span-12 md:col-span-3">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3 font-semibold">— Video Update</div>
+          </div>
+          <div class="col-span-12 md:col-span-9">
+            <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight mb-4">
+              Progress <em class="text-gold-700">Pembangunan</em> — Live From Site
+            </h2>
+            <p class="text-ink-soft text-lg max-w-2xl leading-relaxed">
+              Di-rekam langsung dari kawasan 3,5 hektar Menantu Resort, Bandung Timur. Anda akan melihat pondasi, struktur, infrastruktur kawasan, dan view pegunungan hijau yang mengelilinginya.
+            </p>
+          </div>
+        </div>
+
+        <div class="card-premium overflow-hidden aspect-video shadow-2xl group relative">
+          <iframe
+            src={videoEmbed}
+            title="Progress Pembangunan Sahid Menantu Resort 2"
+            class="w-full h-full"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+          ></iframe>
+        </div>
+
+        <div class="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-mono uppercase tracking-widest text-ink-mute">
+          <span class="inline-flex items-center gap-2"><Play size={12} class="text-gold-700" /> Video Resmi</span>
+          <span class="text-gold-500/40">·</span>
+          <span>Update Terakhir: Juni 2026</span>
+          <span class="text-gold-500/40">·</span>
+          <span>Kawasan 3,5 Ha Cicalengka</span>
+        </div>
+      </div>
+    </section>
+
+    <SectionDivider variant="diamond" />
+
+    <!-- Story — Why we share progress -->
+    <section class="relative bg-white py-20 md:py-28 gsap-fade" data-section="why-transparent">
+      <SectionBackground variant="cream" pattern={true} orbs={true} intensity="subtle" />
+      <div class="container-wide relative">
+        <div class="grid grid-cols-12 gap-8 mb-12">
+          <div class="col-span-12 md:col-span-3">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3 font-semibold">— Mengapa Kami Transparan</div>
+          </div>
+          <div class="col-span-12 md:col-span-9">
+            <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight mb-6">
+              Karena investasi villa <em class="text-gold-700">bukanlah</em> membeli kucing dalam karung.
+            </h2>
+            <div class="space-y-5 text-ink-soft text-lg leading-relaxed max-w-3xl">
+              <p>
+                Jika Anda cari-cari di internet, Anda akan menemukan banyak proyek villa resort di Indonesia yang hanya bisa dilihat dari brosur PDF. Tidak ada video. Tidak ada foto real. Tidak ada visit site yang bisa Anda lakukan. Ujung-ujungnya, banyak yang <em>macet</em>, tertunda, atau bahkan tidak selesai sama sekali.
+              </p>
+              <p>
+                Kami di <strong class="text-forest-700">Menantu Resort</strong> memilih jalur berbeda. Properti investasi度假 adalah komitmen finansial besar — komitmen yang mengubah hidup. Tidak seharusnya Anda percaya begitu saja pada kata-kata marketing. Anda <strong class="text-forest-700">berhak</strong> melihat sendiri, kapan saja, dari mana saja.
+              </p>
+              <p>
+                Itulah mengapa halaman ini ada. Anda bisa menonton video progress pembangunan langsung dari situs. Anda bisa datang survey lokasi kapan saja — hanya butuh 45 menit dari Bandung, atau 2,5 jam dari Jakarta. Anda bisa join grup pemilik yang mendapat update mingguan berupa foto & video dari mandor lapangan.
+              </p>
+              <p>
+                Dan yang paling penting: setiap unit villa yang Anda lihat di video ini <strong class="text-forest-700">bukan render</strong>. Itu beton, baja, kayu, dan marmer yang sedang berdiri di atas lahan 3,5 hektar di Cicalengka, Bandung Timur.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mt-12">
+          {whyTransparent.map((item) => {
+            const Icon = item.icon;
+            return (
+              <div class="card-premium p-7 group hover:scale-[1.02] transition-all duration-300 hover:shadow-2xl">
+                <div class="w-12 h-12 bg-forest-700 text-gold-500 flex items-center justify-center mb-4">
+                  <Icon size={22} />
+                </div>
+                <h3 class="font-display text-xl text-forest-700 mb-3 font-bold">{item.title}</h3>
+                <p class="text-sm text-ink-soft leading-relaxed">{item.desc}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+
+    <SectionDivider variant="ornate" />
+
+    <!-- Milestone Timeline -->
+    <section class="relative section-cream py-20 md:py-28 gsap-fade" data-section="milestones">
+      <SectionBackground variant="gold" pattern={true} orbs={true} intensity="subtle" />
+      <div class="container-wide relative">
+        <div class="grid grid-cols-12 gap-8 mb-14">
+          <div class="col-span-12 md:col-span-3">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3 font-semibold">— Timeline 2026</div>
+          </div>
+          <div class="col-span-12 md:col-span-9">
+            <h2 class="font-display text-display-md text-forest-700 leading-[0.95] tracking-tight mb-4">
+              Empat kuartal, <em class="text-gold-700">satu standar resort.</em>
+            </h2>
+            <p class="text-ink-soft text-lg max-w-3xl leading-relaxed">
+              Pembangunan resort sekelas ini tidak bisa instan. Ini bukan perumahan cluster yang selesai dalam 8 bulan. Ini adalah kawasan resort dengan standar hotel Sahid — butuh presisi, butuh material premium, dan butuh waktu yang terukur.
+            </p>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          {milestones.map((m, i) => {
+            const Icon = m.icon;
+            return (
+              <div class="card-premium p-7 md:p-10 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-40 h-40 bg-gold-500/5 rounded-full blur-3xl"></div>
+                <div class="relative grid grid-cols-12 gap-6 items-start">
+                  <div class="col-span-12 md:col-span-3">
+                    <div class="flex items-center gap-3 mb-3">
+                      <div class="w-12 h-12 bg-forest-700 text-gold-500 flex items-center justify-center flex-shrink-0">
+                        <Icon size={22} />
+                      </div>
+                      <div class="font-mono text-xs uppercase tracking-widest text-gold-700 font-bold">Step {i + 1}</div>
+                    </div>
+                    <div class="font-mono text-sm uppercase tracking-widest text-forest-700 font-bold">{m.quarter}</div>
+                    <h3 class="font-display text-2xl text-forest-700 mt-2 leading-tight">{m.title}</h3>
+                  </div>
+                  <div class="col-span-12 md:col-span-9">
+                    <ul class="space-y-3">
+                      {m.items.map((item) => (
+                        <li class="flex items-start gap-3 text-ink-soft leading-relaxed">
+                          <CheckCircle2 size={18} class="text-gold-700 mt-1 flex-shrink-0" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+
+    <SectionDivider variant="diamond" />
+
+    <!-- FOMO Urgency -->
+    <section class="relative bg-forest-900 text-cream-50 py-20 md:py-28 overflow-hidden gsap-fade" data-section="urgency">
+      <SectionBackground variant="dark" pattern={true} orbs={true} intensity="normal" />
+      <div class="container-wide relative">
+        <div class="text-center mb-14">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-gold-500/10 border border-gold-500/30 mb-6">
+            <AlertCircle size={14} class="text-gold-500" />
+            <span class="font-mono text-xs uppercase tracking-widest text-gold-500 font-semibold">— Diskon Pembukaan Akan Berakhir</span>
+          </div>
+          <h2 class="font-display text-display-lg text-cream-50 leading-[0.95] tracking-tight mb-6 max-w-3xl mx-auto">
+            16 dari 74 unit tersisa. <em class="text-gold-500">Harga naik 5%</em> setelah groundbreaking.
+          </h2>
+          <p class="text-cream-50/70 text-lg max-w-2xl mx-auto leading-relaxed">
+            Ini bukan tekanan buatan. Ini matematika sederhana: semakin banyak unit terjual, semakin sedikit pilihan. Saat groundbreaking fase 2 dimulai, harga otomatis naik karena nilai kawasan naik & material cost terkunci.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div class="card-premium bg-forest-700/50 border-gold-500/20 p-8 text-center backdrop-blur-sm">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-500 mb-3">— Unit Terjual</div>
+            <div class="font-display text-5xl text-gold-500 font-bold leading-none mb-2">58 / 74</div>
+            <div class="text-cream-50/60 text-sm">78% kawasan sudah dimiliki investor smart</div>
+          </div>
+          <div class="card-premium bg-forest-700/50 border-gold-500/20 p-8 text-center backdrop-blur-sm">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-500 mb-3">— Sisa Unit</div>
+            <div class="font-display text-5xl text-gold-500 font-bold leading-none mb-2">16</div>
+            <div class="text-cream-50/60 text-sm">Tersisa di 3 tipe villa (Bijak, Idaman, Mapan)</div>
+          </div>
+          <div class="card-premium bg-forest-700/50 border-gold-500/20 p-8 text-center backdrop-blur-sm">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-500 mb-3">— Kenaikan Harga</div>
+            <div class="font-display text-5xl text-gold-500 font-bold leading-none mb-2">+5%</div>
+            <div class="text-cream-50/60 text-sm">Setelah fase pondasi selesai (Q1 2026)</div>
+          </div>
+        </div>
+
+        <div class="card-premium bg-gold-500/10 border-gold-500/30 p-8 md:p-10 max-w-3xl mx-auto text-center">
+          <TrendingUp size={32} class="text-gold-500 mx-auto mb-4" />
+          <h3 class="font-display text-2xl md:text-3xl text-cream-50 mb-3 leading-tight">
+            Booking fee hanya <em class="text-gold-500">Rp 10 juta</em>, refundable 100%.
+          </h3>
+          <p class="text-cream-50/70 leading-relaxed max-w-2xl mx-auto">
+            Lock unit Anda hari ini dengan booking fee ringan. Uang 100% kembali jika berubah pikiran dalam 14 hari. Tanpa komitmen, tanpa tekanan, hanya langkah pertama menuju passive income seumur hidup.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <SectionDivider variant="ornate" />
+
+    <!-- Final CTA -->
+    <section class="relative bg-cream-50 py-20 md:py-32 gsap-fade" data-section="final-cta">
+      <SectionBackground variant="forest" pattern={true} orbs={true} intensity="subtle" />
+      <div class="container-wide relative">
+        <div class="max-w-4xl mx-auto text-center">
+          <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-4 font-semibold">— Langkah Anda Selanjutnya</div>
+          <h2 class="font-display text-display-lg text-forest-700 leading-[0.95] tracking-tight mb-6">
+            Anda sudah melihat <em class="text-gold-700">buktinya</em>.<br/>
+            Sekarang giliran Anda memutuskan.
+          </h2>
+          <p class="text-ink-soft text-lg max-w-2xl mx-auto leading-relaxed mb-10">
+            Video ini bukan untuk Anda yang sedang "lihat-lihat". Video ini untuk Anda yang sudah serius mempertimbangkan investasi度假 villa di Bandung Timur dan butuh validasi terakhir sebelum memutuskan. <strong class="text-forest-700">Chat WhatsApp kami sekarang</strong> untuk survey lokasi, hitung simulasi KPR, atau download brosur lengkap.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto mb-10">
+            <a href={waLink('Halo, saya sudah melihat video progress Menantu Resort. Saya ingin *Survey Lokasi Gratis* dan melihat langsung unit villa di Cicalengka. Bisa dijadwalkan untuk weekend ini?')} target="_blank" rel="noopener" class="btn btn-primary btn-lg">
+              <CalendarDays size={18} />
+              Survey Lokasi Gratis
+              <ArrowRight size={16} />
+            </a>
+            <a href={waLink('Halo, saya sudah menonton video progress. Saya ingin *Simulasi KPR Personal* untuk tipe villa Bijak/Idaman/Mapan. Bisa dihitung cicilan per bulan dan skema pembayarannya?')} target="_blank" rel="noopener" class="btn btn-secondary btn-lg">
+              <MessageCircle size={18} />
+              Hitung Simulasi KPR
+            </a>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-mono uppercase tracking-widest text-ink-mute">
+            <span class="inline-flex items-center gap-2"><ShieldCheck size={12} class="text-gold-700" /> SHM Bersih</span>
+            <span class="text-gold-500/40">·</span>
+            <span class="inline-flex items-center gap-2"><Award size={12} class="text-gold-700" /> Dikelola Sahid 50+ Tahun</span>
+            <span class="text-gold-500/40">·</span>
+            <span class="inline-flex items-center gap-2"><TrendingUp size={12} class="text-gold-700" /> ROI 10% Guarantee</span>
+            <span class="text-gold-500/40">·</span>
+            <span>16 Unit Tersisa</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

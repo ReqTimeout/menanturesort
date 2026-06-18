@@ -42,6 +42,7 @@ const STATIC_PAGES = [
   { loc: '/investasi/skema-bank/', priority: 0.9, changefreq: 'daily' },
   { loc: '/investasi/skema-developer/', priority: 0.9, changefreq: 'daily' },
   { loc: '/lokasi/', priority: 0.9, changefreq: 'weekly' },
+  { loc: '/progress/', priority: 0.9, changefreq: 'daily' },
   { loc: '/resort/', priority: 0.9, changefreq: 'weekly' },
   { loc: '/artikel/', priority: 0.9, changefreq: 'daily' },
   { loc: '/faq/', priority: 0.7, changefreq: 'weekly' },

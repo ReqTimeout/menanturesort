@@ -15,6 +15,7 @@
     { href: '/investasi', label: 'Investasi' },
     { href: '/resort', label: 'Resort' },
     { href: '/lokasi', label: 'Lokasi' },
+    { href: '/progress', label: 'Progress' },
     { href: '/artikel', label: 'Artikel' },
     { href: '/kontak', label: 'Kontak' },
   ];
