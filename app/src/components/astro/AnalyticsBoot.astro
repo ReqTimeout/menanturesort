@@ -211,11 +211,25 @@ const SITE_URL = 'https://menantu-resort.com';
   // (per https://support.google.com/tagmanager/answer/7545739)
   // Usage: onclick="return gtag_report_conversion('https://wa.me/...')"
   // ═══════════════════════════════════════════════════════════
+  // Helper: open URL in new tab (wa.me always opens in new tab to keep current page)
+  window.mrOpenInNewTab = function(url) {
+    if (!url || window._mrOpened === url) return;
+    window._mrOpened = url;
+    // Open in new tab (works in desktop + mobile browsers)
+    const win = window.open(url, '_blank', 'noopener,noreferrer');
+    if (!win) {
+      // Popup blocked fallback: navigate current tab
+      window.location.href = url;
+    } else {
+      // Focus the new tab (in case browser kept current tab focused)
+      try { win.focus(); } catch (e) {}
+    }
+  };
+
   window.gtag_report_conversion = function(url) {
     var callback = function () {
-      if (typeof(url) != 'undefined' && url && !window._mrRedirected) {
-        window._mrRedirected = true;
-        window.location = url;
+      if (typeof(url) != 'undefined' && url) {
+        window.mrOpenInNewTab(url);
       }
     };
     // Fire conversion with Enhanced Conversions user_data
@@ -229,11 +243,10 @@ const SITE_URL = 'https://menantu-resort.com';
     } else {
       callback();
     }
-    // Fallback redirect in 2.5s (in case callback never fires)
+    // Fallback open in 2.5s (in case callback never fires)
     setTimeout(function() {
-      if (typeof(url) != 'undefined' && url && !window._mrRedirected) {
-        window._mrRedirected = true;
-        window.location = url;
+      if (typeof(url) != 'undefined' && url) {
+        window.mrOpenInNewTab(url);
       }
     }, 2500);
     return false;
@@ -321,14 +334,14 @@ const SITE_URL = 'https://menantu-resort.com';
     const source = link.getAttribute('data-source') || link.getAttribute('data-track') || 'organic_wa_click';
     const label = link.getAttribute('aria-label') || (link.textContent || '').trim().slice(0, 50) || 'whatsapp';
 
-    // Fire Google Ads conversion (with callback redirect)
+    // Fire Google Ads conversion (opens in new tab via callback)
     e.preventDefault();
     if (typeof window.gtag_report_conversion === 'function') {
       window.gtag_report_conversion(href);
     } else {
-      // Fallback: fire events then redirect
+      // Fallback: fire events then open in new tab
       window.mrAnalytics.trackWhatsApp(source, label);
-      setTimeout(function() { window.location = href; }, 1500);
+      setTimeout(function() { window.mrOpenInNewTab(href); }, 800);
     }
   }, true);
 
