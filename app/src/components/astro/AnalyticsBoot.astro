@@ -213,7 +213,8 @@ const SITE_URL = 'https://menantu-resort.com';
   // ═══════════════════════════════════════════════════════════
   // Helper: open URL in new tab (wa.me always opens in new tab to keep current page)
   window.mrOpenInNewTab = function(url) {
-    if (!url || window._mrOpened === url) return;
+    if (!url) return;
+    if (window._mrOpened === url) return;
     window._mrOpened = url;
     // Open in new tab (works in desktop + mobile browsers)
     const win = window.open(url, '_blank', 'noopener,noreferrer');
@@ -226,29 +227,37 @@ const SITE_URL = 'https://menantu-resort.com';
     }
   };
 
+  /**
+   * gtag_report_conversion — Google Ads conversion snippet
+   * Opens WhatsApp in new tab. Waits 400ms after gtag fires to ensure
+   * network request completes (Google Ads "no detection" usually caused
+   * by callback firing before request resolves).
+   */
   window.gtag_report_conversion = function(url) {
-    var callback = function () {
-      if (typeof(url) != 'undefined' && url) {
-        window.mrOpenInNewTab(url);
-      }
+    var navigated = false;
+    var safeOpen = function () {
+      if (navigated) return;
+      navigated = true;
+      window.mrOpenInNewTab(url);
     };
     // Fire conversion with Enhanced Conversions user_data
     if (typeof window.gtag === 'function') {
-      window.mrEnhancedConversions.trackConversion('conversion', null, {
+      // Direct call (per Google spec — no custom EC wrapper that may swallow callback)
+      window.gtag('event', 'conversion', {
         send_to: ADS_ID + '/' + ADS_CONVERSION_LABEL,
         value: ADS_CONVERSION_VALUE,
         currency: 'IDR',
-        event_callback: callback
-      }, 'ads');
+        event_callback: function() {
+          // Wait 400ms to ensure pixel request resolves
+          setTimeout(safeOpen, 400);
+        }
+      });
     } else {
-      callback();
+      // No gtag loaded — just open
+      safeOpen();
     }
-    // Fallback open in 2.5s (in case callback never fires)
-    setTimeout(function() {
-      if (typeof(url) != 'undefined' && url) {
-        window.mrOpenInNewTab(url);
-      }
-    }, 2500);
+    // Safety net fallback: open in 1.5s if callback never fires
+    setTimeout(safeOpen, 1500);
     return false;
   };
 
@@ -339,9 +348,9 @@ const SITE_URL = 'https://menantu-resort.com';
     if (typeof window.gtag_report_conversion === 'function') {
       window.gtag_report_conversion(href);
     } else {
-      // Fallback: fire events then open in new tab
+      // Fallback: fire events then open in new tab (after 400ms for safety)
       window.mrAnalytics.trackWhatsApp(source, label);
-      setTimeout(function() { window.mrOpenInNewTab(href); }, 800);
+      setTimeout(function() { window.mrOpenInNewTab(href); }, 400);
     }
   }, true);
 
