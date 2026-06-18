@@ -1,198 +1,372 @@
 ---
 /**
- * AnalyticsBoot.astro — GA4 + Google Ads + Enhanced Conversions
+ * AnalyticsBoot.astro — Complete Google Tag + GA4 + Google Ads + Enhanced Conversions
  *
- * Features:
- * 1. gtag.js unified load (GA4 + Google Ads)
- * 2. gtag_report_conversion snippet for Google Ads conversion tracking
- * 3. Enhanced Conversions SHA-256 helpers (auto-hash user PII)
- * 4. Global WhatsApp click interceptor with 1.5s delayed redirect
- * 5. Auto-injects conversion data into every wa.me link
+ * Loads:
+ * 1. gtag.js (unified for GA4 + Google Ads)
+ * 2. Google Ads AW-18240219652 config
+ * 3. gtag_report_conversion snippet (WhatsApp → Google Ads conversion)
+ * 4. Enhanced Conversions SHA-256 helpers (user PII → hashed)
+ * 5. Global WhatsApp click interceptor (auto-track ALL wa.me links)
+ * 6. User data store (email/phone/name from forms → localStorage)
  *
- * Set env vars in .env or cPanel Node.js app:
- *   PUBLIC_GA4_ID=G-XXXXXXXXXX
- *   PUBLIC_GOOGLE_ADS_ID=AW-XXXXXXXXXX
- *   PUBLIC_GTM_ID=GTM-XXXXXXX (optional)
- *   PUBLIC_ADS_CONVERSION_LABEL=/<label> (e.g. /vK06CJ_ui78cEITUzvlD)
+ * ENV vars (set in cPanel Node.js selector or .env):
+ *   PUBLIC_GA4_ID=G-39JSBHZY3T
+ *   PUBLIC_GOOGLE_ADS_ID=AW-18240219652
+ *   PUBLIC_ADS_CONVERSION_LABEL=1KOzCMms1cAcEITUzvlD
+ *   PUBLIC_ADS_CONVERSION_VALUE=10000000   (Rp 10 juta booking fee)
+ *
+ * Tracking Pixel IDs:
+ *   GA4: G-39JSBHZY3T
+ *   Google Ads: AW-18240219652
+ *   Conversion Label: 1KOzCMms1cAcEITUzvlD
+ *   Google Site Verification: d-7Ysdp2HpFgntspeuC4-jsiy_cvgq3LxNVubodaYyU
  */
 const GA4_ID = import.meta.env.PUBLIC_GA4_ID || 'G-39JSBHZY3T';
 const ADS_ID = import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-18240219652';
-const GTM_ID = import.meta.env.PUBLIC_GTM_ID || '';
-const ADS_CONVERSION_LABEL = import.meta.env.PUBLIC_ADS_CONVERSION_LABEL || 'vK06CJ_ui78cEITUzvlD';
+const ADS_CONVERSION_LABEL = import.meta.env.PUBLIC_ADS_CONVERSION_LABEL || '1KOzCMms1cAcEITUzvlD';
+const ADS_CONVERSION_VALUE = parseFloat(import.meta.env.PUBLIC_ADS_CONVERSION_VALUE || '10000000');
+const SITE_URL = 'https://menantu-resort.com';
 ---
 
-{GA4_ID && (
-  <>
-    <!-- Google tag (gtag.js) - GA4 + Google Ads unified -->
-    <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}></script>
-    <script is:inline define:vars={{ GA4_ID, ADS_ID, GTM_ID, ADS_CONVERSION_LABEL }}>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){ dataLayer.push(arguments); }
-      window.gtag = gtag;
-      gtag('js', new Date());
+<!-- Google tag (gtag.js) - Loads BOTH GA4 + Google Ads (unified) -->
+<script async src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}></script>
+<script async src={`https://www.googletagmanager.com/gtag/js?id=${ADS_ID}`}></script>
 
-      // Configure GA4
-      gtag('config', GA4_ID, {
-        anonymize_ip: true,
-        send_page_view: true,
-        // Enhanced Conversions: auto-detect user data from forms
-        enhanced_conversions: { gdpr_consent_enabled: false }
-      });
+<script is:inline define:vars={{ GA4_ID, ADS_ID, ADS_CONVERSION_LABEL, ADS_CONVERSION_VALUE, SITE_URL }}>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  window.gtag = gtag;
+  gtag('js', new Date());
 
-      // Configure Google Ads
-      if (ADS_ID) {
-        gtag('config', ADS_ID, {
-          allow_enhanced_conversions: true,
-          send_page_view: true
-        });
+  // ═══════════════════════════════════════════════════════════
+  // GA4 Configuration
+  // ═══════════════════════════════════════════════════════════
+  gtag('config', GA4_ID, {
+    anonymize_ip: true,
+    send_page_view: true,
+    enhanced_conversions: { gdpr_consent_enabled: false },
+    linker: { domains: ['menantu-resort.com', 'www.menantu-resort.com'] }
+  });
+
+  // ═══════════════════════════════════════════════════════════
+  // Google Ads Configuration (AW-18240219652)
+  // CRITICAL: Must config BOTH GA4 and Ads accounts
+  // ═══════════════════════════════════════════════════════════
+  gtag('config', ADS_ID, {
+    allow_enhanced_conversions: true,
+    send_page_view: true,
+    // Enhanced Conversions for leads/sales
+    conversion_linker: true
+  });
+
+  // ═══════════════════════════════════════════════════════════
+  // ENHANCED CONVERSIONS USER DATA STORE
+  // Stores user PII (name/email/phone) in localStorage so ANY
+  // subsequent conversion (even WhatsApp clicks) can attach
+  // user_data for better matching + bid optimization.
+  // ═══════════════════════════════════════════════════════════
+  window.mrUserData = {
+    _store: { email: '', phone: '', firstName: '', lastName: '', address: null, capturedAt: 0 },
+
+    set: function(data) {
+      try {
+        const prev = JSON.parse(localStorage.getItem('mr_user_data') || '{}');
+        const merged = { ...prev, ...data, capturedAt: Date.now() };
+        localStorage.setItem('mr_user_data', JSON.stringify(merged));
+        window.mrUserData._store = merged;
+        window.dispatchEvent(new CustomEvent('mr:userdata:updated', { detail: merged }));
+        return true;
+      } catch (e) { return false; }
+    },
+
+    get: function() {
+      try {
+        const data = JSON.parse(localStorage.getItem('mr_user_data') || '{}');
+        // Only return if captured within last 90 days
+        if (data.capturedAt && (Date.now() - data.capturedAt) < 90 * 24 * 60 * 60 * 1000) {
+          return data;
+        }
+        return {};
+      } catch (e) { return {}; }
+    },
+
+    getHashed: async function() {
+      const data = window.mrUserData.get();
+      return await window.mrEnhancedConversions.hashData(data);
+    },
+
+    clear: function() {
+      try { localStorage.removeItem('mr_user_data'); } catch (e) {}
+    }
+  };
+
+  // ═══════════════════════════════════════════════════════════
+  // SHA-256 HASHING (per Google Ads spec)
+  // - email: trim, lowercase
+  // - phone: digits only, country code required
+  // - name: trim, lowercase
+  // - address fields: trim, lowercase
+  // ═══════════════════════════════════════════════════════════
+  window.mrEnhancedConversions = {
+    normalize: {
+      email: (s) => String(s || '').trim().toLowerCase(),
+      phone: (s) => String(s || '').replace(/[^0-9]/g, ''),
+      firstName: (s) => String(s || '').trim().toLowerCase(),
+      lastName: (s) => String(s || '').trim().toLowerCase(),
+      text: (s) => String(s || '').trim().toLowerCase()
+    },
+
+    hashString: async function(str) {
+      if (!str) return undefined;
+      try {
+        const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+        return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+      } catch (e) { return undefined; }
+    },
+
+    hashData: async function(data) {
+      if (!data) return {};
+      const n = window.mrEnhancedConversions.normalize;
+      const h = window.mrEnhancedConversions.hashString;
+      const result = {};
+
+      // Email
+      const email = n.email(data.email);
+      if (email) result.email = await h(email);
+
+      // Phone — must include country code (e.g. 62xxx for Indonesia)
+      let phone = n.phone(data.phone);
+      if (phone && !phone.startsWith('62') && phone.startsWith('0')) {
+        phone = '62' + phone.substring(1);
+      }
+      if (phone && phone.length >= 8) result.phone_number = await h(phone);
+
+      // Name
+      const firstName = n.firstName(data.firstName);
+      if (firstName) result.first_name = await h(firstName);
+      const lastName = n.lastName(data.lastName);
+      if (lastName) result.last_name = await h(lastName);
+
+      // Address (optional)
+      if (data.address) {
+        const a = data.address;
+        const addr = {};
+        const street = n.text(a.street); if (street) addr.street = await h(street);
+        const city = n.text(a.city); if (city) addr.city = await h(city);
+        const region = n.text(a.region); if (region) addr.region = await h(region);
+        const postal = String(a.postal || '').replace(/\s/g, ''); if (postal) addr.postal_code = postal;
+        if (Object.keys(addr).length > 0) {
+          addr.country = a.country || 'ID';
+          result.address = addr;
+        }
       }
 
-      // ═══════════════════════════════════════════════════════════
-      // GOOGLE ADS CONVERSION TRACKER
-      // (Per snippet docs: https://support.google.com/tagmanager/answer/7545739)
-      // ═══════════════════════════════════════════════════════════
-      window.gtag_report_conversion = function(url) {
-        var callback = function () {
-          if (typeof(url) != 'undefined' && url) {
-            window.location = url;
-          }
-        };
-        // Fire conversion event to Google Ads
-        gtag('event', 'conversion', {
-          'send_to': ADS_ID + '/' + ADS_CONVERSION_LABEL,
-          'value': 1.0,
-          'currency': 'IDR',
-          'event_callback': callback
-        });
-        // Fallback: if gtag fails to fire within 2s, redirect anyway
-        setTimeout(function() {
-          if (typeof(url) != 'undefined' && url && !window._mrRedirected) {
-            window._mrRedirected = true;
-            window.location = url;
-          }
-        }, 2000);
-        return false;
+      return result;
+    },
+
+    /**
+     * Fire a conversion event with Enhanced Conversions user_data
+     * @param eventName - gtag event name (e.g. 'conversion', 'generate_lead')
+     * @param userData - {email, phone, firstName, lastName, address?}
+     * @param conversionData - extra params (value, currency, transaction_id, items)
+     * @param sendTo - 'ads' | 'ga4' | 'both' (default 'both')
+     */
+    trackConversion: async function(eventName, userData, conversionData, sendTo) {
+      sendTo = sendTo || 'both';
+      const userInput = userData || window.mrUserData.get();
+      const hashed = await window.mrEnhancedConversions.hashData(userInput);
+
+      // Attach user_data to ALL destinations
+      const baseParams = {
+        ...(conversionData || {}),
+        enhanced_conversions_data: hashed,
+        user_data: hashed  // also for newer API
       };
 
-      // ═══════════════════════════════════════════════════════════
-      // ENHANCED CONVERSIONS — SHA-256 hashing
-      // ═══════════════════════════════════════════════════════════
-      window.mrEnhancedConversions = {
-        hashData: async function(data) {
-          const encoder = new TextEncoder();
-          const normalize = (str) => String(str || '').trim().toLowerCase().replace(/\s+/g, '');
-          const hash = async (str) => {
-            if (!str) return undefined;
-            const normalized = normalize(str);
-            if (!normalized) return undefined;
-            const buffer = await crypto.subtle.digest('SHA-256', encoder.encode(normalized));
-            return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-          };
-          return {
-            email: await hash(data.email),
-            phone_number: await hash(data.phone),
-            first_name: await hash(data.firstName),
-            last_name: await hash(data.lastName),
-            address: data.address ? {
-              street: await hash(data.address.street),
-              city: await hash(data.address.city),
-              region: await hash(data.address.region),
-              postal_code: data.address.postal ? String(data.address.postal).replace(/\s/g, '') : undefined,
-              country: data.address.country || 'ID'
-            } : undefined
-          };
-        },
-        trackConversion: async function(eventName, userData, conversionData) {
-          const hashed = await this.hashData(userData);
-          if (typeof window.gtag === 'function') {
-            window.gtag('event', eventName, {
-              ...conversionData,
-              enhanced_conversions_data: hashed,
-              send_to: ADS_ID || GA4_ID
-            });
-          }
-        }
-      };
-
-      // ═══════════════════════════════════════════════════════════
-      // SITE ANALYTICS HELPERS
-      // ═══════════════════════════════════════════════════════════
-      window.mrAnalytics = {
-        trackEvent: function (name, params) {
-          if (typeof window.gtag === 'function') {
-            window.gtag('event', name, params || {});
-          }
-        },
-        trackPageview: function (path) {
-          if (typeof window.gtag === 'function') {
-            window.gtag('event', 'page_view', {
-              page_path: path,
-              page_title: document.title,
-              send_to: GA4_ID
-            });
-          }
-        },
-        trackWhatsApp: function (source, label, conversionLabel) {
-          if (typeof window.gtag === 'function') {
-            // GA4 event
-            window.gtag('event', 'whatsapp_click', {
-              event_category: 'engagement',
-              event_label: label || source,
-              source: source,
-              send_to: ADS_ID ? [GA4_ID, ADS_ID] : GA4_ID
-            });
-            // Google Ads conversion (if label provided)
-            if (conversionLabel) {
-              window.gtag('event', 'conversion', {
-                send_to: ADS_ID + '/' + conversionLabel,
-                value: 1.0,
-                currency: 'IDR'
-              });
-            }
-          }
-        },
-        trackLead: async function (formData) {
-          await window.mrEnhancedConversions.trackConversion('generate_lead', formData, {
-            event_category: 'lead',
-            event_label: formData.leadType || 'general',
-            value: formData.estimatedValue || 0,
-            currency: 'IDR',
-            send_to: ADS_ID || GA4_ID
+      if (sendTo === 'both' || sendTo === 'ads') {
+        // Fire to Google Ads (priority destination)
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', eventName, {
+            ...baseParams,
+            send_to: ADS_ID
           });
         }
-      };
+      }
+      if (sendTo === 'both' || sendTo === 'ga4') {
+        // Also send to GA4 (with user properties for audience building)
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', eventName, {
+            ...baseParams,
+            send_to: GA4_ID
+          });
+        }
+      }
+      return hashed;
+    }
+  };
 
-      // ═══════════════════════════════════════════════════════════
-      // GLOBAL WHATSAPP CLICK INTERCEPTOR
-      // Auto-tracks ALL wa.me clicks with 1.5s delay redirect
-      // (so Google Ads conversion registers before navigation)
-      // ═══════════════════════════════════════════════════════════
-      document.addEventListener('click', function(e) {
-        const link = e.target.closest && e.target.closest('a[href*="wa.me/"]');
-        if (!link) return;
-        const href = link.getAttribute('href');
-        if (!href) return;
-        // Don't intercept if it's a mailto/tel or already has data attribute (manually handled)
-        if (link.dataset.tracked === 'true') return;
-        e.preventDefault();
-        // Identify source
-        const source = link.dataset.track || link.getAttribute('data-source') || 'unknown';
-        const label = link.getAttribute('aria-label') || link.textContent?.trim().slice(0, 50) || 'wa_click';
-        // Fire events
-        if (typeof window.mrAnalytics !== 'undefined') {
-          window.mrAnalytics.trackWhatsApp(source, label, ADS_CONVERSION_LABEL);
-        }
-        // Fire the Google Ads conversion with callback
-        if (typeof window.gtag_report_conversion === 'function') {
-          // Mark as tracked
-          link.dataset.tracked = 'true';
-          // Use the conversion snippet, which will redirect after firing
-          window.gtag_report_conversion(href);
-        } else {
-          // Fallback: 1.5s delay then redirect
-          setTimeout(function() { window.location = href; }, 1500);
-        }
-      }, true);
-    </script>
-  </>
-)}
+  // ═══════════════════════════════════════════════════════════
+  // GOOGLE ADS CONVERSION SNIPPET
+  // (per https://support.google.com/tagmanager/answer/7545739)
+  // Usage: onclick="return gtag_report_conversion('https://wa.me/...')"
+  // ═══════════════════════════════════════════════════════════
+  window.gtag_report_conversion = function(url) {
+    var callback = function () {
+      if (typeof(url) != 'undefined' && url && !window._mrRedirected) {
+        window._mrRedirected = true;
+        window.location = url;
+      }
+    };
+    // Fire conversion with Enhanced Conversions user_data
+    if (typeof window.gtag === 'function') {
+      window.mrEnhancedConversions.trackConversion('conversion', null, {
+        send_to: ADS_ID + '/' + ADS_CONVERSION_LABEL,
+        value: ADS_CONVERSION_VALUE,
+        currency: 'IDR',
+        event_callback: callback
+      }, 'ads');
+    } else {
+      callback();
+    }
+    // Fallback redirect in 2.5s (in case callback never fires)
+    setTimeout(function() {
+      if (typeof(url) != 'undefined' && url && !window._mrRedirected) {
+        window._mrRedirected = true;
+        window.location = url;
+      }
+    }, 2500);
+    return false;
+  };
+
+  // ═══════════════════════════════════════════════════════════
+  // ANALYTICS HELPERS
+  // ═══════════════════════════════════════════════════════════
+  window.mrAnalytics = {
+    trackEvent: function(name, params) {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', name, params || {});
+      }
+    },
+    trackPageview: function(path) {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'page_view', {
+          page_path: path,
+          page_title: document.title,
+          send_to: GA4_ID
+        });
+      }
+    },
+
+    /**
+     * Track WhatsApp click — fires BOTH:
+     * 1. GA4 whatsapp_click event
+     * 2. Google Ads conversion (with Enhanced Conversions)
+     * 3. Closes current page after 1.5s (so conversion fires)
+     */
+    trackWhatsApp: async function(source, label) {
+      // GA4 event
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'whatsapp_click', {
+          event_category: 'engagement',
+          event_label: label || source,
+          source: source,
+          send_to: GA4_ID
+        });
+      }
+      // Google Ads conversion (with EC user_data)
+      await window.mrEnhancedConversions.trackConversion('conversion', null, {
+        send_to: ADS_ID + '/' + ADS_CONVERSION_LABEL,
+        value: ADS_CONVERSION_VALUE,
+        currency: 'IDR'
+      }, 'ads');
+    },
+
+    /**
+     * Track lead form submission
+     * @param formData - {email, phone, firstName, lastName, leadType, estimatedValue}
+     */
+    trackLead: async function(formData) {
+      // Persist user data so future clicks (even non-form pages) get EC
+      if (formData.email || formData.phone) {
+        window.mrUserData.set({
+          email: formData.email,
+          phone: formData.phone,
+          firstName: formData.firstName,
+          lastName: formData.lastName
+        });
+      }
+      await window.mrEnhancedConversions.trackConversion('generate_lead', formData, {
+        event_category: 'lead',
+        event_label: formData.leadType || 'general',
+        value: formData.estimatedValue || ADS_CONVERSION_VALUE,
+        currency: 'IDR'
+      }, 'both');
+    }
+  };
+
+  // ═══════════════════════════════════════════════════════════
+  // GLOBAL WHATSAPP CLICK INTERCEPTOR
+  // Auto-tracks ALL wa.me clicks (no manual onclick needed)
+  // Even for links with onclick="..." or data-track attributes
+  // ═══════════════════════════════════════════════════════════
+  document.addEventListener('click', function(e) {
+    const link = e.target.closest && e.target.closest('a[href*="wa.me/"]');
+    if (!link) return;
+    if (link.dataset.mrTracked === '1') return; // already handled
+    link.dataset.mrTracked = '1';
+
+    const href = link.getAttribute('href');
+    if (!href) return;
+    const source = link.getAttribute('data-source') || link.getAttribute('data-track') || 'organic_wa_click';
+    const label = link.getAttribute('aria-label') || (link.textContent || '').trim().slice(0, 50) || 'whatsapp';
+
+    // Fire Google Ads conversion (with callback redirect)
+    e.preventDefault();
+    if (typeof window.gtag_report_conversion === 'function') {
+      window.gtag_report_conversion(href);
+    } else {
+      // Fallback: fire events then redirect
+      window.mrAnalytics.trackWhatsApp(source, label);
+      setTimeout(function() { window.location = href; }, 1500);
+    }
+  }, true);
+
+  // ═══════════════════════════════════════════════════════════
+  // AUTO-COLLECT user data from forms (for Enhanced Conversions)
+  // Watch for any form with name="email", name="phone", name="nama"
+  // ═══════════════════════════════════════════════════════════
+  document.addEventListener('submit', function(e) {
+    const form = e.target;
+    if (!form || form.tagName !== 'FORM') return;
+    const fd = new FormData(form);
+    const userData = {};
+    for (const [k, v] of fd.entries()) {
+      const lk = k.toLowerCase();
+      if (lk === 'email' || lk === 'e-mail') userData.email = v;
+      else if (lk === 'phone' || lk === 'whatsapp' || lk === 'wa' || lk === 'hp' || lk === 'telepon') userData.phone = v;
+      else if (lk === 'name' || lk === 'nama' || lk === 'fullname') {
+        const parts = String(v).trim().split(/\s+/);
+        userData.firstName = parts[0] || '';
+        userData.lastName = parts.slice(1).join(' ') || '';
+      }
+      else if (lk === 'firstname' || lk === 'first_name' || lk === 'nama_depan') userData.firstName = v;
+      else if (lk === 'lastname' || lk === 'last_name' || lk === 'nama_belakang') userData.lastName = v;
+    }
+    if (userData.email || userData.phone) {
+      window.mrUserData.set(userData);
+    }
+  }, true);
+
+  // Expose to window for debugging
+  window.mrAnalyticsDebug = function() {
+    return {
+      ga4: GA4_ID,
+      ads: ADS_ID,
+      conversionLabel: ADS_CONVERSION_LABEL,
+      conversionValue: ADS_CONVERSION_VALUE,
+      userData: window.mrUserData.get(),
+      hashedUserData: null  // async, call window.mrUserData.getHashed()
+    };
+  };
+</script>

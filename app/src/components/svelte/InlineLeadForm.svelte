@@ -56,30 +56,25 @@
       firstName: firstName || undefined,
       lastName: lastParts.join(' ') || undefined,
     };
-    if (typeof window.mrEnhancedConversions !== 'undefined') {
+    // Use the unified trackLead helper (handles EC + persistence + GA4 + Ads)
+    if (typeof window.mrAnalytics !== 'undefined' && window.mrAnalytics.trackLead) {
+      window.mrAnalytics.trackLead({
+        ...userData,
+        leadType: source,
+        estimatedValue: value
+      }).catch((e) => console.warn('[InlineLeadForm] trackLead failed:', e));
+    } else if (typeof window.mrEnhancedConversions !== 'undefined') {
+      // Fallback: direct call
       window.mrEnhancedConversions.trackConversion('generate_lead', userData, {
         event_category: 'lead',
         event_label: source,
         value: value,
         currency: 'IDR',
+        send_to: [GA4_ID, ADS_ID]
       }).catch((e) => console.warn('[InlineLeadForm] enhanced conv failed:', e));
     }
-    if (typeof window.mrAnalytics !== 'undefined') {
-      window.mrAnalytics.trackEvent('inline_lead_submit', {
-        event_category: 'lead',
-        event_label: source,
-        value: value,
-        currency: 'IDR',
-        villa_type: villa,
-      });
-    }
-    // Persist for cross-page attribution
-    if (typeof sessionStorage !== 'undefined') {
-      sessionStorage.setItem('mr_user', JSON.stringify({ name, phone, email, villa }));
-    }
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('mr_user', JSON.stringify({ name, phone, email, villa }));
-    }
+    // Mirror to localStorage as backup
+    try { localStorage.setItem('mr_user', JSON.stringify({ name, phone, email, villa })); } catch (e) {}
   }
 
   function submit(e) {
