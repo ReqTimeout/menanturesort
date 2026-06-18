@@ -12,7 +12,7 @@
   import { waUrl } from '@lib/utils';
   import siteData from '@data/site.json';
 
-  let { heading = 'Dapatkan Simulasi Personal', subheading = 'Tim Sahid akan menghubungi Anda dalam 5 menit via WhatsApp.', source = 'inline_form', ctaText = 'Kirim Simulasi via WhatsApp', value = 10000000 } = $props();
+  let { heading = 'Dapatkan Simulasi Personal', subheading = 'Tim Sahid akan menghubungi Anda dalam 5 menit via WhatsApp.', source = 'inline_form', ctaText = 'Kirim Simulasi via WhatsApp', value = 100000 } = $props();
 
   let name = $state('');
   let phone = $state('');
