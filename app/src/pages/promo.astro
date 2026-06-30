@@ -80,17 +80,23 @@ const unitsLeft = totalUnits - unitsSold;
   <NavMenu client:load />
   <main class="pt-20">
     <!-- ════════════════ SECTION 2: HERO ════════════════ -->
-    <PromoHero client:only="svelte" promo={siteData.promo} />
+    <div data-track-section="promo_hero">
+      <PromoHero client:only="svelte" promo={siteData.promo} />
+    </div>
 
     <!-- ════════════════ SECTION 3: PROOF BAR (Marquee) ════════════════ -->
-    <Marquee client:visible items={marqueeItems} />
+    <div data-track-section="promo_proof_bar">
+      <Marquee client:visible items={marqueeItems} />
+    </div>
 
     <!-- ════════════════ SECTION 4: 3 PROMO PILLAR ════════════════ -->
-    <PromoSpesialSection client:visible promo={siteData.promo} />
+    <div data-track-section="promo_3_pillar">
+      <PromoSpesialSection client:visible promo={siteData.promo} />
+    </div>
     <SectionDivider variant="ornate" />
 
     <!-- ════════════════ SECTION 5: SCARCITY LIVE ════════════════ -->
-    <section class="relative bg-white py-20 md:py-32" data-section="scarcity">
+    <section class="relative bg-white py-20 md:py-32" data-track-section="promo_scarcity">
       <SectionBackground variant="cream" pattern={true} orbs={true} intensity="subtle" />
       <Pattern variant="dots" color="forest" opacity={0.05} />
       <div class="container-wide relative">
@@ -131,11 +137,13 @@ const unitsLeft = totalUnits - unitsSold;
     <SectionDivider variant="diamond" />
 
     <!-- ════════════════ SECTION 6: WHY NOW (Storytelling) ════════════════ -->
-    <WhyNowSection client:visible />
+    <div data-track-section="promo_why_now">
+      <WhyNowSection client:visible />
+    </div>
     <SectionDivider variant="ornate" />
 
     <!-- ════════════════ SECTION 7: VILLA SHOWCASE ════════════════ -->
-    <section class="relative bg-cream-50 py-20 md:py-32" data-section="villa">
+    <section class="relative bg-cream-50 py-20 md:py-32" data-track-section="promo_villa">
       <SectionBackground variant="cream" pattern={true} orbs={true} intensity="subtle" />
       <Pattern variant="dots" color="forest" opacity={0.05} />
       <div class="container-wide relative">
@@ -183,23 +191,31 @@ const unitsLeft = totalUnits - unitsSold;
     <SectionDivider variant="diamond" />
 
     <!-- ════════════════ SECTION 8: PROMO MATH ════════════════ -->
-    <PromoMathSection client:visible />
+    <div data-track-section="promo_math">
+      <PromoMathSection client:visible />
+    </div>
     <SectionDivider variant="ornate" />
 
     <!-- ════════════════ SECTION 9: TRUST BAND ════════════════ -->
-    <PromoTrustBand client:visible />
+    <div data-track-section="promo_trust">
+      <PromoTrustBand client:visible />
+    </div>
     <SectionDivider variant="diamond" />
 
     <!-- ════════════════ SECTION 10: FAQ ════════════════ -->
-    <PromoFAQSection client:visible />
+    <div data-track-section="promo_faq">
+      <PromoFAQSection client:visible />
+    </div>
     <SectionDivider variant="ornate" />
 
     <!-- ════════════════ SECTION 11: FINAL CTA ════════════════ -->
-    <FinalCTASection
-      client:visible
-      liveEvents={siteData.liveEvents}
-      promoDeadline={siteData.promo.deadline}
-    />
+    <div data-track-section="promo_final_cta">
+      <FinalCTASection
+        client:visible
+        liveEvents={siteData.liveEvents}
+        promoDeadline={siteData.promo.deadline}
+      />
+    </div>
   </main>
 
   <Footer />

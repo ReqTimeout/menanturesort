@@ -220,13 +220,19 @@
         {/if}
 
         <!-- Form -->
-        <form onsubmit={submit} class="space-y-4">
+        <form
+          onsubmit={submit}
+          class="space-y-4"
+          data-track-form={`promo_${source.replace(/^promo_/, '')}`}
+          data-form-source={source}
+          id={`leadform-${source.replace(/[^a-z0-9]/g, '-')}`}
+        >
           <div>
-            <label for="inline-leadform-name" class="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-forest-900 mb-2 font-semibold">
+            <label for={`lf-name-${source.replace(/[^a-z0-9]/g, '-')}`} class="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-forest-900 mb-2 font-semibold">
               <User class="w-3 h-3" /> Nama Lengkap <span class="text-gold-700">*</span>
             </label>
             <input
-              id="inline-leadform-name"
+              id={`lf-name-${source.replace(/[^a-z0-9]/g, '-')}`}
               type="text"
               bind:value={name}
               required
@@ -237,11 +243,11 @@
           </div>
 
           <div>
-            <label for="inline-leadform-phone" class="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-forest-900 mb-2 font-semibold">
+            <label for={`lf-phone-${source.replace(/[^a-z0-9]/g, '-')}`} class="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-forest-900 mb-2 font-semibold">
               <Phone class="w-3 h-3" /> WhatsApp <span class="text-gold-700">*</span>
             </label>
             <input
-              id="inline-leadform-phone"
+              id={`lf-phone-${source.replace(/[^a-z0-9]/g, '-')}`}
               type="tel"
               bind:value={phone}
               required
@@ -253,11 +259,11 @@
 
           {#if showEmail}
             <div>
-              <label for="inline-leadform-email" class="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-forest-900 mb-2 font-semibold">
+              <label for={`lf-email-${source.replace(/[^a-z0-9]/g, '-')}`} class="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-forest-900 mb-2 font-semibold">
                 <Mail class="w-3 h-3" /> Email <span class="text-ink-mute font-normal normal-case tracking-normal text-[10px]">(opsional, untuk simulasi PDF)</span>
               </label>
               <input
-                id="inline-leadform-email"
+                id={`lf-email-${source.replace(/[^a-z0-9]/g, '-')}`}
                 type="email"
                 bind:value={email}
                 autocomplete="email"
@@ -269,11 +275,11 @@
 
           {#if showVilla && villaOptions.length > 0}
             <div>
-              <label for="inline-leadform-villa" class="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-forest-900 mb-2 font-semibold">
+              <label for={`lf-villa-${source.replace(/[^a-z0-9]/g, '-')}`} class="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-forest-900 mb-2 font-semibold">
                 <Home class="w-3 h-3" /> Preferensi Villa
               </label>
               <select
-                id="inline-leadform-villa"
+                id={`lf-villa-${source.replace(/[^a-z0-9]/g, '-')}`}
                 bind:value={villa}
                 class="w-full px-4 py-3 bg-white border border-cream-100 text-forest-900 text-[15px] focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500/30 transition appearance-none cursor-pointer"
                 style="background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%231B4332%22><path d=%22M7 10l5 5 5-5z%22/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 18px; padding-right: 40px;"

@@ -324,8 +324,18 @@ const SITE_URL = 'https://menantu-resort.com';
   // ═══════════════════════════════════════════════════════════
   window.mrAnalytics = {
     trackEvent: function(name, params) {
+      // Auto-attach UTM if available (so all events carry attribution)
+      let enrichedParams = Object.assign({}, params || {});
+      try {
+        if (window.mrUtm && typeof window.mrUtm.retrieve === 'function') {
+          const utm = window.mrUtm.retrieve();
+          Object.keys(utm).forEach(function(k) {
+            if (!(k in enrichedParams)) enrichedParams[k] = utm[k];
+          });
+        }
+      } catch (e) {}
       if (typeof window.gtag === 'function') {
-        window.gtag('event', name, params || {});
+        window.gtag('event', name, enrichedParams);
       }
       // Mirror to Meta Pixel if it's a known event
       if (typeof window.fbq === 'function') {
@@ -341,9 +351,9 @@ const SITE_URL = 'https://menantu-resort.com';
         };
         if (metaMap[name]) {
           window.fbq('track', metaMap[name], {
-            value: (params && params.value) || 0,
+            value: (enrichedParams && enrichedParams.value) || 0,
             currency: 'IDR',
-            content_name: (params && (params.event_label || params.source)) || name,
+            content_name: (enrichedParams && (enrichedParams.event_label || enrichedParams.source)) || name,
             content_category: 'villa_investment'
           });
         }
@@ -549,7 +559,7 @@ const SITE_URL = 'https://menantu-resort.com';
     }
   }, true);
 
-  // Expose to window for debugging
+// Expose to window for debugging
   window.mrAnalyticsDebug = function() {
     return {
       ga4: GA4_ID,
@@ -560,7 +570,275 @@ const SITE_URL = 'https://menantu-resort.com';
       metaPixelEnabled: META_PIXEL_ENABLED,
       metaLoaded: typeof window.fbq === 'function',
       userData: window.mrUserData.get(),
-      hashedUserData: null  // async, call window.mrUserData.getHashed()
+      hashedUserData: null,  // async, call window.mrUserData.getHashed()
+      utm: window.mrUtm ? window.mrUtm.retrieve() : {}
     };
   };
+
+  // ═══════════════════════════════════════════════════════════
+  // UTM CAPTURE & PERSIST
+  // Captures utm_source/medium/campaign/term/content from URL on first visit,
+  // persists in sessionStorage for cross-page attribution, fires PageView with
+  // UTM attached so Google Ads + Meta can attribute the conversion correctly.
+  // ═══════════════════════════════════════════════════════════
+  window.mrUtm = {
+    KEYS: ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'fbclid', 'msclkid'],
+    capture: function() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const utm = {};
+        let hasAny = false;
+        window.mrUtm.KEYS.forEach(function(k) {
+          const v = params.get(k);
+          if (v) { utm[k] = v; hasAny = true; }
+        });
+        if (hasAny) {
+          sessionStorage.setItem('mr_utm', JSON.stringify(utm));
+          sessionStorage.setItem('mr_utm_captured_at', String(Date.now()));
+        }
+        return utm;
+      } catch (e) { return {}; }
+    },
+    retrieve: function() {
+      try {
+        return JSON.parse(sessionStorage.getItem('mr_utm') || '{}');
+      } catch (e) { return {}; }
+    },
+    attachToParams: function(params) {
+      const utm = window.mrUtm.retrieve();
+      const merged = Object.assign({}, params || {}, utm);
+      return merged;
+    }
+  };
+  window.mrUtm.capture();
+
+  // Re-fire PageView with UTM attached (helps GA4 + Meta attribute correctly)
+  setTimeout(function() {
+    const utm = window.mrUtm.retrieve();
+    if (Object.keys(utm).length > 0 && typeof window.gtag === 'function') {
+      window.gtag('event', 'page_view_with_utm', Object.assign({
+        page_path: window.location.pathname,
+        page_title: document.title,
+        send_to: GA4_ID
+      }, utm));
+    }
+  }, 600);
+
+  // ═══════════════════════════════════════════════════════════
+  // SCROLL DEPTH TRACKER
+  // Fires GA4 scroll_depth event at 25/50/75/100% milestones.
+  // Each milestone = micro-commitment signal for funnel analysis.
+  // Uses requestAnimationFrame for perf, fires only once per milestone.
+  // ═══════════════════════════════════════════════════════════
+  (function() {
+    const milestones = [25, 50, 75, 100];
+    const fired = {};
+    let ticking = false;
+
+    function getScrollPct() {
+      const h = document.documentElement;
+      const b = document.body;
+      const st = 'scrollTop', sh = 'scrollHeight';
+      return Math.min(100, Math.round(
+        (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100
+      ));
+    }
+
+    function check() {
+      const pct = getScrollPct();
+      milestones.forEach(function(m) {
+        if (pct >= m && !fired[m]) {
+          fired[m] = true;
+          if (typeof window.mrAnalytics !== 'undefined' && window.mrAnalytics.trackEvent) {
+            window.mrAnalytics.trackEvent('scroll_depth', {
+              event_category: 'engagement',
+              event_label: m + '%',
+              percent: m,
+              page: window.location.pathname,
+              send_to: GA4_ID
+            });
+          }
+          // Mirror to Meta Pixel (ViewContent with percent for funnel viz)
+          if (typeof window.fbq === 'function') {
+            window.fbq('trackCustom', 'ScrollDepth', {
+              percent: m,
+              page: window.location.pathname,
+              content_name: 'scroll_' + m + 'pct'
+            });
+          }
+        }
+      });
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        window.requestAnimationFrame(check);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    // Fire 100% on unload if user reached bottom (some browsers skip scroll event)
+    window.addEventListener('beforeunload', function() {
+      if (!fired[100]) {
+        const pct = getScrollPct();
+        if (pct >= 95) {
+          fired[100] = true;
+          try {
+            if (typeof window.mrAnalytics !== 'undefined') {
+              window.mrAnalytics.trackEvent('scroll_depth', { percent: 100, event_label: '100%', send_to: GA4_ID });
+            }
+          } catch (e) {}
+        }
+      }
+    });
+  })();
+
+  // ═══════════════════════════════════════════════════════════
+  // SECTION VIEW TRACKER (IntersectionObserver)
+  // Fires GA4 view_section + Meta ViewContent when 50% of section enters viewport.
+  // Add data-track-section="section_name" to any <section> you want tracked.
+  // ═══════════════════════════════════════════════════════════
+  (function() {
+    if (typeof window.IntersectionObserver === 'undefined') return;
+
+    const tracked = new Set();
+
+    function observe() {
+      const sections = document.querySelectorAll('[data-track-section]');
+      sections.forEach(function(el) {
+        if (tracked.has(el)) return;
+        tracked.add(el);
+
+        const name = el.getAttribute('data-track-section');
+        const obs = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.4) {
+              // GA4
+              if (typeof window.mrAnalytics !== 'undefined' && window.mrAnalytics.trackEvent) {
+                window.mrAnalytics.trackEvent('view_section', {
+                  event_category: 'engagement',
+                  event_label: name,
+                  section: name,
+                  page: window.location.pathname,
+                  send_to: GA4_ID
+                });
+              }
+              // Meta ViewContent (per section, helps build retargeting audiences)
+              if (typeof window.fbq === 'function') {
+                window.fbq('track', 'ViewContent', {
+                  content_name: name,
+                  content_category: 'promo_section',
+                  content_type: 'section_view'
+                });
+              }
+              obs.unobserve(el); // fire once
+            }
+          });
+        }, { threshold: [0.4] });
+
+        obs.observe(el);
+      });
+    }
+
+    // Run after DOM is ready (Astro hydrates components progressively)
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', observe);
+    } else {
+      observe();
+    }
+    // Re-scan after a tick (in case sections mount late)
+    setTimeout(observe, 1500);
+    setTimeout(observe, 3500);
+  })();
+
+  // ═══════════════════════════════════════════════════════════
+  // FORM START TRACKER (first focus on any form)
+  // Fires GA4 form_start + Meta Lead (early signal) once per form.
+  // Add data-track-form="form_name" to <form> for source attribution.
+  // ═══════════════════════════════════════════════════════════
+  (function() {
+    const fired = new WeakSet();
+
+    document.addEventListener('focusin', function(e) {
+      const form = e.target && e.target.closest && e.target.closest('form');
+      if (!form || fired.has(form)) return;
+      fired.add(form);
+
+      const name = form.getAttribute('data-track-form') || form.id || 'unnamed_form';
+      const source = form.getAttribute('data-form-source') || name;
+
+      // GA4 form_start
+      if (typeof window.mrAnalytics !== 'undefined' && window.mrAnalytics.trackEvent) {
+        window.mrAnalytics.trackEvent('form_start', {
+          event_category: 'lead',
+          event_label: name,
+          form_name: name,
+          form_source: source,
+          page: window.location.pathname,
+          send_to: GA4_ID
+        });
+      }
+      // Meta Lead (early-funnel signal for optimization)
+      if (typeof window.fbq === 'function') {
+        window.fbq('track', 'Lead', {
+          content_name: 'form_start_' + name,
+          content_category: 'villa_investment',
+          content_type: 'form_start'
+        });
+      }
+    }, true);
+  })();
+
+  // ═══════════════════════════════════════════════════════════
+  // CTA CLICK TRACKER
+  // Auto-track any element with data-track-cta="cta_name".
+  // Fires GA4 cta_click + Meta Lead for retargeting.
+  // ═══════════════════════════════════════════════════════════
+  (function() {
+    document.addEventListener('click', function(e) {
+      const el = e.target.closest && e.target.closest('[data-track-cta]');
+      if (!el) return;
+      const name = el.getAttribute('data-track-cta');
+      const href = el.getAttribute('href') || '';
+      const isWA = href.indexOf('wa.me/') !== -1;
+
+      // Skip WA clicks (handled by global interceptor) to avoid double-fire
+      if (isWA) return;
+
+      if (typeof window.mrAnalytics !== 'undefined' && window.mrAnalytics.trackEvent) {
+        window.mrAnalytics.trackEvent('cta_click', {
+          event_category: 'engagement',
+          event_label: name,
+          cta_name: name,
+          page: window.location.pathname,
+          send_to: GA4_ID
+        });
+      }
+    }, true);
+  })();
+
+  // ═══════════════════════════════════════════════════════════
+  // TIME ON PAGE TRACKER
+  // Fires GA4 time_on_page at 30s/60s/120s/300s milestones.
+  // ═══════════════════════════════════════════════════════════
+  (function() {
+    const milestones = [30, 60, 120, 300];
+    const fired = {};
+    milestones.forEach(function(s) {
+      setTimeout(function() {
+        if (fired[s] || document.hidden) return;
+        fired[s] = true;
+        if (typeof window.mrAnalytics !== 'undefined' && window.mrAnalytics.trackEvent) {
+          window.mrAnalytics.trackEvent('time_on_page', {
+            event_category: 'engagement',
+            event_label: s + 's',
+            seconds: s,
+            page: window.location.pathname,
+            send_to: GA4_ID
+          });
+        }
+      }, s * 1000);
+    });
+  })();
 </script>
