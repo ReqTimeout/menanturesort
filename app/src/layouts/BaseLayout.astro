@@ -115,7 +115,7 @@ const seo = buildSEO({
   <WhatsAppFloating />
 
   <!-- Sticky lead form modal trigger — appears after 30s idle -->
-  <LeadForm client:idle />
+  <LeadForm client:only="svelte" />
 
   <!-- Global site script (minimal) -->
   <script is:inline>

@@ -1,0 +1,200 @@
+---
+/**
+ * /admin/leads/[id] — Lead detail + edit
+ */
+const { id } = Astro.params;
+---
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lead Detail — Menantu Resort CRM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-stone-50 text-stone-900 min-h-screen">
+  <header class="bg-gradient-to-r from-emerald-900 to-emerald-800 text-white sticky top-0 z-10 shadow-md">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div>
+        <h1 class="text-xl font-bold">Menantu Resort CRM</h1>
+        <p class="text-xs text-emerald-200 font-mono uppercase tracking-wider">Lead Detail</p>
+      </div>
+      <nav class="flex items-center gap-6 text-sm">
+        <a href="/admin" class="text-emerald-200 hover:text-white">Dashboard</a>
+        <a href="/admin/leads" class="text-emerald-200 hover:text-white">Leads</a>
+        <button id="logout" class="text-emerald-200 hover:text-white text-xs uppercase tracking-wider">Logout</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-6 py-8">
+    <div id="auth-prompt" class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-sm border border-stone-200">
+      <h2 class="text-lg font-bold mb-2">🔐 Masukkan Admin API Key</h2>
+      <input id="api-key" type="password" placeholder="admin-api-key-xxx..." class="w-full px-3 py-2 border border-stone-300 rounded font-mono text-sm mb-3" />
+      <button id="auth-submit" class="w-full bg-emerald-900 text-white py-2.5 rounded font-semibold text-sm">Masuk</button>
+    </div>
+
+    <div id="content" class="hidden">
+      <a href="/admin/leads" class="text-sm text-emerald-700 hover:text-emerald-900 font-semibold mb-4 inline-block">← Kembali ke daftar</a>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left: lead info + edit -->
+        <div class="lg:col-span-2 space-y-6">
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200">
+            <div class="flex items-start justify-between mb-4">
+              <div>
+                <h2 id="lead-name" class="text-2xl font-bold">Loading...</h2>
+                <p id="lead-contact" class="text-sm text-stone-600 font-mono mt-1"></p>
+              </div>
+              <span id="lead-status" class="px-3 py-1 text-xs font-bold uppercase tracking-wider bg-stone-100">—</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mt-6 text-sm">
+              <div><span class="text-stone-500 text-xs uppercase tracking-wider block">Villa Pref</span><span id="lead-villa" class="font-mono">—</span></div>
+              <div><span class="text-stone-500 text-xs uppercase tracking-wider block">Source</span><span id="lead-source" class="font-mono">—</span></div>
+              <div><span class="text-stone-500 text-xs uppercase tracking-wider block">Page</span><span id="lead-page" class="font-mono text-xs">—</span></div>
+              <div><span class="text-stone-500 text-xs uppercase tracking-wider block">IP Country</span><span id="lead-country" class="font-mono">—</span></div>
+              <div><span class="text-stone-500 text-xs uppercase tracking-wider block">UTM Source</span><span id="lead-utm-source" class="font-mono text-xs">—</span></div>
+              <div><span class="text-stone-500 text-xs uppercase tracking-wider block">UTM Campaign</span><span id="lead-utm-campaign" class="font-mono text-xs">—</span></div>
+            </div>
+          </div>
+
+          <!-- Edit form -->
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-stone-700 mb-4">Update Lead</h3>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs uppercase tracking-wider text-stone-600 mb-1">Status</label>
+                <select id="status" class="w-full px-3 py-2 border border-stone-300 rounded text-sm">
+                  <option value="new">New</option>
+                  <option value="contacted">Contacted</option>
+                  <option value="qualified">Qualified</option>
+                  <option value="tour_scheduled">Tour Scheduled</option>
+                  <option value="won">Won</option>
+                  <option value="lost">Lost</option>
+                  <option value="abandoned">Abandoned</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs uppercase tracking-wider text-stone-600 mb-1">Notes</label>
+                <textarea id="notes" rows="5" placeholder="Catatan follow-up, hasil call, dll..." class="w-full px-3 py-2 border border-stone-300 rounded text-sm"></textarea>
+              </div>
+              <div>
+                <label class="block text-xs uppercase tracking-wider text-stone-600 mb-1">Assigned To</label>
+                <input id="assigned" type="text" placeholder="Nama sales" class="w-full px-3 py-2 border border-stone-300 rounded text-sm" />
+              </div>
+              <button id="save" class="w-full bg-emerald-900 text-white py-2.5 rounded font-semibold text-sm hover:bg-emerald-800">Simpan</button>
+              <p id="save-msg" class="text-xs text-center hidden"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: activity timeline -->
+        <div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-stone-700 mb-4">Activity Timeline</h3>
+            <div id="activities" class="space-y-3 text-sm">
+              <p class="text-stone-500 text-xs">Memuat...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script is:inline define:vars={{ leadId: id }}>
+    const API = location.origin;
+    let apiKey = localStorage.getItem('mr_admin_key') || '';
+
+    function getHeaders() { return { 'Authorization': 'Bearer ' + apiKey, 'Content-Type': 'application/json' }; }
+    async function api(path, opts = {}) {
+      const res = await fetch(API + path, { ...opts, headers: { ...getHeaders(), ...(opts.headers || {}) } });
+      if (res.status === 401) {
+        document.getElementById('auth-prompt').classList.remove('hidden');
+        document.getElementById('content').classList.add('hidden');
+        throw new Error('Unauthorized');
+      }
+      return res;
+    }
+
+    function escapeHtml(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+    function formatTime(unix) { return new Date(unix * 1000).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }); }
+
+    document.getElementById('auth-submit').addEventListener('click', () => {
+      apiKey = document.getElementById('api-key').value.trim();
+      if (!apiKey) return;
+      localStorage.setItem('mr_admin_key', apiKey);
+      show();
+    });
+    document.getElementById('api-key').addEventListener('keypress', (e) => { if (e.key === 'Enter') document.getElementById('auth-submit').click(); });
+    document.getElementById('logout').addEventListener('click', () => { localStorage.removeItem('mr_admin_key'); location.reload(); });
+
+    let currentLead = null;
+    const statusColor = { new: 'amber', contacted: 'blue', qualified: 'violet', tour_scheduled: 'sky', won: 'emerald', lost: 'rose', abandoned: 'stone' };
+
+    async function show() {
+      document.getElementById('auth-prompt').classList.add('hidden');
+      document.getElementById('content').classList.remove('hidden');
+      await load();
+    }
+
+    async function load() {
+      const res = await api('/api/leads/' + leadId);
+      const data = await res.json();
+      currentLead = data.lead;
+
+      document.getElementById('lead-name').textContent = currentLead.name || '(no name)';
+      document.getElementById('lead-contact').textContent = [currentLead.phone, currentLead.email].filter(Boolean).join(' · ');
+      document.getElementById('lead-villa').textContent = currentLead.villa_pref || '—';
+      document.getElementById('lead-source').textContent = currentLead.source || '—';
+      document.getElementById('lead-page').textContent = currentLead.page_path || '—';
+      document.getElementById('lead-country').textContent = currentLead.ip_country || '—';
+      document.getElementById('lead-utm-source').textContent = currentLead.utm_source || '—';
+      document.getElementById('lead-utm-campaign').textContent = currentLead.utm_campaign || '—';
+
+      const statusEl = document.getElementById('lead-status');
+      statusEl.textContent = currentLead.status;
+      statusEl.className = 'px-3 py-1 text-xs font-bold uppercase tracking-wider bg-' + (statusColor[currentLead.status] || 'stone') + '-100 text-' + (statusColor[currentLead.status] || 'stone') + '-800';
+
+      document.getElementById('status').value = currentLead.status;
+      document.getElementById('notes').value = currentLead.notes || '';
+      document.getElementById('assigned').value = currentLead.assigned_to || '';
+
+      // Activities
+      const acts = data.activities || [];
+      const actsEl = document.getElementById('activities');
+      if (acts.length === 0) {
+        actsEl.innerHTML = '<p class="text-stone-500 text-xs">Belum ada activity.</p>';
+      } else {
+        actsEl.innerHTML = acts.map(a => `
+          <div class="border-l-2 border-${a.activity_type === 'status_change' ? 'amber' : 'emerald'}-500 pl-3 py-1">
+            <div class="text-xs font-bold uppercase tracking-wider text-stone-600">${a.activity_type}</div>
+            <div class="text-sm text-stone-800 mt-0.5">${escapeHtml(a.description || '')}</div>
+            <div class="text-[10px] text-stone-500 font-mono mt-1">${formatTime(a.created_at)} · ${escapeHtml(a.created_by || 'system')}</div>
+          </div>
+        `).join('');
+      }
+    }
+
+    document.getElementById('save').addEventListener('click', async () => {
+      const body = {
+        status: document.getElementById('status').value,
+        notes: document.getElementById('notes').value,
+        assigned_to: document.getElementById('assigned').value
+      };
+      const res = await api('/api/leads/' + leadId, { method: 'PATCH', body: JSON.stringify(body) });
+      if (res.ok) {
+        const msg = document.getElementById('save-msg');
+        msg.textContent = '✓ Tersimpan';
+        msg.className = 'text-xs text-center text-emerald-700';
+        msg.classList.remove('hidden');
+        setTimeout(() => msg.classList.add('hidden'), 2000);
+        await load();
+      }
+    });
+
+    if (apiKey) api('/api/leads/' + leadId).then(r => r.ok && show()).catch(() => {});
+  </script>
+</body>
+</html>

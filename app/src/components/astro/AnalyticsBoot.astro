@@ -26,6 +26,8 @@ const GA4_ID = import.meta.env.PUBLIC_GA4_ID || 'G-39JSBHZY3T';
 const ADS_ID = import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-18240219652';
 const ADS_CONVERSION_LABEL = import.meta.env.PUBLIC_ADS_CONVERSION_LABEL || '1KOzCMms1cAcEITUzvlD';
 const ADS_CONVERSION_VALUE = parseFloat(import.meta.env.PUBLIC_ADS_CONVERSION_VALUE || '100000');
+const META_PIXEL_ID = '866468102744117';
+const META_PIXEL_ENABLED = true;
 const SITE_URL = 'https://menantu-resort.com';
 ---
 
@@ -33,7 +35,30 @@ const SITE_URL = 'https://menantu-resort.com';
 <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}></script>
 <script async src={`https://www.googletagmanager.com/gtag/js?id=${ADS_ID}`}></script>
 
-<script is:inline define:vars={{ GA4_ID, ADS_ID, ADS_CONVERSION_LABEL, ADS_CONVERSION_VALUE, SITE_URL }}>
+<!-- Meta Pixel Code (Facebook / Instagram Ads) - ID: 866468102744117 -->
+{META_PIXEL_ENABLED && (
+  <Fragment>
+    <script is:inline define:vars={{ META_PIXEL_ID }}>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      window.fbq('init', META_PIXEL_ID);
+      window.fbq('track', 'PageView');
+    </script>
+    <noscript>
+      <img height="1" width="1" style="display:none"
+        src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}
+        alt="" />
+    </noscript>
+  </Fragment>
+)}
+
+<script is:inline define:vars={{ GA4_ID, ADS_ID, ADS_CONVERSION_LABEL, ADS_CONVERSION_VALUE, META_PIXEL_ID, META_PIXEL_ENABLED, SITE_URL }}>
   window.dataLayer = window.dataLayer || [];
   function gtag(){ dataLayer.push(arguments); }
   window.gtag = gtag;
@@ -302,6 +327,27 @@ const SITE_URL = 'https://menantu-resort.com';
       if (typeof window.gtag === 'function') {
         window.gtag('event', name, params || {});
       }
+      // Mirror to Meta Pixel if it's a known event
+      if (typeof window.fbq === 'function') {
+        const metaMap = {
+          'view_promo': 'ViewContent',
+          'view_villa': 'ViewContent',
+          'cta_click': 'Lead',
+          'whatsapp_click': 'Contact',
+          'phone_click': 'Contact',
+          'form_start': 'Lead',
+          'form_submit': 'Lead',
+          'generate_lead': 'Lead'
+        };
+        if (metaMap[name]) {
+          window.fbq('track', metaMap[name], {
+            value: (params && params.value) || 0,
+            currency: 'IDR',
+            content_name: (params && (params.event_label || params.source)) || name,
+            content_category: 'villa_investment'
+          });
+        }
+      }
     },
     trackPageview: function(path) {
       if (typeof window.gtag === 'function') {
@@ -317,7 +363,8 @@ const SITE_URL = 'https://menantu-resort.com';
      * Track WhatsApp click — fires BOTH:
      * 1. GA4 whatsapp_click event
      * 2. Google Ads conversion (with Enhanced Conversions)
-     * 3. Closes current page after 1.5s (so conversion fires)
+     * 3. Meta Pixel Contact event (with hashed user_data when available)
+     * 4. Persists user data for future attribution
      */
     trackWhatsApp: async function(source, label) {
       // GA4 event
@@ -326,6 +373,8 @@ const SITE_URL = 'https://menantu-resort.com';
           event_category: 'engagement',
           event_label: label || source,
           source: source,
+          value: ADS_CONVERSION_VALUE,
+          currency: 'IDR',
           send_to: GA4_ID
         });
       }
@@ -335,6 +384,21 @@ const SITE_URL = 'https://menantu-resort.com';
         value: ADS_CONVERSION_VALUE,
         currency: 'IDR'
       }, 'ads');
+      // Meta Pixel — Contact event (with hashed user_data if any)
+      if (typeof window.fbq === 'function') {
+        const userData = window.mrUserData.get();
+        const hashed = await window.mrUserData.getHashed();
+        window.fbq('track', 'Contact', {
+          value: ADS_CONVERSION_VALUE,
+          currency: 'IDR',
+          content_name: label || source,
+          content_category: 'whatsapp_click',
+          ...(hashed && hashed.email ? { em: hashed.email } : {}),
+          ...(hashed && hashed.phone_number ? { ph: hashed.phone_number } : {}),
+          ...(hashed && hashed.first_name ? { fn: hashed.first_name } : {}),
+          ...(hashed && hashed.last_name ? { ln: hashed.last_name } : {})
+        });
+      }
     },
 
     /**
@@ -351,12 +415,50 @@ const SITE_URL = 'https://menantu-resort.com';
           lastName: formData.lastName
         });
       }
+      // Google Ads + GA4 conversion (with Enhanced Conversions)
       await window.mrEnhancedConversions.trackConversion('generate_lead', formData, {
         event_category: 'lead',
         event_label: formData.leadType || 'general',
         value: formData.estimatedValue || ADS_CONVERSION_VALUE,
         currency: 'IDR'
       }, 'both');
+      // Meta Pixel Lead (with hashed user_data for advanced matching)
+      if (typeof window.fbq === 'function') {
+        const hashed = await window.mrUserData.getHashed();
+        window.fbq('track', 'Lead', {
+          value: formData.estimatedValue || 10000000,
+          currency: 'IDR',
+          content_name: formData.leadType || 'villa_inquiry',
+          content_category: 'villa_investment',
+          ...(hashed && hashed.email ? { em: hashed.email } : {}),
+          ...(hashed && hashed.phone_number ? { ph: hashed.phone_number } : {}),
+          ...(hashed && hashed.first_name ? { fn: hashed.first_name } : {}),
+          ...(hashed && hashed.last_name ? { ln: hashed.last_name } : {})
+        });
+      }
+    },
+
+    /**
+     * Track Meta Pixel ViewContent event
+     */
+    trackMetaViewContent: function(contentName, value) {
+      if (typeof window.fbq === 'function') {
+        window.fbq('track', 'ViewContent', {
+          content_name: contentName,
+          content_category: 'villa_investment',
+          value: value || 0,
+          currency: 'IDR'
+        });
+      }
+    },
+
+    /**
+     * Fire Meta Pixel PageView (for SPA route changes)
+     */
+    trackMetaPageview: function() {
+      if (typeof window.fbq === 'function') {
+        window.fbq('track', 'PageView');
+      }
     }
   };
 
@@ -364,6 +466,11 @@ const SITE_URL = 'https://menantu-resort.com';
   // GLOBAL WHATSAPP CLICK INTERCEPTOR
   // Auto-tracks ALL wa.me clicks (no manual onclick needed)
   // Even for links with onclick="..." or data-track attributes
+  //
+  // Fires BOTH:
+  // - Google Ads conversion (with Enhanced Conversions via gtag_report_conversion)
+  // - Meta Pixel Contact event (with hashed user_data when available)
+  // - GA4 whatsapp_click event
   // ═══════════════════════════════════════════════════════════
   document.addEventListener('click', function(e) {
     const link = e.target.closest && e.target.closest('a[href*="wa.me/"]');
@@ -376,8 +483,37 @@ const SITE_URL = 'https://menantu-resort.com';
     const source = link.getAttribute('data-source') || link.getAttribute('data-track') || 'organic_wa_click';
     const label = link.getAttribute('aria-label') || (link.textContent || '').trim().slice(0, 50) || 'whatsapp';
 
-    // Fire Google Ads conversion (opens in new tab via callback)
+    // Prevent default click to handle conversion tracking first
     e.preventDefault();
+
+    // Fire Meta Pixel Contact event (in parallel with Google Ads)
+    if (typeof window.fbq === 'function') {
+      // Use async to get hashed user_data (won't block conversion)
+      window.mrUserData.getHashed().then(function(hashed) {
+        window.fbq('track', 'Contact', {
+          value: ADS_CONVERSION_VALUE,
+          currency: 'IDR',
+          content_name: label || source,
+          content_category: 'whatsapp_click',
+          content_type: source,
+          ...(hashed && hashed.email ? { em: hashed.email } : {}),
+          ...(hashed && hashed.phone_number ? { ph: hashed.phone_number } : {}),
+          ...(hashed && hashed.first_name ? { fn: hashed.first_name } : {}),
+          ...(hashed && hashed.last_name ? { ln: hashed.last_name } : {})
+        });
+      }).catch(function() {
+        // Fallback: fire without hashed data
+        window.fbq('track', 'Contact', {
+          value: ADS_CONVERSION_VALUE,
+          currency: 'IDR',
+          content_name: label || source,
+          content_category: 'whatsapp_click',
+          content_type: source
+        });
+      });
+    }
+
+    // Fire Google Ads conversion (opens in new tab via callback)
     if (typeof window.gtag_report_conversion === 'function') {
       window.gtag_report_conversion(href);
     } else {
@@ -418,8 +554,11 @@ const SITE_URL = 'https://menantu-resort.com';
     return {
       ga4: GA4_ID,
       ads: ADS_ID,
-      conversionLabel: ADS_CONVERSION_LABEL,
-      conversionValue: ADS_CONVERSION_VALUE,
+      adsConversionLabel: ADS_CONVERSION_LABEL,
+      adsConversionValue: ADS_CONVERSION_VALUE,
+      metaPixel: META_PIXEL_ID,
+      metaPixelEnabled: META_PIXEL_ENABLED,
+      metaLoaded: typeof window.fbq === 'function',
       userData: window.mrUserData.get(),
       hashedUserData: null  // async, call window.mrUserData.getHashed()
     };

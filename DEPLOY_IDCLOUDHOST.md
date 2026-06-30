@@ -12,12 +12,12 @@
 ### cPanel Login
 | Item | Value |
 |---|---|
-| **cPanel URL** | `https://103.63.24.139:2083/` |
+| **cPanel URL** | `https://103.63.24.139:2083/` 'https://iix1280.idcloudhost.com:2083/'|
 | **Username** | `egokkcmq` |
-| **Password** | *(lihat di IDCloudHost client area / email welcome)* |
+| **Password** | 565xcbc6VG#@!* |
 | **Server IP** | `103.63.24.139` |
 | **Domain** | `menantu-resort.com` |
-| **Document Root** | `/home/egokkcmq/public_html/` |
+| **Document Root** | `/home/egokkcmq/menantu-resort.com/` |
 
 ### Port
 | Service | Port | Status |

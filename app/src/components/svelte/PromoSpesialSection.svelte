@@ -20,8 +20,8 @@
     discountDesc: 'Potongan harga langsung untuk Master Suite & Deluxe',
     bonus: 'Mobil Listrik Baru',
     bonusDesc: 'Bonus langsung untuk 10 pendaftar pertama',
-    deadline: '2026-06-30T23:59:59+07:00',
-    deadlineLabel: '30 Juni 2026, 23:59 WIB',
+    deadline: '2026-07-30T23:59:59+07:00',
+    deadlineLabel: '30 Juli 2026, 23:59 WIB',
     quota: '10 pendaftar pertama',
     sk: 'Berlaku untuk unit Master Suite & Deluxe. Tidak dapat digabung dengan promo lain. S&K berlaku.',
   }, class: className = '' } = $props();

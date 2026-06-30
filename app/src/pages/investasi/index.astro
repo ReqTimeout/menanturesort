@@ -16,7 +16,6 @@ import VillaCompare from '../../components/svelte/VillaCompare.svelte';
 import BookingFlow from '../../components/svelte/BookingFlow.svelte';
 import InlineLeadForm from '../../components/svelte/InlineLeadForm.svelte';
 import CompareVsDevelopers from '../../components/svelte/CompareVsDevelopers.svelte';
-import InlineLeadForm from '../../components/svelte/InlineLeadForm.svelte';
 import siteData from '../../data/site.json';
 import villaData from '../../data/villa.json';
 import { formatShort, waUrl } from '../../lib/utils';
@@ -174,11 +173,12 @@ const waLink = (msg: string) => waUrl(siteData.contact.whatsapp, msg, 'investasi
           </div>
           <div class="lg:col-span-7">
             <InlineLeadForm
-              client:visible
-              heading="Kirim Simulasi Personal"
-              subheading="Tim Sahid akan balas dalam 5 menit via WhatsApp dengan rekomendasi villa sesuai budget Anda."
+              client:only="svelte"
+              heading="Miliki"
+              headingItalic="Unit Sekarang"
+              subheading="Tim konsultan kami bantu rekomendasikan villa yang paling pas untuk budget & timeline Anda — gratis, tanpa komitmen."
               source="investasi_inline_form"
-              ctaText="Kirim Simulasi ke WhatsApp Saya"
+              ctaText="Kirim Simulasi Personal"
             />
           </div>
         </div>

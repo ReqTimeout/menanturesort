@@ -1,0 +1,36 @@
+{
+  "name": "menantu-capi-gateway",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Menantu Resort CAPI Gateway + Custom CRM (Cloudflare Worker + D1 + Astro)",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "deploy": "wrangler deploy",
+    "deploy:prod": "wrangler deploy --env production",
+    "db:create": "wrangler d1 create menantu-leads",
+    "db:migrate:local": "wrangler d1 execute menantu-leads --local --file=./migrations/0001_initial.sql",
+    "db:migrate:remote": "wrangler d1 execute menantu-leads --remote --file=./migrations/0001_initial.sql",
+    "db:query:local": "wrangler d1 execute menantu-leads --local --command=\"SELECT * FROM leads ORDER BY id DESC LIMIT 10\"",
+    "db:query:remote": "wrangler d1 execute menantu-leads --remote --command=\"SELECT * FROM leads ORDER BY id DESC LIMIT 10\"",
+    "secret:meta": "wrangler secret put META_ACCESS_TOKEN",
+    "secret:sheets": "wrangler secret put SHEETS_WEBHOOK_URL",
+    "secret:admin": "wrangler secret put ADMIN_API_KEY",
+    "types": "wrangler types",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^12.0.0",
+    "@astrojs/tailwind": "^5.1.0",
+    "astro": "^5.0.0",
+    "lucide-svelte": "^0.456.0",
+    "tailwindcss": "^3.4.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250620.0",
+    "typescript": "^5.7.0",
+    "wrangler": "^4.105.0"
+  }
+}

@@ -3,7 +3,7 @@
    * CountdownTimer — countdown to promo deadline (V5.2)
    *
    * Usage:
-   *   <CountdownTimer target="2026-06-30T23:59:59+07:00" />
+   *   <CountdownTimer target="2026-07-30T23:59:59+07:00" />
    *   <CountdownTimer target={promo.deadline} size="lg" expiredText="Promo berakhir" />
    */
   import { onMount } from 'svelte';

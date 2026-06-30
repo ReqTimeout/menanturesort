@@ -1,0 +1,206 @@
+---
+/**
+ * /promo — Campaign landing page untuk Google Ads + Meta Ads
+ * Fokus 1 KPI: lead WhatsApp masuk
+ *
+ * Sections (top → bottom):
+ * 1. Sticky Nav (existing)
+ * 2. Hero (PromoHero.svelte — custom)
+ * 3. Proof Bar Marquee (existing)
+ * 4. 3 Promo Pillar (PromoSpesialSection.svelte — existing)
+ * 5. Live Scarcity (UrgencyBanner + LiveActivityTicker — existing)
+ * 6. Why Now (WhyNowSection.svelte — new)
+ * 7. Villa Showcase (existing VillaCard + 360° panorama)
+ * 8. Promo Math (PromoMathSection.svelte — new)
+ * 9. Trust Band (PromoTrustBand.svelte — new)
+ * 10. FAQ (PromoFAQSection.svelte — new)
+ * 11. Final CTA (FinalCTASection.svelte — existing)
+ * + Footer
+ * + WhatsAppFloating (existing, global)
+ * + StickyMobileCTA (existing, global)
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NavMenu from '../components/svelte/NavMenu.svelte';
+import Footer from '../components/astro/Footer.astro';
+import SectionBackground from '../components/astro/SectionBackground.astro';
+import SectionDivider from '../components/astro/SectionDivider.astro';
+import Pattern from '../components/astro/Pattern.astro';
+
+import PromoHero from '../components/svelte/PromoHero.svelte';
+import PromoSpesialSection from '../components/svelte/PromoSpesialSection.svelte';
+import Marquee from '../components/svelte/Marquee.svelte';
+import UrgencyBanner from '../components/svelte/UrgencyBanner.svelte';
+import LiveActivityTicker from '../components/svelte/LiveActivityTicker.svelte';
+import Panorama360 from '../components/svelte/Panorama360.svelte';
+import VillaCard from '../components/svelte/VillaCard.svelte';
+import InlineLeadForm from '../components/svelte/InlineLeadForm.svelte';
+import WhatsAppButton from '../components/svelte/WhatsAppButton.svelte';
+import FinalCTASection from '../components/svelte/FinalCTASection.svelte';
+import CountdownTimer from '../components/svelte/CountdownTimer.svelte';
+
+import WhyNowSection from '../components/svelte/WhyNowSection.svelte';
+import PromoMathSection from '../components/svelte/PromoMathSection.svelte';
+import PromoTrustBand from '../components/svelte/PromoTrustBand.svelte';
+import PromoFAQSection from '../components/svelte/PromoFAQSection.svelte';
+
+import siteData from '../data/site.json';
+import villaData from '../data/villa.json';
+
+const waKonsultasi = (msg) =>
+  `https://wa.me/${siteData.contact.whatsapp}?text=${encodeURIComponent(msg)}`;
+
+// Marquee items
+const marqueeItems = [
+  '★ Sisa 16 dari 74 Unit',
+  '★ SHM — Sertifikat Hak Milik',
+  '★ Booking Rp 5 juta · Refundable 30 hari',
+  '★ Diskon Rp 200 juta',
+  '★ Bonus Mobil Listrik Baru',
+  '★ Sahid Hotel & Resort · 50+ tahun',
+  '★ Cicilan mulai Rp 9 jt/bln',
+  '★ 12 Investor closing bulan ini',
+  '★ Passive income 8-15% p.a.',
+  '★ Bandung Timur naik 28% YoY',
+  '★ Diskon berakhir 30 Juli 2026',
+  '★ Kuota 10 pendaftar pertama',
+];
+
+// Stats untuk urgency banner
+const totalUnits = siteData.stats.totalUnits;
+const unitsSold = siteData.stats.unitsSold;
+const unitsLeft = totalUnits - unitsSold;
+---
+
+<BaseLayout
+  title="Promo Rp 200 Juta + Mobil Listrik — Villa Bukit Bandung Cicilan Rp 9 Juta"
+  description="Klaim diskon Rp 200 juta + bonus Mobil Listrik Baru untuk 10 pendaftar pertama. Villa produktif di Cicalengka, Bandung Timur, dikelola Sahid Hotel & Resort. Booking Rp 5 juta refundable."
+  canonical="https://menantu-resort.com/promo/"
+  ogImage="/images/og/og-image.svg"
+>
+  <NavMenu client:load />
+  <main class="pt-20">
+    <!-- ════════════════ SECTION 2: HERO ════════════════ -->
+    <PromoHero client:only="svelte" promo={siteData.promo} />
+
+    <!-- ════════════════ SECTION 3: PROOF BAR (Marquee) ════════════════ -->
+    <Marquee client:visible items={marqueeItems} />
+
+    <!-- ════════════════ SECTION 4: 3 PROMO PILLAR ════════════════ -->
+    <PromoSpesialSection client:visible promo={siteData.promo} />
+    <SectionDivider variant="ornate" />
+
+    <!-- ════════════════ SECTION 5: SCARCITY LIVE ════════════════ -->
+    <section class="relative bg-white py-20 md:py-32" data-section="scarcity">
+      <SectionBackground variant="cream" pattern={true} orbs={true} intensity="subtle" />
+      <Pattern variant="dots" color="forest" opacity={0.05} />
+      <div class="container-wide relative">
+        <div class="max-w-4xl mx-auto">
+          <!-- Section heading -->
+          <div class="text-center mb-12">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">
+              — Real-Time, Bukan Estimasi
+            </div>
+            <h2 class="font-display text-editorial-md text-forest-700 leading-[0.95] tracking-tight font-bold mb-4">
+              16 Unit Tersisa. <em class="text-gold-700">Bukti Live.</em>
+            </h2>
+            <p class="font-body text-base md:text-lg text-ink-soft max-w-2xl mx-auto">
+              Angka ini berubah setiap minggu. Saat Anda membaca ini, mungkin sudah turun menjadi 14. Mungkin 11. Yang pasti — tidak naik.
+            </p>
+          </div>
+
+          <!-- Urgency Banner -->
+          <UrgencyBanner
+            client:visible
+            unitsLeft={unitsLeft}
+            totalUnits={totalUnits}
+            deadline={siteData.promo.deadline}
+          />
+
+          <!-- Live Activity Ticker -->
+          <div class="mt-10">
+            <LiveActivityTicker client:visible events={siteData.liveEvents} />
+          </div>
+
+          <!-- Inline note -->
+          <p class="text-[11px] text-ink-mute text-center mt-6 font-mono uppercase tracking-widest">
+            *Data aktivitas adalah simulasi untuk transparansi. Booking real diproses manual oleh tim.
+          </p>
+        </div>
+      </div>
+    </section>
+    <SectionDivider variant="diamond" />
+
+    <!-- ════════════════ SECTION 6: WHY NOW (Storytelling) ════════════════ -->
+    <WhyNowSection client:visible />
+    <SectionDivider variant="ornate" />
+
+    <!-- ════════════════ SECTION 7: VILLA SHOWCASE ════════════════ -->
+    <section class="relative bg-cream-50 py-20 md:py-32" data-section="villa">
+      <SectionBackground variant="cream" pattern={true} orbs={true} intensity="subtle" />
+      <Pattern variant="dots" color="forest" opacity={0.05} />
+      <div class="container-wide relative">
+        <div class="max-w-3xl mb-12">
+          <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">
+            — Pilih Villa Anda
+          </div>
+          <h2 class="font-display text-editorial-md text-forest-700 leading-[0.95] tracking-tight font-bold mb-4">
+            Tiga Tipe Villa. <em class="text-gold-700">Tiga Cerita Berbeda.</em>
+          </h2>
+          <p class="font-body text-base md:text-lg text-ink-soft">
+            Mana yang paling cocok dengan Anda?
+          </p>
+        </div>
+
+        <!-- Villa cards (3 col on desktop) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+          {villaData.types.map((villa, i) => (
+            <VillaCard
+              client:visible
+              villa={villa}
+              isBestValue={villa.bestValue === true}
+              index={i}
+            />
+          ))}
+        </div>
+
+        <!-- 360° Virtual Tour -->
+        <div class="max-w-4xl mx-auto">
+          <div class="text-center mb-8">
+            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">
+              — Atau Lihat Sendiri
+            </div>
+            <h3 class="font-display text-2xl md:text-3xl text-forest-700 leading-tight font-bold mb-3">
+              Virtual Tour 360° <em class="text-gold-700">Asli.</em>
+            </h3>
+            <p class="text-sm md:text-base text-ink-soft max-w-xl mx-auto">
+              Bukan foto. Bukan video. View 360° asli dari villa yang sudah berdiri hari ini. Geser, zoom, dan lihat sendiri apa yang Anda dapatkan.
+            </p>
+          </div>
+          <Panorama360 client:visible />
+        </div>
+      </div>
+    </section>
+    <SectionDivider variant="diamond" />
+
+    <!-- ════════════════ SECTION 8: PROMO MATH ════════════════ -->
+    <PromoMathSection client:visible />
+    <SectionDivider variant="ornate" />
+
+    <!-- ════════════════ SECTION 9: TRUST BAND ════════════════ -->
+    <PromoTrustBand client:visible />
+    <SectionDivider variant="diamond" />
+
+    <!-- ════════════════ SECTION 10: FAQ ════════════════ -->
+    <PromoFAQSection client:visible />
+    <SectionDivider variant="ornate" />
+
+    <!-- ════════════════ SECTION 11: FINAL CTA ════════════════ -->
+    <FinalCTASection
+      client:visible
+      liveEvents={siteData.liveEvents}
+      promoDeadline={siteData.promo.deadline}
+    />
+  </main>
+
+  <Footer />
+</BaseLayout>

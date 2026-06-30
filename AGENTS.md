@@ -126,12 +126,33 @@ menantu-resort.com/
 4. Test Node server: `npm run serve` (port 3000)
 5. Verify output: `app/dist/client/` (HTML) + `app/dist/server/entry.mjs`
 
-## 🚀 Deployment Workflow (IDCloudHost cPanel)
+## 🚀 Deployment Workflow (IDCloudHost cPanel + lftp)
 
-- **Tidak ada SSH** — pakai cPanel File Manager / FTP / Git version control
+- **Tidak ada SSH** (port 22 closed) — pakai cPanel File Manager / FTP / **lftp push**
 - **Runtime:** Node.js via cPanel "Setup Node.js App" → entry point `dist/server/entry.mjs`
-- **Static fallback:** `dist/client/*` bisa di-host langsung di `public_html/` (untuk `output: 'static'` page)
-- **Lihat `DEPLOY.md`** untuk step-by-step
+- **Static fallback:** `dist/client/*` bisa di-host langsung di addon folder
+- **Lihat `DEPLOY_LFTP.md`** (verified 30 Jun 2026) — pakai `lftp` push-only, NO delete, safe untuk live site
+- **Lihat `DEPLOY_IDCLOUDHOST.md`** untuk cPanel UI walkthrough (Mode B Node SSR)
+
+### ⚠️ CRITICAL: Folder Layout Trap (jangan lupa!)
+
+| Path | Isi | Target deploy? |
+|---|---|---|
+| `/home/egokkcmq/public_html/` | **WordPress** (main cPanel account, BUKAN menantu-resort.com) | ❌ JANGAN — akan hapus WordPress |
+| `/home/egokkcmq/menantu-resort.com/` | **Astro static build** (addon domain) | ✅ INI yang benar |
+| `/home/egokkcmq/menantu-resort.com.backup-*/` | Auto-backup sebelum deploy | ✅ Rollback safety net |
+
+**Verify:** `curl -sI https://menantu-resort.com/ | grep -i last-modified` lalu cocokkan dengan `ls -la menantu-resort.com/index.html` di remote. Jika timestamp cocok → site serve dari folder itu.
+
+### 📊 Analytics & Pixels (sudah installed, jangan double-install)
+
+- **GA4:** `G-39JSBHZY3T` (`AnalyticsBoot.astro:25`)
+- **Google Ads:** `AW-18240219652` + conversion `1KOzCMms1cAcEITUzvlD` (`AnalyticsBoot.astro:26-27`)
+- **Meta Pixel (FB/IG):** `866468102744117` (`AnalyticsBoot.astro:29-30`, script block 38-59)
+- **Google Search Console:** `d-7Ysdp2HpFgntspeuC4-jsiy_cvgq3LxNVubodaYyU` (`BaseLayout.astro:48`)
+- **Enhanced Conversions:** SHA-256 hashing + Advanced Matching untuk Meta (hashed email/phone/name)
+
+Track events fired: `view_promo`, `view_villa`, `cta_click`, `whatsapp_click` (Contact di Meta), `phone_click`, `form_start`, `form_submit`, `generate_lead` (Lead di Meta), `view_content` (ViewContent di Meta).
 
 ## ⚠️ Yang TIDAK Boleh Dilakukan
 
@@ -143,14 +164,18 @@ menantu-resort.com/
 - ❌ JANGAN coba SSH ke server (port 22 closed) — pakai cPanel
 - ❌ JANGAN push file `id_rsa*` ke Git — sudah di-ignore di `.gitignore`
 
-## 📋 Current Phase (per 2026-06-14)
+## 📋 Current Phase (per 2026-06-30)
 
-- ✅ **Phase 1-3:** Project setup + design system + static pages
-- ✅ **Phase 4 partial:** Homepage premium + villa detail (legacy alias fixed)
-- 🔄 **Phase 5 CURRENT:** Asset generation + Node deployment prep
-- ⏳ **Phase 6:** Investasi pages (simulasi-kpr interactive)
-- ⏳ **Phase 7:** Image generation via nanobanana (perlu API key)
-- ⏳ **Phase 8:** Deploy to IDCloudHost via cPanel Node.js selector
+- ✅ **Phase 1-5:** Project setup + design system + static pages + premium components
+- ✅ **Phase 6:** Investasi pages (KPR simulator)
+- ✅ **Phase 7:** Image assets (subset generated)
+- ✅ **Phase 8a:** lftp push-only deploy verified 30 Jun 2026 (DEPLOY_LFTP.md, live at menantu-resort.com/)
+- ✅ **Phase 8b:** Meta Pixel `866468102744117` installed + serving (GA4 + Google Ads + Meta, with Enhanced Conversions)
+- ✅ **Phase 8c:** LeadForm refactor 30 Jun 2026 — `LeadForm.svelte` + `InlineLeadForm.svelte` reusable, NO FOMO, "Kirim Simulasi Personal" CTA, no "belum yakin" option, CAPI-ready (`sendBeacon` to /capi/track). See ARCHITECTURE_CAPI.md §19.
+- ✅ **Phase 8d:** Performance optimization — webp conversion (hero 800→347KB, panorama 3MB→287KB), Panorama360 lazy load via IntersectionObserver, CAPI beacon disabled by default (no 404)
+- ✅ **Phase 9a (code done, deploy pending):** CAPI Gateway + Custom CRM implemented at `capi-gateway/` — Astro 5 + @astrojs/cloudflare + D1 + KV. Custom domain `menantucapi.beriklan.co.id`. Includes admin UI, lead CRUD, activity timeline, dashboard stats. See ARCHITECTURE_CAPI.md §20 + DEPLOY_CAPI.md.
+- 📝 **Phase 9b (next):** Deploy CAPI gateway — `cd capi-gateway && npm install && wrangler d1 create && wrangler kv:namespace create && npm run deploy`. Step-by-step di DEPLOY_CAPI.md.
+- ⏳ **Phase 10 (backlog):** WhatsApp Cloud API follow-up, retargeting audiences, A/B testing, email automation, mobile PWA
 
 ## 🔗 Key Files Reference
 
@@ -162,7 +187,13 @@ menantu-resort.com/
 - `app/src/data/site.json` — kontak, bank, stats
 - `app/src/data/villa.json` — tipe villa + simulasi
 - `app/astro.config.mjs` — Node adapter config
-- `DEPLOY.md` — cPanel deployment guide (coming soon)
+- `DEPLOY_LFTP.md` — **lftp push-only deploy procedure (verified 30 Jun 2026, primary reference, for main site)**
+- `DEPLOY_IDCLOUDHOST.md` — cPanel UI walkthrough (Mode B Node SSR, ⚠️ outdated soal folder layout — `public_html/` BUKAN doc root menantu-resort.com, yg benar `menantu-resort.com/`)
+- `DEPLOY_CAPI.md` — **CAPI Gateway + Custom CRM deploy guide (Astro + D1 + KV, step-by-step)**
+- `deploy-lftp.sh` — Reusable lftp push-only script (one-command deploy for main site)
+- `ARCHITECTURE_CAPI.md` — **CAPI Gateway + Custom CRM design (Cloudflare Worker + D1 + Google Sheets + admin UI) — APPROVED + implemented 30 Jun 2026, deploy pending**
+- `capi-gateway/` — **CAPI Gateway + Custom CRM source code (Astro 5 project, deploy via `npm run deploy`)**
+- `app/src/components/astro/AnalyticsBoot.astro` — GA4 + Google Ads + Meta Pixel source (browser-side, consent-gated)
 
 ## 💡 Saat User Kembali di Sesi Baru
 

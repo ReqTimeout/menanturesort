@@ -26,7 +26,7 @@
     eyebrow = '08 / Eksplorasi',
     heading = 'Lihat dari Atas',
     subheading = 'Panorama 360° kawasan 3,5 hektar. Drag untuk melihat sekeliling, atau klik fullscreen untuk eksplorasi penuh.',
-    src = '/360/panorama-main.jpg',
+    src = '/360/panorama-main.webp',
     poster = '/360/panorama-poster.jpg',
     height = '70vh',
     ctaHref = '/villa',

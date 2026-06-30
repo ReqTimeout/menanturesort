@@ -1,38 +1,77 @@
 <script>
   /**
-   * InlineLeadForm.svelte — Inline form untuk landing page Google Ads
-   * - Inline (bukan popup) — lebih tinggi conversion untuk cold traffic
-   * - Enhanced Conversion: email, phone, name di-hash SHA-256 dan dikirim ke Google Ads
-   * - Conversion value: Rp 10.000.000 (booking fee) untuk Smart Bidding
-   * - 1.5s delay sebelum redirect ke WhatsApp (conversion fires dulu)
+   * InlineLeadForm.svelte — Inline form (non-modal) untuk landing page
+   *
+   * Used in: index.astro, promo.astro, investasi/index.astro, PromoHero.svelte
+   * Companion to LeadForm.svelte (which is the modal version).
+   *
+   * Copy strategy: SAME as LeadForm.svelte — no FOMO, no "belum yakin", persuasive.
+   * See ARCHITECTURE_CAPI.md §19 for full design rationale.
+   *
+   * Reusable via props: heading/subheading/source/ctaText/value all overrideable.
+   * CAPI-ready: sendBeacon ke /capi/track fires BEFORE WhatsApp opens.
    */
-  import { onMount } from 'svelte';
+
   import { motion, AnimatePresence } from '@humanspeak/svelte-motion';
-  import { User, Phone, Mail, Home, MessageCircle, ArrowRight, CheckCircle2, Sparkles, Shield, Clock } from 'lucide-svelte';
+  import { User, Phone, Mail, Home, ArrowRight, CheckCircle2, Sparkles, Send } from 'lucide-svelte';
   import { waUrl } from '@lib/utils';
   import siteData from '@data/site.json';
 
-  let { heading = 'Dapatkan Simulasi Personal', subheading = 'Tim Sahid akan menghubungi Anda dalam 5 menit via WhatsApp.', source = 'inline_form', ctaText = 'Kirim Simulasi via WhatsApp', value = 100000 } = $props();
+  // ========== Reusable props (mirror LeadForm.svelte) ==========
+  let {
+    badge = 'Simulasi Personal',
+    heading = 'Rencanakan',
+    headingItalic = 'Investasi Villa Anda',
+    subheading = 'Tim konsultan Sahid akan menghubungi Anda via WhatsApp untuk menyusun rekomendasi villa, simulasi yield, dan proyeksi cicilan sesuai profil investasi Anda.',
+    source = 'inline_form',
+    ctaText = 'Kirim Simulasi Personal',
+    ctaHint = 'Via WhatsApp',
+    successTitle = 'Simulasi Anda Terkirim',
+    successBody = 'Tim konsultan Sahid akan menghubungi Anda via WhatsApp untuk mendiskusikan rekomendasi personal. Mohon ditunggu.',
+    valueProps = [
+      'Simulasi yield 9–15% p.a. sesuai profil Anda',
+      'Proyeksi cicilan KPR Bank & Developer',
+      'Rekomendasi villa dari 3 tipe (Bijak, Idaman, Mapan)'
+    ],
+    villaOptions = [
+      { value: 'bijak', label: 'Bijak — Rp 1,2 M' },
+      { value: 'idaman', label: 'Idaman — Rp 1,6 M' },
+      { value: 'mapan', label: 'Mapan — Rp 2 M' }
+    ],
+    defaultVilla = 'idaman',
+    showVilla = true,
+    showEmail = true,
+    disclaimer = 'Gratis · Tanpa komitmen · Data aman sesuai UU PDP',
+    value = 10000000,                 // IDR, for Smart Bidding
+    capiEndpoint = '/capi/track',
+    enableCAPI = false                 // SET TRUE setelah CAPI Gateway deployed (lihat ARCHITECTURE_CAPI.md)
+  } = $props();
 
   let name = $state('');
   let phone = $state('');
   let email = $state('');
-  let villa = $state('belum-tahu');
+  let villa = $state(defaultVilla);
   let submitting = $state(false);
   let success = $state(false);
 
   function villaLabel(id) {
-    return {
-      'bijak': 'Bijak (Rp 1,2 M)',
-      'idaman': 'Idaman (Rp 1,6 M)',
-      'mapan': 'Mapan (Rp 2 M)',
-      'belum-tahu': 'Konsultasi dulu',
-    }[id] || id;
+    return villaOptions.find(o => o.value === id)?.label || id;
+  }
+
+  function generateEventId() {
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+      return crypto.randomUUID();
+    }
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+      const r = (Math.random() * 16) | 0;
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
   }
 
   function buildWAUrl() {
     const lines = [
-      `Halo Tim Sahid, saya tertarik dengan villa Menantu Resort.`,
+      `Halo Tim Sahid, saya ingin simulasi personal villa Menantu Resort.`,
       ``,
       `*Data Diri*`,
       `• Nama: ${name || '-'}`,
@@ -42,63 +81,105 @@
       `*Preferensi*`,
       `• Villa: ${villaLabel(villa)}`,
       ``,
-      `Mohon info lebih lanjut. Terima kasih.`,
+      `Mohon disusun simulasinya. Terima kasih.`
     ].filter(Boolean);
     return waUrl(siteData.contact.whatsapp, lines.join('\n'), source);
-  }
-
-  function trackEnhancedConversion() {
-    if (typeof window === 'undefined') return;
-    const [firstName, ...lastParts] = (name || '').trim().split(' ');
-    const userData = {
-      email: email || undefined,
-      phone: phone || undefined,
-      firstName: firstName || undefined,
-      lastName: lastParts.join(' ') || undefined,
-    };
-    // Use the unified trackLead helper (handles EC + persistence + GA4 + Ads)
-    if (typeof window.mrAnalytics !== 'undefined' && window.mrAnalytics.trackLead) {
-      window.mrAnalytics.trackLead({
-        ...userData,
-        leadType: source,
-        estimatedValue: value
-      }).catch((e) => console.warn('[InlineLeadForm] trackLead failed:', e));
-    } else if (typeof window.mrEnhancedConversions !== 'undefined') {
-      // Fallback: direct call
-      window.mrEnhancedConversions.trackConversion('generate_lead', userData, {
-        event_category: 'lead',
-        event_label: source,
-        value: value,
-        currency: 'IDR',
-        send_to: [GA4_ID, ADS_ID]
-      }).catch((e) => console.warn('[InlineLeadForm] enhanced conv failed:', e));
-    }
-    // Mirror to localStorage as backup
-    try { localStorage.setItem('mr_user', JSON.stringify({ name, phone, email, villa })); } catch (e) {}
   }
 
   function submit(e) {
     e.preventDefault();
     if (!name || !phone) return;
     submitting = true;
-    trackEnhancedConversion();
-    const url = buildWAUrl();
-    if (typeof window.gtag_report_conversion === 'function') {
-      window.gtag_report_conversion(url);
-    } else {
-      setTimeout(() => window.open(url, '_blank', 'noopener'), 1500);
+
+    // Persist for cross-page attribution
+    try {
+      localStorage.setItem('mr_user', JSON.stringify({ name, phone, email, villa }));
+      sessionStorage.setItem('mr_user', JSON.stringify({ name, phone, email, villa }));
+    } catch {}
+
+    // Build user data
+    const [firstName, ...lastParts] = (name || '').trim().split(/\s+/);
+    const userData = {
+      firstName,
+      lastName: lastParts.join(' '),
+      phone: phone || undefined,
+      email: email || undefined
+    };
+
+    const eventId = generateEventId();
+    const eventTime = Math.floor(Date.now() / 1000);
+
+    // === 1. CAPI Gateway beacon (only if enabled — false until CAPI Gateway deployed) ===
+    if (enableCAPI && capiEndpoint && typeof navigator !== 'undefined' && navigator.sendBeacon) {
+      try {
+        const beaconPayload = JSON.stringify({
+          event_name: 'Lead',
+          event_id: eventId,
+          event_time: eventTime,
+          event_source_url: window.location.href,
+          action_source: 'website',
+          user_data: userData,
+          custom_data: {
+            value,
+            currency: 'IDR',
+            lead_type: 'simulation_request',
+            villa_pref: villa,
+            source,
+            content_name: 'simulation_request_inline',
+            content_category: 'villa_investment'
+          }
+        });
+        navigator.sendBeacon(
+          capiEndpoint,
+          new Blob([beaconPayload], { type: 'application/json' })
+        );
+      } catch (err) {
+        console.warn('[InlineLeadForm] CAPI beacon failed:', err);
+      }
     }
-    setTimeout(() => {
-      success = true;
-      submitting = false;
-    }, 600);
+
+    // === 2. Browser fbq (Meta Pixel — dedup via event_id) ===
+    if (typeof window.fbq === 'function') {
+      window.fbq('track', 'Lead', {
+        event_id: eventId,
+        value,
+        currency: 'IDR',
+        content_name: 'simulation_request_inline',
+        content_category: 'villa_investment'
+      });
+    }
+
+    // === 3. GA4 + Google Ads Enhanced Conversions ===
+    (async () => {
+      try {
+        if (typeof window.mrAnalytics !== 'undefined' && window.mrAnalytics.trackLead) {
+          await window.mrAnalytics.trackLead({
+            ...userData,
+            leadType: 'simulation_request',
+            estimatedValue: value
+          });
+        }
+      } catch (err) {
+        console.warn('[InlineLeadForm] Enhanced conversion failed:', err);
+      }
+
+      // === 4. Open WhatsApp (final user action) ===
+      const url = buildWAUrl();
+      if (typeof window.gtag_report_conversion === 'function') {
+        window.gtag_report_conversion(url);
+      } else {
+        setTimeout(() => window.open(url, '_blank', 'noopener'), 400);
+      }
+
+      setTimeout(() => {
+        success = true;
+        submitting = false;
+      }, 800);
+    })();
   }
 </script>
 
-<div class="card-premium p-6 sm:p-8 md:p-10 bg-white border-2 border-gold-500/40 shadow-xl shadow-forest-900/5 relative overflow-hidden">
-  <!-- Decorative top accent -->
-  <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gold-500 via-gold-300 to-gold-500"></div>
-
+<div class="relative bg-cream-50 border-t-4 border-gold-500 shadow-2xl shadow-forest-900/10 overflow-hidden">
   <AnimatePresence mode="wait">
     {#if !success}
       <motion.div
@@ -107,121 +188,147 @@
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -8 }}
         transition={{ duration: 0.35 }}
+        class="p-6 sm:p-8 md:p-10"
       >
-        <div class="mb-6">
-          <div class="inline-flex items-center gap-2 bg-gold-500/10 text-gold-700 px-3 py-1.5 text-[10px] font-bold tracking-widest uppercase mb-3">
-            <Sparkles class="w-3 h-3" />
-            Konsultasi Gratis
-          </div>
-          <h3 class="font-display text-2xl sm:text-3xl text-forest-700 leading-tight font-bold">
-            {heading}
-          </h3>
-          <p class="text-sm text-ink-700 mt-2 leading-relaxed">
-            {subheading}
-          </p>
+        <!-- Badge -->
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-gold-500/15 text-gold-700 text-[10px] font-bold tracking-[0.2em] uppercase mb-4">
+          <Sparkles class="w-3 h-3" />
+          {badge}
         </div>
 
+        <!-- Headline -->
+        <h3 class="font-display text-2xl sm:text-3xl text-forest-900 leading-[1.1] font-bold tracking-tight mb-3">
+          {heading}{' '}
+          <em class="text-gold-700 italic font-display">{headingItalic}</em>
+        </h3>
+
+        <!-- Subhead -->
+        <p class="text-[15px] text-ink-700 leading-relaxed mb-6">
+          {subheading}
+        </p>
+
+        <!-- Value props -->
+        {#if valueProps && valueProps.length > 0}
+          <div class="border-l-2 border-gold-500 pl-4 space-y-2 mb-6">
+            {#each valueProps as prop}
+              <div class="flex items-start gap-2.5 text-[14px] text-ink-700 leading-snug">
+                <CheckCircle2 class="w-4 h-4 text-gold-600 flex-shrink-0 mt-0.5" />
+                <span>{prop}</span>
+              </div>
+            {/each}
+          </div>
+        {/if}
+
+        <!-- Form -->
         <form onsubmit={submit} class="space-y-4">
           <div>
-            <label class="block text-xs font-mono uppercase tracking-widest text-forest-700 mb-1.5">
-              <User class="w-3 h-3 inline mr-1" /> Nama Lengkap *
+            <label for="inline-leadform-name" class="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-forest-900 mb-2 font-semibold">
+              <User class="w-3 h-3" /> Nama Lengkap <span class="text-gold-700">*</span>
             </label>
             <input
+              id="inline-leadform-name"
               type="text"
               bind:value={name}
               required
               autocomplete="name"
               placeholder="Budi Santoso"
-              class="w-full px-4 py-3 bg-cream-50 border border-cream-100 text-forest-700 text-base focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 transition"
+              class="w-full px-4 py-3 bg-white border border-cream-100 text-forest-900 text-[15px] focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500/30 transition"
             />
           </div>
 
           <div>
-            <label class="block text-xs font-mono uppercase tracking-widest text-forest-700 mb-1.5">
-              <Phone class="w-3 h-3 inline mr-1" /> WhatsApp *
+            <label for="inline-leadform-phone" class="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-forest-900 mb-2 font-semibold">
+              <Phone class="w-3 h-3" /> WhatsApp <span class="text-gold-700">*</span>
             </label>
             <input
+              id="inline-leadform-phone"
               type="tel"
               bind:value={phone}
               required
               autocomplete="tel"
               placeholder="+62 812 3456 7890"
-              class="w-full px-4 py-3 bg-cream-50 border border-cream-100 text-forest-700 font-mono text-base focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 transition"
+              class="w-full px-4 py-3 bg-white border border-cream-100 text-forest-900 font-mono text-[15px] focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500/30 transition"
             />
           </div>
 
-          <div>
-            <label class="block text-xs font-mono uppercase tracking-widest text-forest-700 mb-1.5">
-              <Mail class="w-3 h-3 inline mr-1" /> Email (untuk simulasi PDF)
-            </label>
-            <input
-              type="email"
-              bind:value={email}
-              autocomplete="email"
-              placeholder="budi@email.com"
-              class="w-full px-4 py-3 bg-cream-50 border border-cream-100 text-forest-700 text-base focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 transition"
-            />
-          </div>
+          {#if showEmail}
+            <div>
+              <label for="inline-leadform-email" class="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-forest-900 mb-2 font-semibold">
+                <Mail class="w-3 h-3" /> Email <span class="text-ink-mute font-normal normal-case tracking-normal text-[10px]">(opsional, untuk simulasi PDF)</span>
+              </label>
+              <input
+                id="inline-leadform-email"
+                type="email"
+                bind:value={email}
+                autocomplete="email"
+                placeholder="budi@email.com"
+                class="w-full px-4 py-3 bg-white border border-cream-100 text-forest-900 text-[15px] focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500/30 transition"
+              />
+            </div>
+          {/if}
 
-          <div>
-            <label class="block text-xs font-mono uppercase tracking-widest text-forest-700 mb-1.5">
-              <Home class="w-3 h-3 inline mr-1" /> Minat Villa
-            </label>
-            <select
-              bind:value={villa}
-              class="w-full px-4 py-3 bg-cream-50 border border-cream-100 text-forest-700 text-base focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 transition"
+          {#if showVilla && villaOptions.length > 0}
+            <div>
+              <label for="inline-leadform-villa" class="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-[0.2em] text-forest-900 mb-2 font-semibold">
+                <Home class="w-3 h-3" /> Preferensi Villa
+              </label>
+              <select
+                id="inline-leadform-villa"
+                bind:value={villa}
+                class="w-full px-4 py-3 bg-white border border-cream-100 text-forest-900 text-[15px] focus:outline-none focus:border-gold-500 focus:ring-1 focus:ring-gold-500/30 transition appearance-none cursor-pointer"
+                style="background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22%231B4332%22><path d=%22M7 10l5 5 5-5z%22/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 18px; padding-right: 40px;"
+              >
+                {#each villaOptions as opt}
+                  <option value={opt.value}>{opt.label}</option>
+                {/each}
+              </select>
+            </div>
+          {/if}
+
+          <!-- Submit -->
+          <div class="pt-2">
+            <button
+              type="submit"
+              disabled={submitting}
+              class="w-full flex items-center justify-center gap-2.5 px-6 py-4 bg-forest-900 hover:bg-forest-800 disabled:opacity-50 text-cream-50 font-bold text-[13px] tracking-[0.2em] uppercase transition min-h-[54px] shadow-lg shadow-forest-900/20 hover:shadow-xl hover:shadow-forest-900/30 hover:-translate-y-0.5"
             >
-              <option value="belum-tahu">Konsultasi dulu (belum yakin)</option>
-              <option value="bijak">Bijak — Rp 1,2 M</option>
-              <option value="idaman">Idaman — Rp 1,6 M</option>
-              <option value="mapan">Mapan — Rp 2 M</option>
-            </select>
-          </div>
-
-          <button
-            type="submit"
-            disabled={submitting}
-            class="w-full flex items-center justify-center gap-2 px-6 py-4 bg-gold-500 hover:bg-gold-300 text-forest-900 font-bold text-sm tracking-wider uppercase transition min-h-[52px] disabled:opacity-50 shadow-lg shadow-gold-500/30 hover:shadow-gold-500/50"
-          >
-            {#if submitting}
-              <span>Menghubungkan ke WhatsApp...</span>
-            {:else}
-              <MessageCircle class="w-4 h-4" />
-              <span>{ctaText}</span>
-              <ArrowRight class="w-4 h-4" />
-            {/if}
-          </button>
-
-          <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-1 text-[10px] text-ink-mute leading-tight">
-            <span class="inline-flex items-center gap-1">
-              <Shield class="w-3 h-3 text-gold-700" /> Data aman
-            </span>
-            <span class="inline-flex items-center gap-1">
-              <Clock class="w-3 h-3 text-gold-700" /> Respon 5 menit
-            </span>
-            <span>UU PDP compliant</span>
+              {#if submitting}
+                <span class="inline-flex items-center gap-2">
+                  <span class="w-3 h-3 border-2 border-cream-50/30 border-t-cream-50 rounded-full animate-spin"></span>
+                  Mengirim...
+                </span>
+              {:else}
+                <Send class="w-4 h-4" />
+                <span>{ctaText}</span>
+                <ArrowRight class="w-4 h-4" />
+              {/if}
+            </button>
+            <p class="text-[11px] text-ink-mute text-center mt-2.5 font-mono uppercase tracking-[0.15em]">
+              → {ctaHint}
+            </p>
           </div>
         </form>
+
+        <p class="text-[10px] text-ink-mute text-center mt-5 leading-relaxed">
+          {disclaimer}
+        </p>
       </motion.div>
     {:else}
       <motion.div
         key="success"
-        class="p-2 text-center"
+        class="p-10 sm:p-12 text-center"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.4, type: 'spring', stiffness: 200 }}
       >
-        <div class="w-16 h-16 mx-auto bg-success/20 text-success rounded-full flex items-center justify-center mb-4">
-          <CheckCircle2 class="w-8 h-8" />
+        <div class="w-16 h-16 mx-auto bg-success/15 text-success rounded-full flex items-center justify-center mb-5">
+          <CheckCircle2 class="w-9 h-9" />
         </div>
-        <h3 class="font-display text-2xl text-forest-700 font-bold mb-2">
-          WhatsApp Terbuka!
+        <h3 class="font-display text-2xl sm:text-3xl text-forest-900 font-bold mb-3">
+          {successTitle}
         </h3>
-        <p class="text-sm text-ink-700 leading-relaxed mb-2">
-          Silakan kirim pesan di WhatsApp untuk terhubung dengan tim Sahid.
-        </p>
-        <p class="text-xs text-ink-mute">
-          Mereka akan merespon dalam <strong>5 menit</strong>.
+        <p class="text-[14px] text-ink-700 leading-relaxed max-w-sm mx-auto">
+          {successBody}
         </p>
       </motion.div>
     {/if}

@@ -1,1 +1,0 @@
-import{a8 as o,a9 as t,aa as l,ab as u,a5 as e}from"./runtime.DhVKItEq.js";function c(n){o===null&&t(),l&&o.l!==null?s(o).m.push(n):u(()=>{const a=e(n);if(typeof a=="function")return a})}function i(n){o===null&&t(),c(()=>()=>e(n))}function s(n){var a=n.l;return a.u??={a:[],b:[],m:[]}}export{i as a,c as o};

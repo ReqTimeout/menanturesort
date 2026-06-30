@@ -12,6 +12,7 @@ import villaData from '../data/villa.json';
 
 import NavMenu from '../components/svelte/NavMenu.svelte';
 import EditorialHero from '../components/svelte/EditorialHero.svelte';
+import InlineLeadForm from '../components/svelte/InlineLeadForm.svelte';
 import Marquee from '../components/svelte/Marquee.svelte';
 import ThePromise from '../components/svelte/ThePromise.svelte';
 import HowItWorks from '../components/svelte/HowItWorks.svelte';
@@ -84,6 +85,59 @@ const showcaseVillas = villaData.types.map((v) => ({
       badge={heroBadge}
       body={heroBody}
     />
+
+    <!-- ═══ 1B. INLINE LEAD FORM (catch hot traffic dari Google Ads) ═══ -->
+    <section class="relative bg-gradient-to-br from-forest-900 via-forest-800 to-forest-900 text-cream-50 py-14 md:py-20 overflow-hidden gsap-fade" data-section="home-lead-form">
+      <!-- Decorative pattern -->
+      <div class="absolute inset-0 pointer-events-none opacity-[0.04]" style="background-image: radial-gradient(circle, #D4A574 1px, transparent 1px); background-size: 28px 28px;"></div>
+      <div class="absolute -top-20 -right-20 w-96 h-96 rounded-full blur-3xl opacity-20" style="background: radial-gradient(circle, rgba(212,165,116,0.4) 0%, transparent 70%);"></div>
+
+      <div class="container-wide relative">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div class="lg:col-span-5 text-center lg:text-left">
+            <div class="inline-flex items-center gap-2 bg-gold-500/20 text-gold-500 px-3 py-1.5 text-[10px] font-bold tracking-widest uppercase mb-4">
+              <span class="w-2 h-2 bg-gold-500 rounded-full animate-pulse"></span>
+              16 dari 74 unit tersisa
+            </div>
+            <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl text-cream-50 leading-[1.0] tracking-tight font-bold mb-5">
+              Mau tau villa yang <em class="text-gold-500 font-medium">cocok untuk budget</em> Anda?
+            </h2>
+            <p class="font-body text-base sm:text-lg text-cream-50/80 leading-relaxed mb-6 max-w-xl mx-auto lg:mx-0">
+              Tim Sahid akan kirim PDF simulasi personal via WhatsApp — cicilan, passive income, dan proyeksi 15 tahun disesuaikan dengan profil Anda. Gratis, tanpa komitmen.
+            </p>
+            <ul class="space-y-2 text-sm text-cream-50/85 mb-6 inline-block text-left">
+              <li class="flex items-start gap-2">
+                <span class="text-gold-500 mt-0.5">✓</span>
+                <span>Cicilan 9,1 jt/bln (DP 30%, tenor 10 tahun)</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-gold-500 mt-0.5">✓</span>
+                <span>Passive income 9% p.a. guarantee 2 tahun</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-gold-500 mt-0.5">✓</span>
+                <span>SHM + izin komersial resort, fully furnished</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-gold-500 mt-0.5">✓</span>
+                <span>Survey lokasi GRATIS shuttle dari Bandung</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="lg:col-span-7">
+            <InlineLeadForm
+              client:only="svelte"
+              heading="Miliki"
+              headingItalic="Unit Sekarang"
+              subheading="Simulasi cicilan, passive income, dan proyeksi 15 tahun disesuaikan dengan profil Anda. Gratis, tanpa komitmen."
+              source="homepage_inline_form"
+              ctaText="Kirim Simulasi Personal"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- ═══ 2. MARQUEE (trust badges horizontal) ═══ -->
     <Marquee client:visible items={marqueeItems} speed={60} />

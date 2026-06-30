@@ -25,7 +25,7 @@
   import { cn } from '@lib/utils';
 
   let {
-    src = '/360/panorama-main.jpg',
+    src = '/360/panorama-main.webp',
     poster = '/360/panorama-poster.jpg',
     caption = 'Eksplor 360° kawasan Menantu Resort',
     height = '60vh',
@@ -44,6 +44,7 @@
   let hintVisible = $state(true);
   let reducedMotion = $state(false);
   let hintTimer: ReturnType<typeof setTimeout> | null = null;
+  let visibilityObserver: IntersectionObserver | null = null;
 
   // Fullscreen URL — gunakan standalone page yang ada
   const fullscreenUrl = '/360/index.html';
@@ -59,12 +60,32 @@
       hintTimer = setTimeout(() => { hintVisible = false; }, 4000);
     }
 
-    // Load PSV dynamically
-    loadViewer();
+    // LAZY LOAD: Only init Photo Sphere Viewer when section is near viewport
+    // This prevents the 3MB panorama-main.jpg from being loaded on initial page load
+    if (containerEl && 'IntersectionObserver' in window) {
+      visibilityObserver = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            loadViewer();
+            visibilityObserver?.disconnect();
+            visibilityObserver = null;
+          }
+        },
+        { rootMargin: '200px 0px' }  // start loading 200px before visible
+      );
+      visibilityObserver.observe(containerEl);
+    } else {
+      // Fallback: load immediately if no IntersectionObserver
+      loadViewer();
+    }
   });
 
   onDestroy(() => {
     if (hintTimer) clearTimeout(hintTimer);
+    if (visibilityObserver) {
+      visibilityObserver.disconnect();
+      visibilityObserver = null;
+    }
     if (viewer?.destroy) {
       try { viewer.destroy(); } catch (e) { /* noop */ }
     }

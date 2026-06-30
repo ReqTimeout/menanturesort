@@ -1,0 +1,214 @@
+---
+/**
+ * /admin — Dashboard
+ * Auth via localStorage-stored API key (entered on first visit).
+ */
+import { checkAuth, handleCors, corsHeaders, unauthorized } from '@lib/auth';
+
+const { SITE_URL } = Astro.locals.runtime.env;
+---
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRM Dashboard — Menantu Resort</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231B4332'%3E%3Cpath d='M12 2L2 22h20L12 2z'/%3E%3C/svg%3E" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .stat-card { transition: all 0.2s; }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+  </style>
+</head>
+<body class="bg-stone-50 text-stone-900 min-h-screen">
+  <header class="bg-gradient-to-r from-emerald-900 to-emerald-800 text-white sticky top-0 z-10 shadow-md">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div>
+        <h1 class="text-xl font-bold tracking-tight">Menantu Resort CRM</h1>
+        <p class="text-xs text-emerald-200 font-mono uppercase tracking-wider">Custom Dashboard</p>
+      </div>
+      <nav class="flex items-center gap-6 text-sm">
+        <a href="/admin" class="text-white font-semibold">Dashboard</a>
+        <a href="/admin/leads" class="text-emerald-200 hover:text-white">Leads</a>
+        <button id="logout" class="text-emerald-200 hover:text-white text-xs uppercase tracking-wider">Logout</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-8">
+    <!-- Auth gate -->
+    <div id="auth-prompt" class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-sm border border-stone-200">
+      <h2 class="text-lg font-bold mb-2">🔐 Masukkan Admin API Key</h2>
+      <p class="text-sm text-stone-600 mb-4">Dapatkan dari <code class="text-xs bg-stone-100 px-1.5 py-0.5 rounded">wrangler secret list</code> di Cloudflare Worker.</p>
+      <input id="api-key" type="password" placeholder="admin-api-key-xxx..." class="w-full px-3 py-2 border border-stone-300 rounded font-mono text-sm mb-3" />
+      <button id="auth-submit" class="w-full bg-emerald-900 text-white py-2.5 rounded font-semibold text-sm hover:bg-emerald-800">Masuk Dashboard</button>
+      <p id="auth-error" class="text-red-600 text-xs mt-2 hidden"></p>
+    </div>
+
+    <div id="dashboard" class="hidden">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold">Overview</h2>
+        <div class="text-xs text-stone-500 font-mono" id="last-updated"></div>
+      </div>
+
+      <!-- Stat cards -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8" id="stat-cards"></div>
+
+      <!-- Top sources + villa prefs -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-stone-700 mb-4">Top Lead Sources</h3>
+          <div id="top-sources" class="space-y-2"></div>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-stone-700 mb-4">Top Villa Prefs</h3>
+          <div id="top-villa-prefs" class="space-y-2"></div>
+        </div>
+      </div>
+
+      <!-- Recent leads -->
+      <div class="bg-white p-6 rounded-lg shadow-sm border border-stone-200">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-stone-700">Leads Terbaru</h3>
+          <a href="/admin/leads" class="text-xs text-emerald-700 hover:text-emerald-900 font-semibold uppercase tracking-wider">Lihat Semua →</a>
+        </div>
+        <div id="recent-leads" class="space-y-2"></div>
+      </div>
+    </div>
+  </main>
+
+  <script is:inline define:vars={{ SITE_URL }}>
+    const API = location.origin;
+    let apiKey = localStorage.getItem('mr_admin_key') || '';
+
+    function getHeaders() {
+      return { 'Authorization': 'Bearer ' + apiKey, 'Content-Type': 'application/json' };
+    }
+
+    async function api(path, opts = {}) {
+      const res = await fetch(API + path, { ...opts, headers: { ...getHeaders(), ...(opts.headers || {}) } });
+      if (res.status === 401) {
+        showAuthPrompt('API key salah');
+        throw new Error('Unauthorized');
+      }
+      return res;
+    }
+
+    function showAuthPrompt(err) {
+      document.getElementById('auth-prompt').classList.remove('hidden');
+      document.getElementById('dashboard').classList.add('hidden');
+      if (err) {
+        const e = document.getElementById('auth-error');
+        e.textContent = err;
+        e.classList.remove('hidden');
+      }
+    }
+
+    function showDashboard() {
+      document.getElementById('auth-prompt').classList.add('hidden');
+      document.getElementById('dashboard').classList.remove('hidden');
+      loadStats();
+      loadRecentLeads();
+    }
+
+    document.getElementById('auth-submit').addEventListener('click', async () => {
+      apiKey = document.getElementById('api-key').value.trim();
+      if (!apiKey) return;
+      localStorage.setItem('mr_admin_key', apiKey);
+      try {
+        const res = await api('/api/stats');
+        if (res.ok) showDashboard();
+      } catch {}
+    });
+
+    document.getElementById('logout').addEventListener('click', () => {
+      localStorage.removeItem('mr_admin_key');
+      location.reload();
+    });
+
+    document.getElementById('api-key').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') document.getElementById('auth-submit').click();
+    });
+
+    async function loadStats() {
+      const res = await api('/api/stats');
+      const s = await res.json();
+
+      const cards = [
+        { label: 'Total Leads', value: s.total_leads, color: 'emerald' },
+        { label: 'New', value: s.new_leads, color: 'amber' },
+        { label: 'Qualified', value: s.qualified_leads, color: 'blue' },
+        { label: 'Won', value: s.won_leads, color: 'green' },
+        { label: 'Today', value: s.leads_today, color: 'rose' },
+        { label: 'This Week', value: s.leads_this_week, color: 'violet' },
+        { label: 'This Month', value: s.leads_this_month, color: 'sky' },
+        { label: 'Conversion', value: (s.conversion_rate * 100).toFixed(1) + '%', color: 'fuchsia' }
+      ];
+
+      document.getElementById('stat-cards').innerHTML = cards.map(c => `
+        <div class="stat-card bg-white p-5 rounded-lg shadow-sm border border-stone-200">
+          <div class="text-2xl font-bold text-${c.color}-700">${c.value}</div>
+          <div class="text-xs uppercase tracking-wider text-stone-500 mt-1">${c.label}</div>
+        </div>
+      `).join('');
+
+      document.getElementById('top-sources').innerHTML = s.top_sources.length === 0
+        ? '<p class="text-sm text-stone-500">Belum ada data.</p>'
+        : s.top_sources.map(x => `<div class="flex justify-between text-sm"><span class="font-mono text-stone-700">${x.source || 'unknown'}</span><span class="font-bold text-emerald-700">${x.count}</span></div>`).join('');
+
+      document.getElementById('top-villa-prefs').innerHTML = s.top_villa_prefs.length === 0
+        ? '<p class="text-sm text-stone-500">Belum ada data.</p>'
+        : s.top_villa_prefs.map(x => `<div class="flex justify-between text-sm"><span class="font-mono uppercase text-stone-700">${x.villa_pref || 'unknown'}</span><span class="font-bold text-emerald-700">${x.count}</span></div>`).join('');
+
+      document.getElementById('last-updated').textContent = 'Updated ' + new Date().toLocaleTimeString('id-ID');
+    }
+
+    async function loadRecentLeads() {
+      const res = await api('/api/leads?limit=10');
+      const data = await res.json();
+      const rows = data.leads || [];
+
+      if (rows.length === 0) {
+        document.getElementById('recent-leads').innerHTML = '<p class="text-sm text-stone-500">Belum ada leads. Submit form di menantu-resort.com untuk test.</p>';
+        return;
+      }
+
+      const statusColor = { new: 'amber', contacted: 'blue', qualified: 'violet', tour_scheduled: 'sky', won: 'emerald', lost: 'rose' };
+
+      document.getElementById('recent-leads').innerHTML = rows.map(l => `
+        <a href="/admin/leads/${l.id}" class="flex items-center justify-between p-3 hover:bg-stone-50 transition border-b border-stone-100 last:border-0">
+          <div class="flex-1 min-w-0">
+            <div class="font-semibold text-sm truncate">${escapeHtml(l.name || '(no name)')}</div>
+            <div class="text-xs text-stone-500 font-mono">${l.phone || l.email || '-'}</div>
+          </div>
+          <div class="flex items-center gap-3 ml-4">
+            <span class="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-${statusColor[l.status] || 'stone'}-100 text-${statusColor[l.status] || 'stone'}-800">${l.status}</span>
+            <span class="text-xs text-stone-400 font-mono">${formatTime(l.created_at)}</span>
+          </div>
+        </a>
+      `).join('');
+    }
+
+    function escapeHtml(s) {
+      const div = document.createElement('div');
+      div.textContent = s || '';
+      return div.innerHTML;
+    }
+
+    function formatTime(unix) {
+      const d = new Date(unix * 1000);
+      const diff = Date.now() - d.getTime();
+      if (diff < 60000) return 'baru';
+      if (diff < 3600000) return Math.floor(diff / 60000) + 'm';
+      if (diff < 86400000) return Math.floor(diff / 3600000) + 'h';
+      return Math.floor(diff / 86400000) + 'd';
+    }
+
+    if (apiKey) {
+      api('/api/stats').then(r => r.ok && showDashboard()).catch(() => {});
+    }
+  </script>
+</body>
+</html>

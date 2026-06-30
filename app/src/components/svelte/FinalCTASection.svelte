@@ -15,7 +15,7 @@
 
   let {
     liveEvents = [],
-    promoDeadline = '2026-06-30T23:59:59+07:00',
+    promoDeadline = '2026-07-30T23:59:59+07:00',
     class: className = '',
   } = $props();
 </script>

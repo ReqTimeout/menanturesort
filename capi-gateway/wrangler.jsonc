@@ -1,0 +1,42 @@
+{
+  "name": "menantu-capi-gateway",
+  "compatibility_date": "2026-06-30",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "./dist/_worker.js/index.js",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1.0
+  },
+  "placement": { "mode": "smart" },
+  "routes": [
+    {
+      "pattern": "menantucapi.beriklan.co.id",
+      "custom_domain": true
+    }
+  ],
+  "vars": {
+    "SITE_URL": "https://menantu-resort.com",
+    "META_PIXEL_ID": "866468102744117",
+    "META_API_VERSION": "v18.0",
+    "ALLOWED_ORIGIN": "https://menantu-resort.com",
+    "ENVIRONMENT": "production"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "menantu-leads",
+      "database_id": "REPLACE_WITH_D1_ID_AFTER_CREATION",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "DEDUP",
+      "id": "REPLACE_WITH_KV_ID_AFTER_CREATION"
+    }
+  ]
+}

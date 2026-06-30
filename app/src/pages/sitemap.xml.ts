@@ -33,6 +33,7 @@ const parseArticleDate = (dateStr) => {
 // Static pages — high priority + daily/weekly
 const STATIC_PAGES = [
   { loc: '/', priority: 1.0, changefreq: 'daily' },
+  { loc: '/promo/', priority: 1.0, changefreq: 'daily' },
   { loc: '/villa/', priority: 0.9, changefreq: 'daily' },
   { loc: '/villa/bijak/', priority: 0.9, changefreq: 'daily' },
   { loc: '/villa/idaman/', priority: 0.9, changefreq: 'daily' },

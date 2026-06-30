@@ -107,26 +107,41 @@
     class="absolute inset-0 z-0 will-change-transform overflow-hidden bg-forest-900"
     style="transform: translate3d({mouseX}px, {mouseY + bgY}px, 0) scale(1.06);"
   >
-    <!-- Mobile: vertical-friendly crop (centered) -->
-    <img
-      class="absolute inset-0 w-full h-full object-cover sm:hidden"
-      src="/images/hero/hero-panorama-mobile.jpg"
-      alt=""
-      loading="eager"
-      fetchpriority="high"
-      decoding="async"
-    />
-    <!-- Desktop: full panorama landscape -->
-    <img
-      class="absolute inset-0 w-full h-full object-cover hidden sm:block"
-      src="/images/hero/hero-panorama-1920.jpg"
-      srcset="/images/hero/hero-panorama-800.jpg 800w, /images/hero/hero-panorama-1280.jpg 1280w, /images/hero/hero-panorama-1920.jpg 1920w"
-      sizes="100vw"
-      alt="Menantu Resort — Panorama kawasan eco-resort Cicalengka, Bandung Timur dengan pegunungan di kejauhan"
-      loading="eager"
-      fetchpriority="high"
-      decoding="async"
-    />
+    <!-- Mobile: vertical-friendly crop (centered) — webp + jpg fallback -->
+    <picture>
+      <source
+        type="image/webp"
+        srcset="/images/hero/hero-panorama-mobile.webp"
+      />
+      <img
+        class="absolute inset-0 w-full h-full object-cover sm:hidden"
+        src="/images/hero/hero-panorama-mobile.jpg"
+        alt=""
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </picture>
+    <!-- Desktop: full panorama landscape — webp + jpg fallback via srcset -->
+    <picture>
+      <source
+        type="image/webp"
+        srcset="/images/hero/hero-panorama-800.webp 800w,
+                /images/hero/hero-panorama-1280.webp 1280w,
+                /images/hero/hero-panorama-1920.webp 1920w"
+        sizes="100vw"
+      />
+      <img
+        class="absolute inset-0 w-full h-full object-cover hidden sm:block"
+        src="/images/hero/hero-panorama-1920.jpg"
+        srcset="/images/hero/hero-panorama-800.jpg 800w, /images/hero/hero-panorama-1280.jpg 1280w, /images/hero/hero-panorama-1920.jpg 1920w"
+        sizes="100vw"
+        alt="Menantu Resort — Panorama kawasan eco-resort Cicalengka, Bandung Timur dengan pegunungan di kejauhan"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </picture>
     <!-- THIN gradient overlay (image sudah punya tone, jadi tipis saja) -->
     <div
       class="absolute inset-0 pointer-events-none"
