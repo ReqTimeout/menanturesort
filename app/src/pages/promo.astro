@@ -1,23 +1,15 @@
 ---
 /**
  * /promo — Campaign landing page untuk Google Ads + Meta Ads
- * Fokus 1 KPI: lead WhatsApp masuk
+ * Fokus 1 KPI: lead WhatsApp masuk.
  *
- * Sections (top → bottom):
- * 1. Sticky Nav (existing)
- * 2. Hero (PromoHero.svelte — custom)
- * 3. Proof Bar Marquee (existing)
- * 4. 3 Promo Pillar (PromoSpesialSection.svelte — existing)
- * 5. Live Scarcity (UrgencyBanner + LiveActivityTicker — existing)
- * 6. Why Now (WhyNowSection.svelte — new)
- * 7. Villa Showcase (existing VillaCard + 360° panorama)
- * 8. Promo Math (PromoMathSection.svelte — new)
- * 9. Trust Band (PromoTrustBand.svelte — new)
- * 10. FAQ (PromoFAQSection.svelte — new)
- * 11. Final CTA (FinalCTASection.svelte — existing)
- * + Footer
- * + WhatsAppFloating (existing, global)
- * + StickyMobileCTA (existing, global)
+ * Design v2 (30 Jun 2026) — rebuild:
+ * - Hero 100% INLINE (Astro HTML) — muncul instant, no hydration flash
+ * - 1 H1 dominan, 1 form, 1 CTA path
+ * - Countdown + Form pakai Svelte islands (`client:load`)
+ * - 3 Pillar inline (no generic PromoSpesialSection)
+ * - Responsive tested: 320/375/768/1024/1440
+ * - All sections punya data-track-section untuk funnel tracking
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import NavMenu from '../components/svelte/NavMenu.svelte';
@@ -26,30 +18,30 @@ import SectionBackground from '../components/astro/SectionBackground.astro';
 import SectionDivider from '../components/astro/SectionDivider.astro';
 import Pattern from '../components/astro/Pattern.astro';
 
-import PromoHero from '../components/svelte/PromoHero.svelte';
-import PromoSpesialSection from '../components/svelte/PromoSpesialSection.svelte';
+import CountdownTimer from '../components/svelte/CountdownTimer.svelte';
+import InlineLeadForm from '../components/svelte/InlineLeadForm.svelte';
+
 import Marquee from '../components/svelte/Marquee.svelte';
 import UrgencyBanner from '../components/svelte/UrgencyBanner.svelte';
 import LiveActivityTicker from '../components/svelte/LiveActivityTicker.svelte';
 import Panorama360 from '../components/svelte/Panorama360.svelte';
 import VillaCard from '../components/svelte/VillaCard.svelte';
-import InlineLeadForm from '../components/svelte/InlineLeadForm.svelte';
-import WhatsAppButton from '../components/svelte/WhatsAppButton.svelte';
-import FinalCTASection from '../components/svelte/FinalCTASection.svelte';
-import CountdownTimer from '../components/svelte/CountdownTimer.svelte';
 
 import WhyNowSection from '../components/svelte/WhyNowSection.svelte';
 import PromoMathSection from '../components/svelte/PromoMathSection.svelte';
 import PromoTrustBand from '../components/svelte/PromoTrustBand.svelte';
 import PromoFAQSection from '../components/svelte/PromoFAQSection.svelte';
+import FinalCTASection from '../components/svelte/FinalCTASection.svelte';
 
 import siteData from '../data/site.json';
 import villaData from '../data/villa.json';
+import { waUrl, pad2, getCountdown } from '../lib/utils';
 
-const waKonsultasi = (msg) =>
-  `https://wa.me/${siteData.contact.whatsapp}?text=${encodeURIComponent(msg)}`;
+const totalUnits = siteData.stats.totalUnits;
+const unitsSold = siteData.stats.unitsSold;
+const unitsLeft = totalUnits - unitsSold;
 
-// Marquee items
+// Marquee
 const marqueeItems = [
   '★ Sisa 16 dari 74 Unit',
   '★ SHM — Sertifikat Hak Milik',
@@ -65,10 +57,14 @@ const marqueeItems = [
   '★ Kuota 10 pendaftar pertama',
 ];
 
-// Stats untuk urgency banner
-const totalUnits = siteData.stats.totalUnits;
-const unitsSold = siteData.stats.unitsSold;
-const unitsLeft = totalUnits - unitsSold;
+// Server-side initial countdown values (so it shows before Svelte hydrates)
+const initialCd = getCountdown(siteData.promo.deadline);
+
+const waPesanHero = waUrl(
+  siteData.contact.whatsapp,
+  `Halo Tim Sahid, saya ingin klaim PROMO Q2 2026 — Diskon Rp 200 Juta + Bonus Mobil Listrik Baru. Mohon info lengkap + jadwal survey.`,
+  'promo_hero_sticky'
+);
 ---
 
 <BaseLayout
@@ -78,43 +74,282 @@ const unitsLeft = totalUnits - unitsSold;
   ogImage="/images/og/og-image.svg"
 >
   <NavMenu client:load />
-  <main class="pt-20">
-    <!-- ════════════════ SECTION 2: HERO ════════════════ -->
-    <div data-track-section="promo_hero">
-      <PromoHero client:only="svelte" promo={siteData.promo} />
-    </div>
 
-    <!-- ════════════════ SECTION 3: PROOF BAR (Marquee) ════════════════ -->
+  <main>
+    <!-- ════════════════════════════════════════════════════════════
+         SECTION 2 — HERO (FULL INLINE · SSR · NO HYDRATION FLASH)
+         Single dominant H1 + Lead form + Countdown + Hero image
+         ════════════════════════════════════════════════════════════ -->
+    <section
+      class="relative bg-forest-900 text-cream-50 overflow-hidden"
+      data-track-section="promo_hero"
+    >
+      <!-- Decorative orbs -->
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute -top-32 -right-32 w-[700px] h-[700px] bg-gold-500/8 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-40 -left-20 w-[500px] h-[500px] bg-forest-500/25 rounded-full blur-3xl"></div>
+      </div>
+
+      <div class="container-wide pt-10 pb-14 md:pt-14 md:pb-20 lg:pt-20 lg:pb-28 relative">
+        <!-- Top eyebrow row -->
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5 mb-6 md:mb-8">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-danger-500/95 text-white text-[10px] sm:text-xs font-bold uppercase tracking-widest animate-pulse-wa">
+            <span class="w-1.5 h-1.5 bg-white rounded-full"></span>
+            PROMO TERBATAS
+          </span>
+          <span class="font-mono text-[10px] sm:text-xs uppercase tracking-widest text-gold-500/90">
+            DIKELOLA SAHID · SHM · 16/74 UNIT
+          </span>
+        </div>
+
+        <!-- HERO GRID: Copy+Form (kiri) | Image (kanan) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+          <!-- LEFT: H1 + Sub + Trust + Countdown + Form -->
+          <div class="lg:col-span-7 order-2 lg:order-1">
+            <!-- Single dominant H1 -->
+            <h1 class="font-display leading-[1.02] tracking-tight font-bold text-cream-50 mb-5 md:mb-6 text-[2.5rem] sm:text-6xl md:text-[4.25rem] lg:text-[4.5rem]">
+              Villa Bukit Bandung<br/>
+              dengan <em class="text-gold-500 not-italic font-display">Cicilan Rp 9 Juta</em><br/>
+              <span class="text-cream-50/90">yang Bekerja Untuk Anda.</span>
+            </h1>
+
+            <!-- Sub-headline (3 kalimat: emosional → rasional → urgency) -->
+            <p class="font-body text-base sm:text-lg md:text-xl text-cream-50/85 leading-relaxed max-w-2xl mb-6 md:mb-8">
+              Bayangkan punya villa di puncak Bandung yang bekerja untuk Anda — disewakan, dikelola Sahid Hotel & Resort, menghasilkan
+              <strong class="text-gold-500">passive income Rp 9–15 juta per bulan</strong>. Mulai Rp 1,2 M, dengan booking fee Rp 5 juta yang
+              <strong class="text-gold-500">100% refundable</strong>. Minggu ini, Anda juga mendapat bonus Mobil Listrik Baru — untuk 10 pendaftar pertama.
+            </p>
+
+            <!-- Trust micro-row (4 badges) -->
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-2 mb-7 md:mb-8">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-cream-50/10 border border-cream-50/15 text-cream-50 text-[11px] sm:text-xs font-bold uppercase tracking-wider">
+                <span class="w-1.5 h-1.5 bg-gold-500 rounded-full"></span>
+                SHM
+              </span>
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-cream-50/10 border border-cream-50/15 text-cream-50 text-[11px] sm:text-xs font-bold uppercase tracking-wider">
+                <span class="w-1.5 h-1.5 bg-gold-500 rounded-full"></span>
+                SAHID 50+ TAHUN
+              </span>
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-cream-50/10 border border-cream-50/15 text-cream-50 text-[11px] sm:text-xs font-bold uppercase tracking-wider">
+                <span class="w-1.5 h-1.5 bg-gold-500 rounded-full"></span>
+                BOOKING 5JT REFUND
+              </span>
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-cream-50/10 border border-cream-50/15 text-cream-50 text-[11px] sm:text-xs font-bold uppercase tracking-wider">
+                <span class="w-1.5 h-1.5 bg-gold-500 rounded-full"></span>
+                16 / 74 UNIT
+              </span>
+            </div>
+
+            <!-- Countdown (Svelte island — SSR fallback shown first) -->
+            <div class="mb-7 md:mb-8" id="hero-countdown">
+              <!-- SSR placeholder (replaced after hydration) -->
+              <noscript>
+                <div class="font-mono text-sm text-gold-500">
+                  Promo berakhir {siteData.promo.deadlineLabel}
+                </div>
+              </noscript>
+              <CountdownTimer
+                client:load
+                target={siteData.promo.deadline}
+                size="lg"
+              />
+              <p class="text-xs sm:text-sm text-cream-50/60 mt-3">
+                Berlaku hingga <strong class="text-gold-500">{siteData.promo.deadlineLabel}</strong>
+              </p>
+            </div>
+
+            <!-- Inline lead form (Svelte island) -->
+            <div class="bg-cream-50 text-forest-900 shadow-2xl shadow-forest-900/40 border-t-4 border-gold-500 max-w-2xl">
+              <InlineLeadForm
+                client:load
+                badge="Klaim Promo + Bonus Mobil Listrik"
+                heading="Kirim 2 Data, Tim Sahid"
+                headingItalic="Chat Anda ≤ 5 Menit"
+                subheading="Isi nama + WhatsApp. Anda dapat detail promo, jadwal survey, dan konsultasi gratis — tanpa komitmen, tanpa spam."
+                source="promo_hero_inline"
+                ctaText="KLAIM PROMO VIA WHATSAPP"
+                value={10000000}
+                valueProps={[
+                  'Detail lengkap diskon Rp 200 juta + bonus Mobil Listrik',
+                  '3 tipe villa: Bijak, Idaman, Mapan — pilih yang cocok',
+                  'Jadwal survey + transport dari Bandung (gratis)',
+                ]}
+                showEmail={false}
+                showVilla={false}
+              />
+            </div>
+          </div>
+
+          <!-- RIGHT: Hero image (full-bleed on mobile, side on desktop) -->
+          <div class="lg:col-span-5 order-1 lg:order-2">
+            <div class="relative aspect-[4/5] sm:aspect-[5/4] lg:aspect-[4/5] overflow-hidden bg-forest-700">
+              <img
+                src="/images/hero/hero-aerial-1920.webp"
+                srcset="
+                  /images/hero/hero-aerial-800.webp 800w,
+                  /images/hero/hero-aerial-1280.webp 1280w,
+                  /images/hero/hero-aerial-1920.webp 1920w
+                "
+                sizes="(max-width: 1024px) 100vw, 40vw"
+                alt="Aerial view Menantu Resort — villa produktif di Cicalengka, Bandung Timur"
+                width="1920"
+                height="2400"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+                class="w-full h-full object-cover"
+              />
+
+              <!-- Gradient overlay bottom (for badges legibility) -->
+              <div class="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-forest-900/80 to-transparent pointer-events-none"></div>
+
+              <!-- Overlay badge: top-right — scarcity -->
+              <div class="absolute top-4 right-4 bg-danger-500 text-white px-3 py-2 shadow-lg">
+                <div class="font-mono text-[9px] uppercase tracking-widest font-bold opacity-80">Sisa</div>
+                <div class="font-display text-2xl font-bold leading-none">16</div>
+                <div class="font-mono text-[9px] uppercase tracking-widest font-bold opacity-80">unit</div>
+              </div>
+
+              <!-- Overlay badge: bottom-left — pricing -->
+              <div class="absolute bottom-4 left-4 bg-cream-50 text-forest-700 px-3 py-2 shadow-lg">
+                <div class="font-mono text-[9px] uppercase tracking-widest text-gold-700 font-bold">Cicilan mulai</div>
+                <div class="font-display text-xl sm:text-2xl font-bold leading-none">Rp 9 jt<span class="text-sm font-normal text-ink-soft">/bln</span></div>
+              </div>
+
+              <!-- Overlay badge: bottom-right — promo -->
+              <div class="absolute bottom-4 right-4 bg-gold-500 text-forest-700 px-3 py-2 shadow-lg">
+                <div class="font-mono text-[9px] uppercase tracking-widest font-bold">Hemat</div>
+                <div class="font-display text-lg sm:text-xl font-bold leading-none">Rp 200 jt</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════
+         SECTION 3 — PROOF BAR (Marquee)
+         ════════════════════════════════════════════════════════════ -->
     <div data-track-section="promo_proof_bar">
       <Marquee client:visible items={marqueeItems} />
     </div>
 
-    <!-- ════════════════ SECTION 4: 3 PROMO PILLAR ════════════════ -->
-    <div data-track-section="promo_3_pillar">
-      <PromoSpesialSection client:visible promo={siteData.promo} />
-    </div>
+    <!-- ════════════════════════════════════════════════════════════
+         SECTION 4 — 3 PILLAR (INLINE · CAMPAIGN-SPECIFIC)
+         Replace generic PromoSpesialSection with focused 3 cards
+         ════════════════════════════════════════════════════════════ -->
+    <section
+      class="relative bg-cream-50 py-16 md:py-24 overflow-hidden"
+      data-track-section="promo_3_pillar"
+    >
+      <SectionBackground variant="cream" pattern={true} orbs={true} intensity="subtle" />
+      <div class="container-wide relative">
+        <div class="max-w-3xl mb-10 md:mb-14">
+          <div class="font-mono text-[10px] md:text-xs uppercase tracking-widest text-gold-700 mb-3">
+            — Yang Anda Dapatkan Minggu Ini
+          </div>
+          <h2 class="font-display text-3xl sm:text-4xl md:text-5xl text-forest-700 leading-[1.05] tracking-tight font-bold mb-4">
+            Bukan Sekadar Promo.<br/>
+            <em class="text-gold-700">Tiga Hal Konkret</em> yang Membuat<br/>
+            Minggu Ini <em class="text-gold-700">Titik Paling Tepat.</em>
+          </h2>
+          <p class="font-body text-base md:text-lg text-ink-700 leading-relaxed">
+            Schedule harga naik Q3 2026. Bonus Mobil Listrik hangus setelah 10 pendaftar. Subsidi cicilan hanya minggu ini. Tiga hal ini tidak akan kembali.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
+          <!-- Pillar 1: Diskon -->
+          <div class="relative bg-white border-2 border-gold-500 p-6 md:p-7 hover-lift">
+            <div class="absolute -top-3 left-6 px-3 py-1 bg-gold-500 text-forest-700 text-[10px] font-bold uppercase tracking-widest">
+              01 — Potongan
+            </div>
+            <div class="w-12 h-12 flex items-center justify-center bg-gold-50 border border-gold-200 mb-5">
+              <span class="font-mono text-xl text-gold-700 font-bold">−</span>
+            </div>
+            <div class="font-display text-3xl md:text-4xl text-forest-700 font-bold leading-none mb-3">
+              Rp 200<span class="text-gold-700"> Juta</span>
+            </div>
+            <p class="font-body text-sm md:text-base text-ink-700 leading-relaxed mb-4">
+              Harga Q2 2026 berlaku minggu ini. Q3 2026, Master Suite naik Rp 150–200 juta, Deluxe naik Rp 100–150 juta. Potongan langsung, bukan markup kemudian.
+            </p>
+            <div class="pt-4 border-t border-cream-100">
+              <p class="font-mono text-[10px] uppercase tracking-widest text-gold-700 font-bold">
+                Berlaku 16 / 74 unit
+              </p>
+            </div>
+          </div>
+
+          <!-- Pillar 2: Bonus -->
+          <div class="relative bg-white border-2 border-forest-700 p-6 md:p-7 hover-lift">
+            <div class="absolute -top-3 left-6 px-3 py-1 bg-forest-700 text-gold-500 text-[10px] font-bold uppercase tracking-widest">
+              02 — Bonus
+            </div>
+            <div class="w-12 h-12 flex items-center justify-center bg-forest-50 border border-forest-200 mb-5">
+              <span class="font-mono text-xl text-forest-700 font-bold">+</span>
+            </div>
+            <div class="font-display text-2xl md:text-3xl text-forest-700 font-bold leading-tight mb-3">
+              Mobil Listrik<br/>Baru
+            </div>
+            <p class="font-body text-sm md:text-base text-ink-700 leading-relaxed mb-4">
+              Wuling Air ev atau setara. STNK atas nama Anda, all-risk 1 tahun. Bisa dipakai pribadi atau di-sewakan terpisah (passive income tambahan Rp 3–4 jt/bln).
+            </p>
+            <div class="pt-4 border-t border-cream-100">
+              <p class="font-mono text-[10px] uppercase tracking-widest text-danger-700 font-bold">
+                Kuota 10 pendaftar pertama
+              </p>
+            </div>
+          </div>
+
+          <!-- Pillar 3: Lock -->
+          <div class="relative bg-white border-2 border-cream-100 p-6 md:p-7 hover-lift">
+            <div class="absolute -top-3 left-6 px-3 py-1 bg-forest-900 text-cream-50 text-[10px] font-bold uppercase tracking-widest">
+              03 — Lock
+            </div>
+            <div class="w-12 h-12 flex items-center justify-center bg-cream-100 border border-cream-100 mb-5">
+              <span class="font-mono text-xl text-forest-700 font-bold">✓</span>
+            </div>
+            <div class="font-display text-3xl md:text-4xl text-forest-700 font-bold leading-none mb-3">
+              90<span class="text-gold-700"> Hari</span>
+            </div>
+            <p class="font-body text-sm md:text-base text-ink-700 leading-relaxed mb-4">
+              Booking Rp 5 juta mengunci harga hari ini selama 90 hari. Promo berakhir? Anda tetap dapat harga. Unit terjual orang lain? Anda tetap dapat unit.
+            </p>
+            <div class="pt-4 border-t border-cream-100">
+              <p class="font-mono text-[10px] uppercase tracking-widest text-gold-700 font-bold">
+                100% refundable 30 hari
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <SectionDivider variant="ornate" />
 
-    <!-- ════════════════ SECTION 5: SCARCITY LIVE ════════════════ -->
-    <section class="relative bg-white py-20 md:py-32" data-track-section="promo_scarcity">
+    <!-- ════════════════════════════════════════════════════════════
+         SECTION 5 — SCARCITY LIVE
+         ════════════════════════════════════════════════════════════ -->
+    <section
+      class="relative bg-white py-16 md:py-24 overflow-hidden"
+      data-track-section="promo_scarcity"
+    >
       <SectionBackground variant="cream" pattern={true} orbs={true} intensity="subtle" />
       <Pattern variant="dots" color="forest" opacity={0.05} />
       <div class="container-wide relative">
         <div class="max-w-4xl mx-auto">
-          <!-- Section heading -->
-          <div class="text-center mb-12">
-            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">
+          <div class="text-center mb-10 md:mb-12">
+            <div class="font-mono text-[10px] md:text-xs uppercase tracking-widest text-gold-700 mb-3">
               — Real-Time, Bukan Estimasi
             </div>
-            <h2 class="font-display text-editorial-md text-forest-700 leading-[0.95] tracking-tight font-bold mb-4">
-              16 Unit Tersisa. <em class="text-gold-700">Bukti Live.</em>
+            <h2 class="font-display text-3xl sm:text-4xl md:text-5xl text-forest-700 leading-[1.05] tracking-tight font-bold mb-4">
+              16 Unit Tersisa.<br/><em class="text-gold-700">Bukti Live.</em>
             </h2>
             <p class="font-body text-base md:text-lg text-ink-soft max-w-2xl mx-auto">
-              Angka ini berubah setiap minggu. Saat Anda membaca ini, mungkin sudah turun menjadi 14. Mungkin 11. Yang pasti — tidak naik.
+              Angka ini berubah setiap minggu. Saat Anda membaca ini, mungkin sudah turun. Yang pasti — tidak naik.
             </p>
           </div>
 
-          <!-- Urgency Banner -->
           <UrgencyBanner
             client:visible
             unitsLeft={unitsLeft}
@@ -122,45 +357,51 @@ const unitsLeft = totalUnits - unitsSold;
             deadline={siteData.promo.deadline}
           />
 
-          <!-- Live Activity Ticker -->
           <div class="mt-10">
             <LiveActivityTicker client:visible events={siteData.liveEvents} />
           </div>
 
-          <!-- Inline note -->
           <p class="text-[11px] text-ink-mute text-center mt-6 font-mono uppercase tracking-widest">
             *Data aktivitas adalah simulasi untuk transparansi. Booking real diproses manual oleh tim.
           </p>
         </div>
       </div>
     </section>
+
     <SectionDivider variant="diamond" />
 
-    <!-- ════════════════ SECTION 6: WHY NOW (Storytelling) ════════════════ -->
+    <!-- ════════════════════════════════════════════════════════════
+         SECTION 6 — WHY NOW
+         ════════════════════════════════════════════════════════════ -->
     <div data-track-section="promo_why_now">
       <WhyNowSection client:visible />
     </div>
+
     <SectionDivider variant="ornate" />
 
-    <!-- ════════════════ SECTION 7: VILLA SHOWCASE ════════════════ -->
-    <section class="relative bg-cream-50 py-20 md:py-32" data-track-section="promo_villa">
+    <!-- ════════════════════════════════════════════════════════════
+         SECTION 7 — VILLA SHOWCASE + 360°
+         ════════════════════════════════════════════════════════════ -->
+    <section
+      class="relative bg-cream-50 py-16 md:py-24 overflow-hidden"
+      data-track-section="promo_villa"
+    >
       <SectionBackground variant="cream" pattern={true} orbs={true} intensity="subtle" />
       <Pattern variant="dots" color="forest" opacity={0.05} />
       <div class="container-wide relative">
-        <div class="max-w-3xl mb-12">
-          <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">
+        <div class="max-w-3xl mb-10 md:mb-14">
+          <div class="font-mono text-[10px] md:text-xs uppercase tracking-widest text-gold-700 mb-3">
             — Pilih Villa Anda
           </div>
-          <h2 class="font-display text-editorial-md text-forest-700 leading-[0.95] tracking-tight font-bold mb-4">
-            Tiga Tipe Villa. <em class="text-gold-700">Tiga Cerita Berbeda.</em>
+          <h2 class="font-display text-3xl sm:text-4xl md:text-5xl text-forest-700 leading-[1.05] tracking-tight font-bold mb-4">
+            Tiga Tipe Villa.<br/><em class="text-gold-700">Tiga Cerita Berbeda.</em>
           </h2>
           <p class="font-body text-base md:text-lg text-ink-soft">
             Mana yang paling cocok dengan Anda?
           </p>
         </div>
 
-        <!-- Villa cards (3 col on desktop) -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 mb-14">
           {villaData.types.map((villa, i) => (
             <VillaCard
               client:visible
@@ -173,42 +414,54 @@ const unitsLeft = totalUnits - unitsSold;
 
         <!-- 360° Virtual Tour -->
         <div class="max-w-4xl mx-auto">
-          <div class="text-center mb-8">
-            <div class="font-mono text-xs uppercase tracking-widest text-gold-700 mb-3">
+          <div class="text-center mb-6 md:mb-8">
+            <div class="font-mono text-[10px] md:text-xs uppercase tracking-widest text-gold-700 mb-3">
               — Atau Lihat Sendiri
             </div>
             <h3 class="font-display text-2xl md:text-3xl text-forest-700 leading-tight font-bold mb-3">
               Virtual Tour 360° <em class="text-gold-700">Asli.</em>
             </h3>
             <p class="text-sm md:text-base text-ink-soft max-w-xl mx-auto">
-              Bukan foto. Bukan video. View 360° asli dari villa yang sudah berdiri hari ini. Geser, zoom, dan lihat sendiri apa yang Anda dapatkan.
+              Bukan foto. Bukan video. View 360° asli dari villa yang sudah berdiri hari ini. Geser, zoom, lihat sendiri apa yang Anda dapatkan.
             </p>
           </div>
           <Panorama360 client:visible />
         </div>
       </div>
     </section>
+
     <SectionDivider variant="diamond" />
 
-    <!-- ════════════════ SECTION 8: PROMO MATH ════════════════ -->
+    <!-- ════════════════════════════════════════════════════════════
+         SECTION 8 — PROMO MATH
+         ════════════════════════════════════════════════════════════ -->
     <div data-track-section="promo_math">
       <PromoMathSection client:visible />
     </div>
+
     <SectionDivider variant="ornate" />
 
-    <!-- ════════════════ SECTION 9: TRUST BAND ════════════════ -->
+    <!-- ════════════════════════════════════════════════════════════
+         SECTION 9 — TRUST BAND
+         ════════════════════════════════════════════════════════════ -->
     <div data-track-section="promo_trust">
       <PromoTrustBand client:visible />
     </div>
+
     <SectionDivider variant="diamond" />
 
-    <!-- ════════════════ SECTION 10: FAQ ════════════════ -->
+    <!-- ════════════════════════════════════════════════════════════
+         SECTION 10 — FAQ
+         ════════════════════════════════════════════════════════════ -->
     <div data-track-section="promo_faq">
       <PromoFAQSection client:visible />
     </div>
+
     <SectionDivider variant="ornate" />
 
-    <!-- ════════════════ SECTION 11: FINAL CTA ════════════════ -->
+    <!-- ════════════════════════════════════════════════════════════
+         SECTION 11 — FINAL CTA
+         ════════════════════════════════════════════════════════════ -->
     <div data-track-section="promo_final_cta">
       <FinalCTASection
         client:visible
